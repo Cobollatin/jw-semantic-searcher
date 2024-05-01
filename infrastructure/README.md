@@ -46,7 +46,6 @@ No modules.
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | The name of the application | `string` | n/a | yes |
 | <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Common tags for all resources | `map(string)` | n/a | yes |
 | <a name="input_environment_name"></a> [environment\_name](#input\_environment\_name) | The name of the environment (e.g., development, staging, production) | `string` | n/a | yes |
-| <a name="input_github_token"></a> [github\_token](#input\_github\_token) | The GitHub token for accessing GitHub resources | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | The Azure region where resources will be created | `string` | n/a | yes |
 | <a name="input_location_short"></a> [location\_short](#input\_location\_short) | The short name of the Azure region where resources will be created | `string` | n/a | yes |
 | <a name="input_swa_repository"></a> [swa\_repository](#input\_swa\_repository) | The GitHub repository for the Static Web App | `string` | n/a | yes |
