@@ -1,4 +1,4 @@
-app_name         = "jw-semantic-searcher"
+app_name         = "JwSemanticSearcher"
 location         = "East US 2"
 location_short   = "eus2"
 environment_name = "dev"

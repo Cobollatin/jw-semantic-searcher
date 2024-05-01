@@ -1,4 +1,4 @@
-version: 0.16.0 # Specify the version of terraform-docs
+version: 0.18.0 # Specify the version of terraform-docs
 
 formatter: markdown # Output format (e.g., markdown, json, yaml, xml)
 
