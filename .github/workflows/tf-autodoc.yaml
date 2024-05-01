@@ -2,16 +2,19 @@ name: "Terraform auto-generate documentation"
 run-name: "Terraform auto-generate README.MD for commit ${{ github.sha }}"
 on:
     pull_request:
+        paths:
+            - "infrastructure/**"
 permissions:
     contents: write
     pull-requests: write
+
 jobs:
     tfdocs:
         runs-on: ubuntu-latest
         strategy:
             max-parallel: 1
             matrix:
-                path: ["environments/dev", "modules"]
+                path: ["infrastructure"]
         defaults:
             run:
                 shell: bash

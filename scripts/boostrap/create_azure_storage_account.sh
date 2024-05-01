@@ -2,8 +2,8 @@
 
 # Define variables for the resource group, storage account name, container name, and location.
 # These variables will be used to create an Azure Storage Account and Blob Container to store Terraform state files.
-RESOURCE_GROUP="lumos-eus2-ops-rg"
-STORAGE_ACCOUNT_NAME="lumostfstateus2"  # Ensure this name is globally unique within Azure.
+RESOURCE_GROUP="jw-semantic-searcher-eus2-ops-rg"
+STORAGE_ACCOUNT_NAME="jwsemanticsearcheruse2opssa"  # Ensure this name is globally unique within Azure.
 CONTAINER_NAME="terraformstate"
 LOCATION="eastus2"
 

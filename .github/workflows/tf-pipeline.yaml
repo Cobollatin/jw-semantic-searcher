@@ -2,6 +2,8 @@ name: "Terraform Plan/Apply Pipeline"
 run-name: "Terraform Plan/Apply Pipeline for commit ${{ github.sha }}"
 on:
     pull_request:
+        paths:
+            - "infrastructure/**"
     push:
         branches:
             - main
@@ -15,16 +17,15 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                env: ["environments/dev/eus2"]
+                env: ["infrastructure"]
         defaults:
             run:
                 shell: bash
                 working-directory: ${{matrix.env}}
         env:
-            TF_VAR_azure_backend_rg: "lumos-eus2-ops-rg"
-            TF_VAR_azure_backend_sa: "lumostfstateus2"
+            TF_VAR_azure_backend_rg: "jw-semantic-searcher-eus2-ops-rg"
+            TF_VAR_azure_backend_sa: "jwsemanticsearcheruse2opssa"
             TF_VAR_azure_backend_container: "terraformstate"
-            SLACK_APP_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
         steps:
             - name: Checkout
               uses: actions/checkout@v4
