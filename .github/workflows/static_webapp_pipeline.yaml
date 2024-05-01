@@ -26,7 +26,7 @@ jobs:
     webapp_ci:
         if: github.event_name == 'pull_request'
         runs-on: ubuntu-latest
-        name: Test
+        name: Test Webapp
         defaults:
             run:
                 working-directory: ${{ env.APP_LOCATION }}
@@ -37,7 +37,7 @@ jobs:
     api_ci:
         if: github.event_name == 'pull_request'
         runs-on: ubuntu-latest
-        name: Test
+        name: Test API
         defaults:
             run:
                 working-directory: ${{ env.API_LOCATION }}
