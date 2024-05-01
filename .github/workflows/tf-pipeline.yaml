@@ -4,11 +4,13 @@ on:
     pull_request:
         paths:
             - "infrastructure/**"
+            - ".github/workflows/tf-pipeline.yaml"
     push:
         branches:
             - main
         paths:
             - "infrastructure/**"
+            - ".github/workflows/tf-pipeline.yaml"
 permissions:
     id-token: write
     contents: read
