@@ -1,0 +1,23 @@
+{
+    "name": "semantic-searcher-api",
+    "version": "0.0.0",
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w",
+        "clean": "rimraf dist",
+        "prestart": "npm run clean && npm run build",
+        "start": "func start",
+        "test": "echo \"No tests yet...\""
+    },
+    "description": "",
+    "dependencies": {
+        "@azure/functions": "^4.4.0",
+        "tslib": "^2.6.2"
+    },
+    "devDependencies": {
+        "@types/node": "^20.x",
+        "rimraf": "^5.0.5",
+        "typescript": "^5.4.5"
+    },
+    "main": "dist/src/functions/*.js"
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
+  "configurations": {
+    "semantic-searcher": {
+      "appLocation": "webapp",
+      "apiLocation": "api",
+      "outputLocation": "dist/semantic-searcher",
+      "apiLanguage": "node",
+      "apiVersion": "18",
+      "apiBuildCommand": "npm run build --if-present"
+    }
+  }
+}

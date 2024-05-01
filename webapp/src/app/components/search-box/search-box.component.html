@@ -1,0 +1,15 @@
+<section>
+    <form>
+        <input type="text" placeholder="Semantic input" #filter />
+        <button
+            class="primary"
+            type="button"
+            (click)="publichSearch(filter.value)"
+        >
+            Search
+        </button>
+    </form>
+    <small *ngIf="error" class="error">
+        {{ error.message }}
+    </small>
+</section>

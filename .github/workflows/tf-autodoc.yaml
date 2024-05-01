@@ -1,0 +1,71 @@
+name: "Terraform auto-generate documentation"
+run-name: "Terraform auto-generate README.MD for commit ${{ github.sha }}"
+on:
+    pull_request:
+permissions:
+    contents: write
+    pull-requests: write
+jobs:
+    tfdocs:
+        runs-on: ubuntu-latest
+        strategy:
+            max-parallel: 1
+            matrix:
+                path: ["environments/dev", "modules"]
+        defaults:
+            run:
+                shell: bash
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.pull_request.head.ref }}
+            - name: Set current date as env variable
+              run: echo "DATE=$(date -u +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+            - name: README.md generation
+              uses: terraform-docs/gh-actions@main
+              id: tfdocs
+              with:
+                  config-file: terraform-docs.yaml
+                  find-dir: ${{ matrix.path }}
+                  output-file: README.md
+                  output-method: inject
+                  git-push: "true"
+                  template: |-
+                      <!-- BEGIN_TF_DOCS -->
+
+                      This is a generated README.md file. Please do not edit directly. Instead, edit the file that generated this one and commit your changes.
+
+                      {{ .Content }}
+
+                      <!-- END_TF_DOCS -->
+
+            - name: Output README.md
+              id: output
+              working-directory: ${{ matrix.path }}
+              run: |
+                  readme_contents=""
+                  while IFS= read -r file; do
+                    base_dir_name=$(dirname "$file")
+                    base_dir_name="${base_dir_name#./}" # Remove the leading ./
+                    readme_contents+="<details><summary><h2>${base_dir_name}</h1></summary>$(cat "$file")</details>"
+                  done < <(find . -type f -name 'README.md' -not -path './README.md')
+                  echo 'readme<<EOF' >> $GITHUB_ENV
+                  echo "$readme_contents" >> $GITHUB_ENV
+                  echo 'EOF' >> $GITHUB_ENV
+            - name: Pull request comment
+              id: comment
+              uses: actions/github-script@v6
+              env:
+                  path: ${{ matrix.path }}
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  script: |
+                      const output = `Terraform-docs has updated the README.md for commit ${process.env.GITHUB_SHA} in ${process.env.path} with the following changes:\n\n
+                      ${process.env.readme}`
+                      github.rest.issues.createComment({
+                        issue_number: context.issue.number,
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        body: output
+                      })

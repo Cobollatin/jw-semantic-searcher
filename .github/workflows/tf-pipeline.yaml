@@ -1,0 +1,137 @@
+name: "Terraform Plan/Apply Pipeline"
+run-name: "Terraform Plan/Apply Pipeline for commit ${{ github.sha }}"
+on:
+    pull_request:
+    push:
+        branches:
+            - main
+permissions:
+    id-token: write
+    contents: read
+    pull-requests: write
+jobs:
+    terraform:
+        name: "Terraform"
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                env: ["environments/dev/eus2"]
+        defaults:
+            run:
+                shell: bash
+                working-directory: ${{matrix.env}}
+        env:
+            TF_VAR_azure_backend_rg: "lumos-eus2-ops-rg"
+            TF_VAR_azure_backend_sa: "lumostfstateus2"
+            TF_VAR_azure_backend_container: "terraformstate"
+            SLACK_APP_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Azure Authentication
+              id: login
+              uses: azure/login@v1
+              with:
+                  creds: ${{ secrets.AZURE_CREDENTIALS }}
+            - name: JSON Parse
+              id: parse
+              env:
+                  AZJSON: ${{ secrets.AZURE_CREDENTIALS }}
+              run: |
+                  ARM_CLIENT_ID=$(echo $AZJSON | jq -r '.["clientId"]')
+                  ARM_CLIENT_SECRET=$(echo $AZJSON | jq -r '.["clientSecret"]')
+                  ARM_TENANT_ID=$(echo $AZJSON | jq -r '.["tenantId"]')
+                  ARM_SUBSCRIPTION_ID=$(echo $AZJSON | jq -r '.["subscriptionId"]')
+                  echo ARM_CLIENT_ID=$ARM_CLIENT_ID >> $GITHUB_ENV
+                  echo ARM_CLIENT_SECRET=$ARM_CLIENT_SECRET >> $GITHUB_ENV
+                  echo ARM_TENANT_ID=$ARM_TENANT_ID >> $GITHUB_ENV
+                  echo ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID >> $GITHUB_ENV
+            - name: GitHub Token
+              id: token
+              env:
+                  TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  echo "machine github.com login x password ${TOKEN}" > ~/.netrc
+                  git config --global url."https://github.com/".insteadOf "git://github.com/"
+                  git config --global advice.detachedHead false
+            - name: Install Terraform
+              uses: hashicorp/setup-terraform@v2.0.3
+              with:
+                  terraform_wrapper: false
+            - name: Terraform Init
+              id: init
+              run: |
+                  terraform init -backend-config="resource_group_name=${TF_VAR_azure_backend_rg}" -backend-config="storage_account_name=${TF_VAR_azure_backend_sa}" -backend-config="container_name=${TF_VAR_azure_backend_container}"
+            - name: Install Checkov
+              id: checkov
+              if: github.event_name == 'pull_request'
+              run: |
+                  pip install checkov
+            - name: Checkov Static Test
+              id: static
+              if: github.event_name == 'pull_request'
+              run: |
+                  checkov -d . --download-external-modules true
+            - name: Terraform Format
+              id: fmt
+              run: terraform fmt -check -recursive
+              continue-on-error: true
+            - name: Terraform Validate
+              id: validate
+              run: terraform validate -no-color
+            - name: Terraform Plan
+              id: tplan
+              run: |
+                  plan_output=$(terraform plan -no-color)
+                  echo "$plan_output"
+                  echo "plan<<EOF" >> $GITHUB_OUTPUT
+                  echo "$plan_output" >> $GITHUB_OUTPUT
+                  echo "EOF" >> $GITHUB_OUTPUT
+            - name: Checkov Plan Test
+              id: cplan
+              if: github.event_name == 'pull_request'
+              run: |
+                  echo Disable until we have a self-hosted runner
+                  # terraform plan --out plan.tfplan
+                  # terraform show -json plan.tfplan > tfplan.json
+                  # ls
+                  # checkov -f tfplan.json --framework terraform_plan
+            - name: Pull Request Comment
+              id: comment
+              uses: actions/github-script@v3
+              if: github.event_name == 'pull_request'
+              env:
+                  TPLAN: "terraform\n${{ steps.tplan.outputs.plan }}"
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  script: |
+                      const output = `
+                      ### Pull Request Information
+                      Please review this pull request. Merging the PR will run Terraform Apply with the plan detailed below.
+
+                      #### Terraform Checks
+                      Init: \`${{ steps.init.outcome }}\`
+                      Format: \`${{ steps.fmt.outcome }}\`
+                      Validation: \`${{ steps.validate.outcome }}\`
+                      Plan: \`${{ steps.tplan.outcome }}\`
+
+                      #### Checkov
+                      Static: \`${{ steps.static.outcome }}\`
+                      Plan: \`${{ steps.cplan.outcome }}\`
+
+                      <details>
+                      <summary>Plan File</summary>
+
+                      \`\`\`${process.env.TPLAN}\`\`\`
+                      </details>
+                      `
+                      github.issues.createComment({
+                        issue_number: context.issue.number,
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        body: output
+                      })
+            - name: Terraform Apply
+              id: apply
+              if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+              run: terraform apply -auto-approve

@@ -1,0 +1,20 @@
+<section class="result">
+    <ng-container *ngIf="source; else errorTemplate">
+        <h2 class="result-heading" (click)="openLink(source.url)">
+            {{ formatTitle(source.title) }}
+        </h2>
+        <p class="result-preview">
+            {{ formatPreview(source.preview) }}
+        </p>
+    </ng-container>
+    <ng-template #errorTemplate>
+        <h2 class="result-heading">Something went wrong</h2>
+        <p class="result-preview">
+            We couldn't show the source, please try again later or report the
+            issue.
+        </p>
+        <small class="error" *ngIf="error">
+            Error: {{ error.message }}
+        </small>
+    </ng-template>
+</section>

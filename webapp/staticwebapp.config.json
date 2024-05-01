@@ -1,0 +1,14 @@
+{
+  "platform": {
+    "apiRuntime": "node:18"
+  },
+  "navigationFallback": {
+    "rewrite": "/"
+  },
+  "responseOverrides": {
+    "404": {
+      "statusCode": 404,
+      "redirect": "/"
+    }
+  }
+}

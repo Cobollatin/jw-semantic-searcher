@@ -1,0 +1,24 @@
+.result {
+    background: var(--accent-color);
+    border-radius: 30px;
+    padding-bottom: 30px;
+}
+.result-heading {
+    color: var(--primary-color);
+    padding: 10px 20px 0 20px;
+}
+.result-preview {
+    padding: 10px 20px 20px 20px;
+}
+section.result a {
+    padding-left: 20px;
+    text-decoration: none;
+    color: var(--primary-color);
+}
+section.result a::after {
+    content: "\203A";
+    margin-left: 5px;
+}
+.error {
+    color: red;
+}
