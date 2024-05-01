@@ -27,6 +27,7 @@ No modules.
 | [azurerm_network_security_group.use2_swa_nsg](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/network_security_group) | resource |
 | [azurerm_network_watcher.use2_main_nwwatcher](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/network_watcher) | resource |
 | [azurerm_resource_group.use2_main_rg](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/resource_group) | resource |
+| [azurerm_static_web_app.use2_main_swa](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/static_web_app) | resource |
 | [azurerm_subnet.use2_swb_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/subnet) | resource |
 | [azurerm_subnet_network_security_group_association.use2_as_subnet_nsg_association](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/subnet_network_security_group_association) | resource |
 | [azurerm_user_assigned_identity.use2_main_acr_identity](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/user_assigned_identity) | resource |
@@ -46,6 +47,8 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_use2_main_swa"></a> [use2\_main\_swa](#output\_use2\_main\_swa) | n/a |
 
 <!-- END_TF_DOCS -->
