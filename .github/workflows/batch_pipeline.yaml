@@ -1,5 +1,5 @@
-name: Azure Static Web Apps CI/CD
-
+name: Azure Batch CI/CD
+run-name: "Azure Batch CI/CD for commit ${{ github.sha }}"
 on:
     push:
         branches:

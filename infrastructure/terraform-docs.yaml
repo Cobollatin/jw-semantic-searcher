@@ -1,0 +1,30 @@
+version: 0.16.0 # Specify the version of terraform-docs
+
+formatter: markdown # Output format (e.g., markdown, json, yaml, xml)
+
+sections:
+  header: true # Include the header section
+  footer: false # Include the footer section
+  inputs: true # Include the inputs section
+  outputs: true # Include the outputs section
+  providers: true # Include the providers section
+  requirements: true # Include the requirements section
+  resources: true # Include the resources section
+  modules: true # Include the modules section
+
+sort:
+  enabled: true # Enable sorting
+  by: name # Sort sections by name
+
+output:
+  file: README.md # The output file where the documentation will be saved
+  mode: inject # Mode can be 'inject' or 'replace'; 'inject' updates the specified sections in the existing README.md
+
+# header-from: "main.tf" # File from which the header content will be extracted
+# footer-from: "docs/footer.md" # File from which the footer content will be extracted
+
+settings:
+  indent: 2 # Number of spaces for indentation
+  escape: true # Escape special characters
+  show: # Further customization of what to show in the documentation
+    required: true # Show required indicator for required inputs
