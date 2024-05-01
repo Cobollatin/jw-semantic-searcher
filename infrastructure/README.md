@@ -37,6 +37,7 @@ No modules.
 | [github_actions_secret.use2_main_swa_api_key](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [azuread_service_principal.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/data-sources/client_config) | data source |
+| [github_actions_public_key.use2_main_swa_github_key](https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/actions_public_key) | data source |
 
 ## Inputs
 
