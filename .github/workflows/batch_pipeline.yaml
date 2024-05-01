@@ -5,15 +5,13 @@ on:
         branches:
             - main
         paths:
-            - "webapp/**"
-            - "api/**"
+            - "indexer/**"
     pull_request:
         types: [opened, synchronize, reopened, closed]
         branches:
             - main
         paths:
-            - "webapp/**"
-            - "api/**"
+            - "indexer/**"
 jobs:
     do_nothing:
         runs-on: ubuntu-latest

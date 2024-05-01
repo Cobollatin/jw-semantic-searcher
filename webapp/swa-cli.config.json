@@ -12,7 +12,7 @@
       "appBuildCommand": "npm run build",
       "printConfig": "true",
       "swaConfigLocation": "./staticwebapp.config.json",
-      "verbose": "silly"
+      "verbose": "log"
     }
   }
 }
