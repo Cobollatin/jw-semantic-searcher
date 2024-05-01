@@ -105,3 +105,12 @@ resource "azurerm_container_registry" "use2_main_acr" {
 #     subresource_names              = ["registry"]
 #   }
 # }
+
+############################################################################################################################
+# SWA
+
+resource "azurerm_static_web_app" "use2_main_swa" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-swa"
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  location            = azurerm_resource_group.use2_main_rg.location
+}

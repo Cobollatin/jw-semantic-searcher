@@ -22,9 +22,9 @@ jobs:
                 shell: bash
                 working-directory: ${{matrix.env}}
         env:
-            TF_VAR_azure_backend_rg: "jw-semantic-searcher-eus2-ops-rg"
-            TF_VAR_azure_backend_sa: "jwssseruse2tfsa"
-            TF_VAR_azure_backend_container: "terraformstate"
+            TF_VAR_azure_backend_rg: ${{ secrets.AZURE_TF_RESOURCE_GROUP }}
+            TF_VAR_azure_backend_sa: ${{ secrets.AZURE_TF_STORAGE_ACCOUNT_NAME }}
+            TF_VAR_azure_backend_container: ${{ secrets.AZURE_TF_CONTAINER_NAME }}
         steps:
             - name: Checkout
               uses: actions/checkout@v4

@@ -6,6 +6,7 @@ RESOURCE_GROUP="jw-semantic-searcher-eus2-ops-rg"
 STORAGE_ACCOUNT_NAME="jwssseruse2tfsa"  # Ensure this name is globally unique within Azure.
 CONTAINER_NAME="terraformstate"
 LOCATION="eastus2"
+GITHUB_REPO="Cobollatin/jw-semantic-searcher" # The format is: user/repo
 
 # Create a resource group in Azure with the specified name and location.
 # Resource groups are containers that hold related resources for an Azure solution.
@@ -23,6 +24,11 @@ ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP --ac
 
 # Create a blob container within the storage account. Blob containers are used to store blobs, such as images, text files, or Terraform state files.
 az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME --account-key $ACCOUNT_KEY
+
+gh secret set AZURE_TF_RESOURCE_GROUP -b"$RESOURCE_GROUP" --repo $GITHUB_REPO
+gh secret set AZURE_TF_STORAGE_ACCOUNT_NAME -b"$STORAGE_ACCOUNT_NAME" --repo $GITHUB_REPO
+gh secret set AZURE_TF_CONTAINER_NAME -b"$CONTAINER_NAME" --repo $GITHUB_REPO
+gh secret set AZURE_TF_LOCATION -b"$LOCATION" --repo $GITHUB_REPO
 
 # Print a message indicating that the storage account and blob container have been successfully created.
 # This setup is commonly used for storing Terraform state files in a remote backend configuration.
