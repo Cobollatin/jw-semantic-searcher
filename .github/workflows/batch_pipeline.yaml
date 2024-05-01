@@ -1,0 +1,22 @@
+name: Azure Batch CI/CD
+run-name: "Azure Batch CI/CD for commit ${{ github.sha }}"
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - "webapp/**"
+            - "api/**"
+    pull_request:
+        types: [opened, synchronize, reopened, closed]
+        branches:
+            - main
+        paths:
+            - "webapp/**"
+            - "api/**"
+jobs:
+    do_nothing:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Do Nothing
+              run: echo "This is a do nothing job"

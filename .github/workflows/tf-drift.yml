@@ -23,7 +23,7 @@ jobs:
                 working-directory: ${{matrix.env}}
         env:
             TF_VAR_azure_backend_rg: "jw-semantic-searcher-eus2-ops-rg"
-            TF_VAR_azure_backend_sa: "jwsemanticsearcheruse2opssa"
+            TF_VAR_azure_backend_sa: "jwssseruse2tfsa"
             TF_VAR_azure_backend_container: "terraformstate"
         steps:
             - name: Checkout

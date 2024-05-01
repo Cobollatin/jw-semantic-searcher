@@ -6,9 +6,6 @@ SUBSCRIPTION_ID="b9d5d1cf-2f79-4a8f-a3d6-73ddca47caed"
 APP_NAME="jw-semantic-searcher"
 GITHUB_REPO="Cobollatin/jw-semantic-searcher" # The format is: user/repo
 
-# Log in to Azure using the Azure CLI. This command requires that you have Azure CLI installed and that you are already authenticated.
-az login
-
 # Set the Azure account to use the specified subscription ID for subsequent operations.
 az account set --subscription=$SUBSCRIPTION_ID
 
