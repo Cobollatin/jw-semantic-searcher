@@ -10,5 +10,9 @@
       "statusCode": 404,
       "redirect": "/"
     }
+  },
+  "globalHeaders": {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET"
   }
 }
