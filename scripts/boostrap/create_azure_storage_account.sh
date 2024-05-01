@@ -3,13 +3,9 @@
 # Define variables for the resource group, storage account name, container name, and location.
 # These variables will be used to create an Azure Storage Account and Blob Container to store Terraform state files.
 RESOURCE_GROUP="jw-semantic-searcher-eus2-ops-rg"
-STORAGE_ACCOUNT_NAME="jwsemanticsearcheruse2opssa"  # Ensure this name is globally unique within Azure.
+STORAGE_ACCOUNT_NAME="jwssseruse2tfsa"  # Ensure this name is globally unique within Azure.
 CONTAINER_NAME="terraformstate"
 LOCATION="eastus2"
-
-# Log in to Azure using the Azure CLI. This step assumes that you have the Azure CLI installed
-# and that you are not already logged in or want to switch accounts.
-az login
 
 # Create a resource group in Azure with the specified name and location.
 # Resource groups are containers that hold related resources for an Azure solution.
