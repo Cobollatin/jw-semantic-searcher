@@ -29,3 +29,9 @@ variable "common_tags" {
   description = "Common tags for all resources" # Tags are key-value pairs associated with resources. Common tags might include metadata like project name, environment, or cost center.
   type        = map(string)                     # Specifies that this variable is a map of strings, allowing for key-value pairs where both keys and values are strings.
 }
+
+# Variable for a swa repository
+variable "swa_repository" {
+  description = "The GitHub repository for the Static Web App" # Specifies the GitHub repository where the Static Web App is hosted.
+  type        = string                                         # The value of this variable is a string.
+}

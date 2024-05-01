@@ -9,3 +9,4 @@ common_tags = {
   CreatedBy   = "Terraform"
   Location    = "East US 2"
 }
+swa_repository = "CoBollatin/jw-semantic-searcher"

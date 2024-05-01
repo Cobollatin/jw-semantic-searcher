@@ -7,3 +7,5 @@ provider "azurerm" {
   # Service principal credentials are the pipeline's responsibility.
   features {}
 }
+
+provider "github" {}
