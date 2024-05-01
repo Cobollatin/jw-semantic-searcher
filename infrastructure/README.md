@@ -6,14 +6,14 @@ This is a generated README.md file. Please do not edit directly. Instead, edit t
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 3.94.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 3.101.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_azuread"></a> [azuread](#provider\_azuread) | n/a |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.94.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.101.0 |
 
 ## Modules
 
@@ -23,17 +23,17 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [azurerm_container_registry.use2_main_acr](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/container_registry) | resource |
-| [azurerm_network_security_group.use2_swa_nsg](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/network_security_group) | resource |
-| [azurerm_network_watcher.use2_main_nwwatcher](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/network_watcher) | resource |
-| [azurerm_resource_group.use2_main_rg](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/resource_group) | resource |
-| [azurerm_static_web_app.use2_main_swa](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/static_web_app) | resource |
-| [azurerm_subnet.use2_swb_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/subnet) | resource |
-| [azurerm_subnet_network_security_group_association.use2_as_subnet_nsg_association](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/subnet_network_security_group_association) | resource |
-| [azurerm_user_assigned_identity.use2_main_acr_identity](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/user_assigned_identity) | resource |
-| [azurerm_virtual_network.use2_main_vnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/virtual_network) | resource |
+| [azurerm_container_registry.use2_main_acr](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/container_registry) | resource |
+| [azurerm_network_security_group.use2_swa_nsg](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/network_security_group) | resource |
+| [azurerm_network_watcher.use2_main_nwwatcher](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/network_watcher) | resource |
+| [azurerm_resource_group.use2_main_rg](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/resource_group) | resource |
+| [azurerm_static_web_app.use2_main_swa](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/static_web_app) | resource |
+| [azurerm_subnet.use2_swb_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/subnet) | resource |
+| [azurerm_subnet_network_security_group_association.use2_as_subnet_nsg_association](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/subnet_network_security_group_association) | resource |
+| [azurerm_user_assigned_identity.use2_main_acr_identity](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/user_assigned_identity) | resource |
+| [azurerm_virtual_network.use2_main_vnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/virtual_network) | resource |
 | [azuread_service_principal.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) | data source |
-| [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/data-sources/client_config) | data source |
+| [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/data-sources/client_config) | data source |
 
 ## Inputs
 
