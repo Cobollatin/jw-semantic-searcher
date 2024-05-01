@@ -25,6 +25,8 @@ jobs:
             TF_VAR_azure_backend_rg: ${{ secrets.AZURE_TF_RESOURCE_GROUP }}
             TF_VAR_azure_backend_sa: ${{ secrets.AZURE_TF_STORAGE_ACCOUNT_NAME }}
             TF_VAR_azure_backend_container: ${{ secrets.AZURE_TF_CONTAINER_NAME }}
+            GITHUB_TOKEN: ${{ secrets.TF_GITHUB_TOKEN }}
+            GITHUB_OWNER: ${{ github.repository_owner }}
         steps:
             - name: Checkout
               uses: actions/checkout@v4

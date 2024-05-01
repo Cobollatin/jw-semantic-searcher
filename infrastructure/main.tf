@@ -115,6 +115,10 @@ resource "azurerm_static_web_app" "use2_main_swa" {
   location            = azurerm_resource_group.use2_main_rg.location
 }
 
+data "github_actions_public_key" "use2_main_swa_github_key" {
+  repository = var.swa_repository
+}
+
 resource "github_actions_secret" "use2_main_swa_api_key" {
   repository      = var.swa_repository
   secret_name     = "AZURE_STATIC_WEB_APPS_API_TOKEN"
