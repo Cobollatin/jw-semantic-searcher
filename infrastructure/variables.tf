@@ -30,6 +30,13 @@ variable "common_tags" {
   type        = map(string)                     # Specifies that this variable is a map of strings, allowing for key-value pairs where both keys and values are strings.
 }
 
+# Variable for github token
+variable "github_token" {
+  description = "The GitHub token for accessing GitHub resources" # Specifies the GitHub token used to authenticate and access GitHub resources.
+  type        = string                                            # The value of this variable is a string.
+  sensitive   = true                                              # Indicates that the value of this variable should be treated as sensitive and not displayed in logs or outputs.
+}
+
 # Variable for a swa repository
 variable "swa_repository" {
   description = "The GitHub repository for the Static Web App" # Specifies the GitHub repository where the Static Web App is hosted.

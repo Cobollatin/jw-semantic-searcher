@@ -8,4 +8,5 @@ provider "azurerm" {
   features {}
 }
 
-provider "github" {}
+provider "github" {
+}
