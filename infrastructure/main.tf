@@ -230,7 +230,7 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
       registry_server           = azurerm_container_registry.use2_main_acr.login_server
       user_assigned_identity_id = azurerm_user_assigned_identity.use2_main_batch_pool_acr_identity.id
     }
-    container_image_names = var.batch_docker_images
+    container_image_names = [for name in var.batch_docker_images : "${azurerm_container_registry.use2_main_acr.login_server}/${name}:latest"]
   }
 }
 
