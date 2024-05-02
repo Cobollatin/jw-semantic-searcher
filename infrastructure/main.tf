@@ -182,7 +182,7 @@ resource "azurerm_batch_account" "use2_main_batch" {
   name                          = lower("${substr(var.app_name, 0, 8)}${var.location_short}${var.environment_name}batch")
   location                      = azurerm_resource_group.use2_main_rg.location
   resource_group_name           = azurerm_resource_group.use2_main_rg.name
-  pool_allocation_mode          = "BatchService"
+  pool_allocation_mode          = "UserSubscription"
   public_network_access_enabled = true
   tags                          = var.common_tags
   identity {
