@@ -1,0 +1,22 @@
+name: "GitHub Issue for TODOs"
+run-name: "GitHub Issue for TODOs for commit ${{ github.sha }}"
+on:
+    push:
+        branches:
+            - main
+permissions:
+    id-token: write
+    contents: read
+    pull-requests: write
+jobs:
+    todo_to_issue:
+        name: "TODO to GitHub Issue"
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4.1.4
+            - name: "TODO to Issue"
+              uses: alstr/todo-to-issue-action@v4.13
+              with:
+                AUTO_P: true
+                  
