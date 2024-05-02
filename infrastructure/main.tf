@@ -217,12 +217,7 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
       user_name       = azurerm_container_registry.use2_main_acr.admin_username
       password        = azurerm_container_registry.use2_main_acr.admin_password
     }
-    dynamic "container_image_names" {
-      for_each = var.batch_docker_images
-      content {
-        image = container_image_names.value
-      }
-    }
+    container_image_names = var.batch_docker_images
   }
 }
 
