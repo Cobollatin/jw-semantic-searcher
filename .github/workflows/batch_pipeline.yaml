@@ -50,5 +50,5 @@ jobs:
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
             - name: Deploy to Azure Batch
-              run: az batch task create --task-id ${{ github.sha }} --job-id ${{ secrets.BATCH_JOB_ID }} --account-endpoint ${{ secrets.BATCH_ACCOUNT_ENDPOINT }} --account-key ${{ secrets.BATCH_ACCOUNT_KEY }} --account-name ${{ secrets.BATCH_ACCOUNT_NAME }} --command-line "echo 'Hello World from $env'"
+              run: az batch task create --task-id ${{ github.sha }} --job-id ${{ secrets.BATCH_JOB_ID }} --account-endpoint ${{ secrets.BATCH_ACCOUNT_ENDPOINT }} --account-name ${{ secrets.BATCH_ACCOUNT_NAME }} --command-line "echo 'Hello World from $env'"
 
