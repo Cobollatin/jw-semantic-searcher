@@ -26,7 +26,6 @@ No modules.
 | Name | Type |
 |------|------|
 | [azurerm_batch_account.use2_main_batch](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/batch_account) | resource |
-| [azurerm_batch_application.use2_main_batch_app](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/batch_application) | resource |
 | [azurerm_container_registry.use2_main_acr](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/container_registry) | resource |
 | [azurerm_network_security_group.use2_swa_nsg](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/network_security_group) | resource |
 | [azurerm_network_watcher.use2_main_nwwatcher](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/network_watcher) | resource |
