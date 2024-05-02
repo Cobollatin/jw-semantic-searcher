@@ -70,6 +70,7 @@ resource "azurerm_container_registry" "use2_main_acr" {
   #checkov:skip=CKV_AZURE_165:We need premium tier for geo-replication
   #checkov:skip=CKV_AZURE_164:We need premium tier for trust policy
   #checkov:skip=CKV_AZURE_163:We only can afford basic tier
+  #checkov:skip=CKV_AZURE_237:We cant use dedicated data endpoints because we only have basic tier
   #checkov:skip=CKV_AZURE_139:We dont have a self-hosted runner in the pipeline yet, so we need to skip this check because the runner needs access
   name                       = "${var.app_name}${var.location_short}${var.environment_name}acr"
   location                   = azurerm_resource_group.use2_main_rg.location
@@ -97,6 +98,7 @@ data "github_actions_public_key" "use2_main_acr_github_key" {
 }
 
 resource "github_actions_secret" "use2_main_acr_rg" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
   for_each        = toset(var.acr_repositories)
   repository      = each.value
   secret_name     = "ACR_RESOURCE_GROUP"
@@ -104,6 +106,7 @@ resource "github_actions_secret" "use2_main_acr_rg" {
 }
 
 resource "github_actions_secret" "use2_main_acr_name" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
   for_each        = toset(var.acr_repositories)
   repository      = each.value
   secret_name     = "AZURE_CONTAINER_REGISTRY"
@@ -173,6 +176,7 @@ resource "azurerm_user_assigned_identity" "use2_main_batch_identity" {
 }
 
 resource "azurerm_batch_account" "use2_main_batch" {
+  #checkov:skip=CKV_AZURE_76:Managed encryption is enough for our needs
   name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-batch"
   location                      = azurerm_resource_group.use2_main_rg.location
   resource_group_name           = azurerm_resource_group.use2_main_rg.name
