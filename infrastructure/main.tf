@@ -193,17 +193,10 @@ resource "azurerm_batch_account" "use2_main_batch" {
   }
 }
 
-resource "azurerm_user_assigned_identity" "use2_main_batch_pool_acr_identity" {
-  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool-acr-identity"
-  location            = azurerm_resource_group.use2_main_rg.location
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
-  tags                = var.common_tags
-}
-
 resource "azurerm_role_assignment" "use2_main_batch_acr_role" {
   scope                = azurerm_container_registry.use2_main_acr.id
   role_definition_name = "AcrPull"
-  principal_id         = azurerm_user_assigned_identity.use2_main_batch_pool_acr_identity.principal_id
+  principal_id         = azurerm_user_assigned_identity.use2_main_batch_identity.principal_id
   description          = "Allow the Batch Pool VM to pull images from the ACR"
 }
 
@@ -228,9 +221,15 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
     type = "DockerCompatible"
     container_registries {
       registry_server           = azurerm_container_registry.use2_main_acr.login_server
-      user_assigned_identity_id = azurerm_user_assigned_identity.use2_main_batch_pool_acr_identity.id
+      user_assigned_identity_id = azurerm_user_assigned_identity.use2_main_batch_identity.id
     }
     container_image_names = [for name in var.batch_docker_images : "${azurerm_container_registry.use2_main_acr.login_server}/${name}:latest"]
+  }
+  identity {
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.use2_main_batch_identity.id,
+    ]
   }
 }
 
