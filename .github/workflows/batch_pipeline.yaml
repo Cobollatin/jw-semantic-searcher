@@ -22,8 +22,16 @@ env:
     IMAGE_NAME: "indexer"
     IMAGE_TAG: ${{ github.sha }}
 jobs:
+    indexer_ci:
+        runs-on: ubuntu-latest
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
+        steps:
+            - uses: actions/checkout@v4.1.4
+            - name: "Do nothing"
+              run: echo "Doing nothing for now"
     buildImage:
         runs-on: ubuntu-latest
+        if: github.event_name == 'push'
         steps:
             - uses: actions/checkout@v4.1.4
             - uses: azure/login@v2.1.0
@@ -42,4 +50,4 @@ jobs:
     #           with:
     #               creds: ${{ secrets.AZURE_CREDENTIALS }}
     #         - name: Deploy to Azure Batch
-    #           run: az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }} --image ${{ secrets.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --command-line "/bin/bash -c 'echo Hello from Azure Batch'"
+    #           run: az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }} --image ${{ secrets.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --command-line "/bin/bash -c 'echo Task for repo ${{ github.repository }} and commit ${{ github.sha }}'"

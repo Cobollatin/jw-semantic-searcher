@@ -161,6 +161,7 @@ data "github_actions_public_key" "use2_main_swa_github_key" {
 }
 
 resource "github_actions_secret" "use2_main_swa_api_key" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
   repository      = var.swa_repository
   secret_name     = "AZURE_STATIC_WEB_APPS_API_TOKEN"
   plaintext_value = azurerm_static_web_app.use2_main_swa.api_key
@@ -192,17 +193,35 @@ resource "azurerm_batch_account" "use2_main_batch" {
   }
 }
 
-# resource "azurerm_batch_pool" "use2_main_batch_pool" {
-#   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool"
-#   resource_group_name = azurerm_resource_group.use2_main_rg.name
-#   account_name        = azurerm_batch_account.use2_main_batch.name
-#   node_agent_sku_id   = "batch.node.ubuntu 20.04"
-#   vm_size             = "STANDARD_A1_v2"
-#   max_tasks_per_node  = 1
-#   storage_image_reference {
-#     publisher = "Canonical"
-#     offer     = "UbuntuServer"
-#     sku       = "20.04-LTS"
-#     version   = "latest"
-#   }
-# }
+resource "azurerm_batch_pool" "use2_main_batch_pool" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool"
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  account_name        = azurerm_batch_account.use2_main_batch.name
+  node_agent_sku_id   = "batch.node.ubuntu 20.04"
+  vm_size             = "Standard_B1s"
+  max_tasks_per_node  = 1
+  storage_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "20.04-LTS"
+    version   = "latest"
+  }
+}
+
+resource "azurerm_batch_job" "use2_main_batch_job" {
+  name          = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-job"
+  batch_pool_id = azurerm_batch_pool.use2_main_batch_pool.id
+}
+
+data "github_actions_public_key" "use2_main_batch_github_key" {
+  for_each   = toset(var.batch_repositories)
+  repository = each.value
+}
+
+resource "github_actions_secret" "use2_main_batch_account" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
+  for_each        = toset(var.batch_repositories)
+  repository      = each.value
+  secret_name     = "BATCH_JOB_ID"
+  plaintext_value = azurerm_batch_account.use2_main_batch.name
+}
