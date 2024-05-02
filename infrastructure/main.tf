@@ -147,12 +147,13 @@ resource "azurerm_static_web_app" "use2_main_swa" {
   sku_tier                           = "Free"
   sku_size                           = "Free"
   tags                               = var.common_tags
-  identity {
-    type = "UserAssigned"
-    identity_ids = [
-      azurerm_user_assigned_identity.use2_main_swa_identity.id,
-    ]
-  }
+  # We cant use the identity under the free tier
+  # identity {
+  #   type = "UserAssigned"
+  #   identity_ids = [
+  #     azurerm_user_assigned_identity.use2_main_swa_identity.id,
+  #   ]
+  # }
 }
 
 data "github_actions_public_key" "use2_main_swa_github_key" {
@@ -177,7 +178,7 @@ resource "azurerm_user_assigned_identity" "use2_main_batch_identity" {
 
 resource "azurerm_batch_account" "use2_main_batch" {
   #checkov:skip=CKV_AZURE_76:Managed encryption is enough for our needs
-  name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-batch"
+  name                          = lower("${substr(var.app_name, 0, 8)}${var.location_short}${var.environment_name}batch")
   location                      = azurerm_resource_group.use2_main_rg.location
   resource_group_name           = azurerm_resource_group.use2_main_rg.name
   pool_allocation_mode          = "BatchService"
