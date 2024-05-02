@@ -244,10 +244,34 @@ data "github_actions_public_key" "use2_main_batch_github_key" {
   repository = each.value
 }
 
-resource "github_actions_secret" "use2_main_batch_account" {
+resource "github_actions_secret" "use2_main_batch_job_id" {
   #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
   for_each        = toset(var.batch_repositories)
   repository      = each.value
   secret_name     = "BATCH_JOB_ID"
+  plaintext_value = azurerm_batch_job.use2_main_batch_job.id
+}
+
+resource "github_actions_secret" "use2_main_batch_account_endpoint" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
+  for_each        = toset(var.batch_repositories)
+  repository      = each.value
+  secret_name     = "BATCH_ACCOUNT_ENDPOINT"
+  plaintext_value = azurerm_batch_account.use2_main_batch.account_endpoint
+}
+
+resource "github_actions_secret" "use2_main_batch_account_key" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
+  for_each        = toset(var.batch_repositories)
+  repository      = each.value
+  secret_name     = "BATCH_ACCOUNT_KEY"
+  plaintext_value = azurerm_batch_account.use2_main_batch.primary_access_key
+}
+
+resource "github_actions_secret" "use2_main_batch_account_name" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
+  for_each        = toset(var.batch_repositories)
+  repository      = each.value
+  secret_name     = "BATCH_ACCOUNT_NAME"
   plaintext_value = azurerm_batch_account.use2_main_batch.name
 }
