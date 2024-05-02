@@ -50,4 +50,4 @@ jobs:
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
             - name: Deploy to Azure Batch
-              run: az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }} --yes
+              run: az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }}
