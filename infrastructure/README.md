@@ -32,11 +32,13 @@ No modules.
 | [azurerm_network_security_group.use2_swa_nsg](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/network_security_group) | resource |
 | [azurerm_network_watcher.use2_main_nwwatcher](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/network_watcher) | resource |
 | [azurerm_resource_group.use2_main_rg](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/resource_group) | resource |
+| [azurerm_role_assignment.use2_main_batch_acr_role](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/role_assignment) | resource |
 | [azurerm_static_web_app.use2_main_swa](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/static_web_app) | resource |
 | [azurerm_subnet.use2_swb_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/subnet) | resource |
 | [azurerm_subnet_network_security_group_association.use2_as_subnet_nsg_association](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/subnet_network_security_group_association) | resource |
 | [azurerm_user_assigned_identity.use2_main_acr_identity](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/user_assigned_identity) | resource |
 | [azurerm_user_assigned_identity.use2_main_batch_identity](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/user_assigned_identity) | resource |
+| [azurerm_user_assigned_identity.use2_main_batch_pool_acr_identity](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/user_assigned_identity) | resource |
 | [azurerm_user_assigned_identity.use2_main_swa_identity](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/user_assigned_identity) | resource |
 | [azurerm_virtual_network.use2_main_vnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/virtual_network) | resource |
 | [github_actions_secret.use2_main_acr_name](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
@@ -55,6 +57,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_acr_repositories"></a> [acr\_repositories](#input\_acr\_repositories) | The list of repositories with Docker images | `list(string)` | n/a | yes |
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | The name of the application | `string` | n/a | yes |
+| <a name="input_batch_docker_images"></a> [batch\_docker\_images](#input\_batch\_docker\_images) | The list of Docker images for the batch job | `list(string)` | n/a | yes |
 | <a name="input_batch_repositories"></a> [batch\_repositories](#input\_batch\_repositories) | The list of repositories with Docker images | `list(string)` | n/a | yes |
 | <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Common tags for all resources | `map(string)` | n/a | yes |
 | <a name="input_environment_name"></a> [environment\_name](#input\_environment\_name) | The name of the environment (e.g., development, staging, production) | `string` | n/a | yes |

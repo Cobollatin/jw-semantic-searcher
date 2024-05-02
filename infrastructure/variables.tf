@@ -47,3 +47,9 @@ variable "batch_repositories" {
   description = "The list of repositories with Docker images" # Specifies a list of repositories that contain a batch job.
   type        = list(string)                                  # Indicates that this variable is a list of strings.
 }
+
+# Variable for the batch docker images
+variable "batch_docker_images" {
+  description = "The list of Docker images for the batch job" # Specifies a list of Docker images that are used for the batch job.
+  type        = list(string)                                  # Indicates that this variable is a list of strings.
+}
