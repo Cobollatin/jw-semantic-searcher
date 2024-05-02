@@ -161,6 +161,7 @@ data "github_actions_public_key" "use2_main_swa_github_key" {
 }
 
 resource "github_actions_secret" "use2_main_swa_api_key" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
   repository      = var.swa_repository
   secret_name     = "AZURE_STATIC_WEB_APPS_API_TOKEN"
   plaintext_value = azurerm_static_web_app.use2_main_swa.api_key
@@ -218,6 +219,7 @@ data "github_actions_public_key" "use2_main_batch_github_key" {
 }
 
 resource "github_actions_secret" "use2_main_batch_account" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
   for_each        = toset(var.batch_repositories)
   repository      = each.value
   secret_name     = "BATCH_JOB_ID"
