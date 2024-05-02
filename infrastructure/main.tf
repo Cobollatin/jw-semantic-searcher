@@ -192,13 +192,6 @@ resource "azurerm_batch_account" "use2_main_batch" {
   }
 }
 
-resource "azurerm_batch_application" "use2_main_batch_app" {
-  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-app"
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
-  account_name        = azurerm_batch_account.use2_main_batch.name
-  display_name        = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-app"
-}
-
 # resource "azurerm_batch_pool" "use2_main_batch_pool" {
 #   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool"
 #   resource_group_name = azurerm_resource_group.use2_main_rg.name
