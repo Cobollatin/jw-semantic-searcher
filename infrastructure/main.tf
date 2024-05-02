@@ -193,6 +193,19 @@ resource "azurerm_batch_account" "use2_main_batch" {
   }
 }
 
+resource "azurerm_user_assigned_identity" "use2_main_batch_pool_acr_identity" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool-acr-identity"
+  location            = azurerm_resource_group.use2_main_rg.location
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  tags                = var.common_tags
+}
+
+resource "azurerm_role_assignment" "use2_main_batch_acr_role" {
+  scope                = azurerm_container_registry.use2_main_acr.id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_batch_account.use2_main_batch.identity[0].principal_id
+}
+
 resource "azurerm_batch_pool" "use2_main_batch_pool" {
   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool"
   resource_group_name = azurerm_resource_group.use2_main_rg.name
@@ -213,9 +226,8 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
   container_configuration {
     type = "DockerCompatible"
     container_registries {
-      registry_server = azurerm_container_registry.use2_main_acr.login_server
-      user_name       = azurerm_container_registry.use2_main_acr.admin_username
-      password        = azurerm_container_registry.use2_main_acr.admin_password
+      registry_server           = azurerm_container_registry.use2_main_acr.login_server
+      user_assigned_identity_id = azurerm_user_assigned_identity.use2_main_batch_pool_acr_identity.id
     }
     container_image_names = var.batch_docker_images
   }
