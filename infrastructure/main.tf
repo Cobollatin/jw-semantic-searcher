@@ -91,6 +91,35 @@ resource "azurerm_container_registry" "use2_main_acr" {
   }
 }
 
+data "github_actions_public_key" "use2_main_swa_github_key" {
+  repository = var.swa_repository
+}
+
+resource "github_actions_secret" "use2_main_swa_api_key" {
+  repository      = var.swa_repository
+  secret_name     = "AZURE_STATIC_WEB_APPS_API_TOKEN"
+  plaintext_value = azurerm_static_web_app.use2_main_swa.api_key
+}
+
+data "github_actions_public_key" "use2_main_acr_github_key" {
+  for_each   = toset(var.acr_repositories)
+  repository = each.value
+}
+
+resource "github_actions_secret" "use2_main_acr_rg" {
+  for_each        = toset(var.acr_repositories)
+  repository      = each.value
+  secret_name     = "ACR_RESOURCE_GROUP"
+  plaintext_value = azurerm_container_registry.use2_main_acr.resource_group_name
+}
+
+resource "github_actions_secret" "use2_main_acr_name" {
+  for_each        = toset(var.acr_repositories)
+  repository      = each.value
+  secret_name     = "AZURE_CONTAINER_REGISTRY"
+  plaintext_value = azurerm_container_registry.use2_main_acr.name
+}
+
 # resource "azurerm_private_endpoint" "use2_main_acr_pe" {
 #   name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-acr-pe"
 #   location                      = azurerm_resource_group.use2_main_rg.location
@@ -109,10 +138,28 @@ resource "azurerm_container_registry" "use2_main_acr" {
 ############################################################################################################################
 # SWA
 
-resource "azurerm_static_web_app" "use2_main_swa" {
-  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-swa"
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
+resource "azurerm_user_assigned_identity" "use2_main_swa_identity" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-swa-identity"
   location            = azurerm_resource_group.use2_main_rg.location
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  tags                = var.common_tags
+}
+
+resource "azurerm_static_web_app" "use2_main_swa" {
+  name                               = "${var.app_name}-${var.location_short}-${var.environment_name}-swa"
+  resource_group_name                = azurerm_resource_group.use2_main_rg.name
+  location                           = azurerm_resource_group.use2_main_rg.location
+  preview_environments_enabled       = false
+  configuration_file_changes_enabled = false
+  sku_tier                           = "Free"
+  sku_size                           = "Free"
+  tags                               = var.common_tags
+  identity {
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.use2_main_swa_identity.id,
+    ]
+  }
 }
 
 data "github_actions_public_key" "use2_main_swa_github_key" {
@@ -125,3 +172,49 @@ resource "github_actions_secret" "use2_main_swa_api_key" {
   plaintext_value = azurerm_static_web_app.use2_main_swa.api_key
 }
 
+############################################################################################################################
+# Batch
+
+resource "azurerm_user_assigned_identity" "use2_main_batch_identity" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-identity"
+  location            = azurerm_resource_group.use2_main_rg.location
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  tags                = var.common_tags
+}
+
+resource "azurerm_batch_account" "use2_main_batch" {
+  name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-batch"
+  location                      = azurerm_resource_group.use2_main_rg.location
+  resource_group_name           = azurerm_resource_group.use2_main_rg.name
+  pool_allocation_mode          = "BatchService"
+  public_network_access_enabled = true
+  tags                          = var.common_tags
+  identity {
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.use2_main_batch_identity.id,
+    ]
+  }
+}
+
+resource "azurerm_batch_application" "use2_main_batch_app" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-app"
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  account_name        = azurerm_batch_account.use2_main_batch.name
+  display_name        = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-app"
+}
+
+# resource "azurerm_batch_pool" "use2_main_batch_pool" {
+#   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool"
+#   resource_group_name = azurerm_resource_group.use2_main_rg.name
+#   account_name        = azurerm_batch_account.use2_main_batch.name
+#   node_agent_sku_id   = "batch.node.ubuntu 20.04"
+#   vm_size             = "STANDARD_A1_v2"
+#   max_tasks_per_node  = 1
+#   storage_image_reference {
+#     publisher = "Canonical"
+#     offer     = "UbuntuServer"
+#     sku       = "20.04-LTS"
+#     version   = "latest"
+#   }
+# }

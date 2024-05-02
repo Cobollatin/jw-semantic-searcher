@@ -35,3 +35,9 @@ variable "swa_repository" {
   description = "The GitHub repository for the Static Web App" # Specifies the GitHub repository where the Static Web App is hosted.
   type        = string                                         # The value of this variable is a string.
 }
+
+# Variable for the repositories with docker images
+variable "acr_repositories" {
+  description = "The list of repositories with Docker images" # Specifies a list of repositories that contain Docker images.
+  type        = list(string)                                  # Indicates that this variable is a list of strings.
+}
