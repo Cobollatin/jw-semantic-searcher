@@ -210,6 +210,20 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
     target_dedicated_nodes    = 1
     target_low_priority_nodes = 0
   }
+  container_configuration {
+    type = "DockerCompatible"
+    container_registries {
+      registry_server = azurerm_container_registry.use2_main_acr.login_server
+      user_name       = azurerm_container_registry.use2_main_acr.admin_username
+      password        = azurerm_container_registry.use2_main_acr.admin_password
+    }
+    dynamic "container_image_names" {
+      for_each = var.batch_docker_images
+      content {
+        image = container_image_names.value
+      }
+    }
+  }
 }
 
 resource "azurerm_batch_job" "use2_main_batch_job" {
