@@ -206,6 +206,11 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
     sku       = "20.04-LTS"
     version   = "latest"
   }
+  fixed_scale {
+    target_dedicated_nodes    = 1
+    target_low_priority_nodes = 0
+    node_deallocation_method  = "TaskCompletion"
+  }
 }
 
 resource "azurerm_batch_job" "use2_main_batch_job" {
