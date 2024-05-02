@@ -55,6 +55,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_acr_repositories"></a> [acr\_repositories](#input\_acr\_repositories) | The list of repositories with Docker images | `list(string)` | n/a | yes |
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | The name of the application | `string` | n/a | yes |
+| <a name="input_batch_docker_images"></a> [batch\_docker\_images](#input\_batch\_docker\_images) | The list of Docker images for the batch job | `list(string)` | n/a | yes |
 | <a name="input_batch_repositories"></a> [batch\_repositories](#input\_batch\_repositories) | The list of repositories with Docker images | `list(string)` | n/a | yes |
 | <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Common tags for all resources | `map(string)` | n/a | yes |
 | <a name="input_environment_name"></a> [environment\_name](#input\_environment\_name) | The name of the environment (e.g., development, staging, production) | `string` | n/a | yes |
