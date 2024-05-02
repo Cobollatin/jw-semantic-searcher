@@ -203,7 +203,8 @@ resource "azurerm_user_assigned_identity" "use2_main_batch_pool_acr_identity" {
 resource "azurerm_role_assignment" "use2_main_batch_acr_role" {
   scope                = azurerm_container_registry.use2_main_acr.id
   role_definition_name = "AcrPull"
-  principal_id         = azurerm_batch_account.use2_main_batch.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.use2_main_batch_pool_acr_identity.principal_id
+  description          = "Allow the Batch Pool VM to pull images from the ACR"
 }
 
 resource "azurerm_batch_pool" "use2_main_batch_pool" {
