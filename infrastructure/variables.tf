@@ -41,3 +41,9 @@ variable "acr_repositories" {
   description = "The list of repositories with Docker images" # Specifies a list of repositories that contain Docker images.
   type        = list(string)                                  # Indicates that this variable is a list of strings.
 }
+
+# Variable for the repositories with batch jobs
+variable "batch_repositories" {
+  description = "The list of repositories with Docker images" # Specifies a list of repositories that contain a batch job.
+  type        = list(string)                                  # Indicates that this variable is a list of strings.
+}

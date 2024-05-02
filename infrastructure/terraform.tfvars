@@ -11,3 +11,4 @@ common_tags = {
 }
 swa_repository   = "jw-semantic-searcher"
 acr_repositories = ["jw-semantic-searcher"]
+batch_repositories = ["jw-semantic-searcher"]
