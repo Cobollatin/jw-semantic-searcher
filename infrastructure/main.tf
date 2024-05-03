@@ -168,6 +168,17 @@ resource "github_actions_secret" "use2_main_swa_api_key" {
 }
 
 ############################################################################################################################
+# Storage Account
+
+resource "azurerm_storage_account" "use2_main_sa" {
+  name                     = "${substr(var.app_name, 0, 4)}${var.location_short}${var.environment_name}sa"
+  location                 = azurerm_resource_group.use2_main_rg.location
+  resource_group_name      = azurerm_resource_group.use2_main_rg.name
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+############################################################################################################################
 # Batch
 
 resource "azurerm_user_assigned_identity" "use2_main_batch_identity" {
@@ -179,12 +190,14 @@ resource "azurerm_user_assigned_identity" "use2_main_batch_identity" {
 
 resource "azurerm_batch_account" "use2_main_batch" {
   #checkov:skip=CKV_AZURE_76:Managed encryption is enough for our needs
-  name                          = lower("${substr(var.app_name, 0, 8)}${var.location_short}${var.environment_name}batch")
-  location                      = azurerm_resource_group.use2_main_rg.location
-  resource_group_name           = azurerm_resource_group.use2_main_rg.name
-  pool_allocation_mode          = "BatchService"
-  public_network_access_enabled = true
-  tags                          = var.common_tags
+  name                                = lower("${substr(var.app_name, 0, 8)}${var.location_short}${var.environment_name}batch")
+  location                            = azurerm_resource_group.use2_main_rg.location
+  resource_group_name                 = azurerm_resource_group.use2_main_rg.name
+  pool_allocation_mode                = "BatchService"
+  public_network_access_enabled       = true
+  storage_account_id                  = azurerm_storage_account.use2_main_sa.id
+  storage_account_authentication_mode = "StorageKeys"
+  tags                                = var.common_tags
   identity {
     type = "UserAssigned"
     identity_ids = [
@@ -213,9 +226,22 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
     sku       = "20-04-lts"
     version   = "latest"
   }
-  fixed_scale {
-    target_dedicated_nodes    = 1
-    target_low_priority_nodes = 0
+  auto_scale {
+    evaluation_interval = "PT15M"
+
+    formula = <<EOF
+      $tasks = $ActiveTasks.GetSamplePercent(TimeInterval_Minute * 5);
+      $pendingTasks = max(0, $tasks - $RunningTasks.GetSample(TimeInterval_Minute * 5));
+      $NodeDeallocationOption = taskcompletion;
+      startingNumberOfVMs = 0;  // Start with 0 VMs initially.
+      targetVMs = $pendingTasks > 0 ? 1 : 0;  // Scale to 1 VM if there are pending tasks, otherwise scale down to 0.
+      // Set the target number of nodes
+      $TargetDedicatedNodes = targetVMs;
+      $NodeDeallocationOption = taskcompletion;
+EOF
+  }
+  network_configuration {
+    subnet_id = azurerm_subnet.use2_swb_subnet.id
   }
   container_configuration {
     type = "DockerCompatible"
