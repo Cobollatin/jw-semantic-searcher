@@ -171,11 +171,22 @@ resource "github_actions_secret" "use2_main_swa_api_key" {
 # Storage Account
 
 resource "azurerm_storage_account" "use2_main_sa" {
-  name                     = "${substr(var.app_name, 0, 4)}${var.location_short}${var.environment_name}sa"
+  #checkov:skip=CKV_AZURE_59:We need to allow public access to the storage account
+  #checkov:skip=CKV_AZURE_190:We need to allow public access to the blobs
+  #checkov:skip=CKV_AZURE_206:No replication in free tier
+  #checkov:skip=CKV_AZURE_33:We dont need logging for this storage account
+  #checkov:skip=CKV2_AZURE_41:We dont need sas policy for this storage account
+  #checkov:skip=CKV2_AZURE_33:We dont need private endpoint for this storage account
+  #checkov:skip=CKV2_AZURE_38:We dont need soft delete for this storage account
+  #checkov:skip=CKV2_AZURE_47:We want anonymous access to the blobs
+  #checkov:skip=CKV2_AZURE_40:We want to use shared key authentication
+  #checkov:skip=CKV2_AZURE_1:We dont need encryption at rest for this storage account
+  name                     = lower("${substr(var.app_name, 0, 4)}${var.location_short}${var.environment_name}sa")
   location                 = azurerm_resource_group.use2_main_rg.location
   resource_group_name      = azurerm_resource_group.use2_main_rg.name
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  min_tls_version          = "TLS1_2"
 }
 
 ############################################################################################################################
