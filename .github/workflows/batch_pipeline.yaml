@@ -54,4 +54,4 @@ jobs:
               with:
                   azcliversion: "2.59.0"
                   inlineScript: |
-                      az batch task create --task-id ${{ github.sha }} --job-id ${{ secrets.BATCH_JOB_ID }} --account-endpoint ${{ secrets.BATCH_ACCOUNT_ENDPOINT }} --account-name ${{ secrets.BATCH_ACCOUNT_NAME }} --command-line "echo 'Hello World from $env'"
+                      az batch task reactivate --task-id ${{ github.sha }} --job-id ${{ secrets.BATCH_JOB_ID }} --account-endpoint ${{ secrets.BATCH_ACCOUNT_ENDPOINT }} --account-name ${{ secrets.BATCH_ACCOUNT_NAME }} --command-line "echo 'Hello World from $env'"

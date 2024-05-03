@@ -34,6 +34,7 @@ No modules.
 | [azurerm_resource_group.use2_main_rg](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/resource_group) | resource |
 | [azurerm_role_assignment.use2_main_batch_acr_role](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/role_assignment) | resource |
 | [azurerm_static_web_app.use2_main_swa](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/static_web_app) | resource |
+| [azurerm_storage_account.use2_main_sa](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/storage_account) | resource |
 | [azurerm_subnet.use2_swb_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/subnet) | resource |
 | [azurerm_subnet_network_security_group_association.use2_as_subnet_nsg_association](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/subnet_network_security_group_association) | resource |
 | [azurerm_user_assigned_identity.use2_main_acr_identity](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/user_assigned_identity) | resource |
