@@ -241,12 +241,12 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
   auto_scale {
     evaluation_interval = "PT15M"
     formula             = <<EOF
-startingNumberOfVMs = 0;
-maxNumberofVMs = 1;
-pendingTaskSamplePercent = $PendingTasks.GetSamplePercent(180 * TimeInterval_Second);
-pendingTaskSamples = pendingTaskSamplePercent < 10 ? startingNumberOfVMs : avg($PendingTasks.GetSample(180 * TimeInterval_Second))
-$TargetLowPriority = 0
-$TargetDedicated = min(maxNumberofVMs, pendingTaskSamples);
+$samples = $ActiveTasks.GetSamplePercent(TimeInterval_Minute * 15);
+$tasks = $samples < 70 ? max(0, $ActiveTasks.GetSample(1)) : 
+max( $ActiveTasks.GetSample(1), avg($ActiveTasks.GetSample(TimeInterval_Minute * 15)));
+$targetVMs = $tasks > 0 ? $tasks : max(0, $TargetDedicatedNodes / 2);
+cappedPoolSize = 1;
+$TargetDedicatedNodes = max(0, min($targetVMs, cappedPoolSize));
 $NodeDeallocationOption = taskcompletion;
 EOF
   }
