@@ -51,7 +51,11 @@ jobs:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
             - name: Deploy to Azure Batch
               uses: azure/CLI@v2.0.0
+              env:
+                  AZURE_BATCH_ENDPOINT: ${{ secrets.BATCH_ACCOUNT_ENDPOINT }}
+                  AZURE_BATCH_ACCESS_KEY: ${{ secrets.BATCH_ACCOUNT_KEY }}
+                  AZURE_BATCH_ACCOUNT: ${{ secrets.BATCH_ACCOUNT_NAME }}
               with:
                   azcliversion: "2.59.0"
                   inlineScript: |
-                      az batch task reactivate --task-id ${{ github.sha }} --job-id ${{ secrets.BATCH_JOB_ID }} --account-endpoint ${{ secrets.BATCH_ACCOUNT_ENDPOINT }} --account-name ${{ secrets.BATCH_ACCOUNT_NAME }} --command-line "echo 'Hello World from $env'"
+                      az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --command-line "echo 'Hello World from $env'"
