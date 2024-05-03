@@ -181,6 +181,7 @@ resource "azurerm_storage_account" "use2_main_sa" {
   #checkov:skip=CKV2_AZURE_47:We want anonymous access to the blobs
   #checkov:skip=CKV2_AZURE_40:We want to use shared key authentication
   #checkov:skip=CKV2_AZURE_1:We dont need encryption at rest for this storage account
+  #checkov:skip=CKV_AZURE_43:False positive, the name follows the naming convention
   name                     = lower("${substr(var.app_name, 0, 4)}${var.location_short}${var.environment_name}sa")
   location                 = azurerm_resource_group.use2_main_rg.location
   resource_group_name      = azurerm_resource_group.use2_main_rg.name
