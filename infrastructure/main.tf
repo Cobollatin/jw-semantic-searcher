@@ -242,14 +242,13 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
     evaluation_interval = "PT15M"
 
     formula = <<EOF
-      $tasks = $ActiveTasks.GetSamplePercent(TimeInterval_Minute * 5);
-      $pendingTasks = max(0, $tasks - $RunningTasks.GetSample(TimeInterval_Minute * 5));
-      $NodeDeallocationOption = taskcompletion;
-      startingNumberOfVMs = 0;  // Start with 0 VMs initially.
-      targetVMs = $pendingTasks > 0 ? 1 : 0;  // Scale to 1 VM if there are pending tasks, otherwise scale down to 0.
-      // Set the target number of nodes
-      $TargetDedicatedNodes = targetVMs;
-      $NodeDeallocationOption = taskcompletion;
+startingNumberOfVMs = 0;
+maxNumberofVMs = 1;
+pendingTaskSamplePercent = $PendingTasks.GetSamplePercent(180 * TimeInterval_Second);
+pendingTaskSamples = pendingTaskSamplePercent < 10 ? startingNumberOfVMs : avg($PendingTasks.GetSample(180 * TimeInterval_Second))
+$TargetLowPriority = 0
+$TargetDedicated = min(maxNumberofVMs, pendingTaskSamples);
+$NodeDeallocationOption = taskcompletion;
 EOF
   }
   network_configuration {
