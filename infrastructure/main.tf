@@ -240,8 +240,7 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
   }
   auto_scale {
     evaluation_interval = "PT15M"
-
-    formula = <<EOF
+    formula             = <<EOF
 startingNumberOfVMs = 0;
 maxNumberofVMs = 1;
 pendingTaskSamplePercent = $PendingTasks.GetSamplePercent(180 * TimeInterval_Second);
