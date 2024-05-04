@@ -58,4 +58,4 @@ jobs:
               with:
                   azcliversion: "2.59.0"
                   inlineScript: |
-                      az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }} --command-line "echo 'Hello World from $env'"
+                      az batch task create --task-id ${{ github.sha }} --job-id ${{ secrets.BATCH_JOB_ID }} --command-line "echo 'Hello World from $env'"

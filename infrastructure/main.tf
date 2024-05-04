@@ -247,7 +247,6 @@ $targetVMs = $tasks > 0 ? $tasks : max(0, $TargetDedicatedNodes / 2);
 cappedPoolSize = 1;
 $TargetDedicatedNodes = max(0, min($targetVMs, cappedPoolSize));
 $NodeDeallocationOption = taskcompletion;
-dsd = $ActiveTasks
 EOF
   }
   network_configuration {
