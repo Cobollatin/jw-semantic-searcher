@@ -1,2 +1,2 @@
-FROM ubuntu:18.04
-RUN echo 'Hello, World!' > /test.txt
+FROM ubuntu:20.04
+RUN echo 'Hello, World!'
