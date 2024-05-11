@@ -147,6 +147,14 @@ resource "github_actions_secret" "use2_main_acr_name" {
   plaintext_value = azurerm_container_registry.use2_main_acr.name
 }
 
+resource "github_actions_secret" "use2_main_acr_login_server" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
+  for_each        = toset(var.acr_repositories)
+  repository      = each.value
+  secret_name     = "AZURE_CONTAINER_REGISTRY_SERVER"
+  plaintext_value = azurerm_container_registry.use2_main_acr.login_server
+}
+
 # resource "azurerm_private_endpoint" "use2_main_acr_pe" {
 #   name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-acr-pe"
 #   location                      = azurerm_resource_group.use2_main_rg.location
@@ -278,7 +286,7 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
 $sample = $PendingTasks.GetSample(TimeInterval_Minute * 15);
 $tasks = max($sample);
 $targetVMs = $tasks > 0 ? $tasks : max(0, $TargetDedicatedNodes / 2);
-minPoolSize = 1;
+minPoolSize = 0;
 cappedPoolSize = 1;
 $TargetDedicatedNodes = max(minPoolSize, min($targetVMs, cappedPoolSize));
 $NodeDeallocationOption = taskcompletion;
