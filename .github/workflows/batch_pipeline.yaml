@@ -55,7 +55,8 @@ jobs:
                   AZURE_BATCH_ENDPOINT: ${{ secrets.BATCH_ACCOUNT_ENDPOINT }}
                   AZURE_BATCH_ACCESS_KEY: ${{ secrets.BATCH_ACCOUNT_KEY }}
                   AZURE_BATCH_ACCOUNT: ${{ secrets.BATCH_ACCOUNT_NAME }}
+                  COMMAND_LINE: sudo docker run ${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest && sudo docker logs $(sudo docker ps -lq)
               with:
                   azcliversion: "2.59.0"
                   inlineScript: |
-                      az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }} --command-line "sudo docker run ${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest && sudo docker logs $(sudo docker ps -lq)"
+                      az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }} --command-line "/bin/sh -c '${{env.COMMAND_LINE}}'"
