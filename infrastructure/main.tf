@@ -43,6 +43,7 @@ resource "azurerm_network_security_group" "use2_swa_nsg" {
     direction              = "Inbound"
     access                 = "Allow"
     source_port_range      = "*"
+    source_address_prefix  = "*"
     destination_port_range = "29876-29877"
   }
   security_rule {
@@ -52,6 +53,7 @@ resource "azurerm_network_security_group" "use2_swa_nsg" {
     direction              = "Outbound"
     access                 = "Allow"
     source_port_range      = "*"
+    source_address_prefix  = "*"
     destination_port_range = "443"
   }
   security_rule {
@@ -61,6 +63,7 @@ resource "azurerm_network_security_group" "use2_swa_nsg" {
     direction              = "Inbound"
     access                 = "Allow"
     source_port_range      = "*"
+    source_address_prefix  = "*"
     destination_port_range = "22"
   }
 }
