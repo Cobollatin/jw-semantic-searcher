@@ -244,8 +244,9 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
 $sample = $PendingTasks.GetSample(TimeInterval_Minute * 15);
 $tasks = max($sample);
 $targetVMs = $tasks > 0 ? $tasks : max(0, $TargetDedicatedNodes / 2);
+minPoolSize = 1;
 cappedPoolSize = 1;
-$TargetDedicatedNodes = max(0, min($targetVMs, cappedPoolSize));
+$TargetDedicatedNodes = max(minPoolSize, min($targetVMs, cappedPoolSize));
 $NodeDeallocationOption = taskcompletion;
 EOF
   }
@@ -283,7 +284,7 @@ resource "github_actions_secret" "use2_main_batch_job_id" {
   for_each        = toset(var.batch_repositories)
   repository      = each.value
   secret_name     = "BATCH_JOB_ID"
-  plaintext_value = azurerm_batch_job.use2_main_batch_job.id
+  plaintext_value = azurerm_batch_job.use2_main_batch_job.name
 }
 
 resource "github_actions_secret" "use2_main_batch_account_endpoint" {
