@@ -32,6 +32,7 @@ resource "azurerm_subnet" "use2_swb_subnet" {
 }
 
 resource "azurerm_network_security_group" "use2_swa_nsg" {
+  #checkov:skip=CKV_AZURE_10:We need to allow ssh from the internet
   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-as-nsg"
   location            = azurerm_resource_group.use2_main_rg.location
   resource_group_name = azurerm_resource_group.use2_main_rg.name
@@ -43,6 +44,7 @@ resource "azurerm_network_security_group" "use2_swa_nsg" {
     direction              = "Inbound"
     access                 = "Allow"
     source_port_range      = "*"
+    source_address_prefix  = "*"
     destination_port_range = "29876-29877"
   }
   security_rule {
@@ -52,6 +54,7 @@ resource "azurerm_network_security_group" "use2_swa_nsg" {
     direction              = "Outbound"
     access                 = "Allow"
     source_port_range      = "*"
+    source_address_prefix  = "*"
     destination_port_range = "443"
   }
   security_rule {
@@ -61,6 +64,7 @@ resource "azurerm_network_security_group" "use2_swa_nsg" {
     direction              = "Inbound"
     access                 = "Allow"
     source_port_range      = "*"
+    source_address_prefix  = "*"
     destination_port_range = "22"
   }
 }
