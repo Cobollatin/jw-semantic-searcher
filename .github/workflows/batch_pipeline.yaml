@@ -55,10 +55,11 @@ jobs:
                   AZURE_BATCH_ENDPOINT: jwsemanteus2devbatch.eastus2.batch.azure.com
                   AZURE_BATCH_ACCESS_KEY: AcdiciteEcCJvO7nnDu/412RUSIdMih4CdA8BefmjeEkyG9e0KoxEdLC3iZz/gZf9QRtD9cF/au4+ABaaXTLsw==
                   AZURE_BATCH_ACCOUNT: jwsemanteus2devbatch
+                  BATCH_JOB_ID: JwSemanticSearcher-eus2-dev-batch-job
                 #   AZURE_BATCH_ENDPOINT: ${{ secrets.BATCH_ACCOUNT_ENDPOINT }}
                 #   AZURE_BATCH_ACCESS_KEY: ${{ secrets.BATCH_ACCOUNT_KEY }}
                 #   AZURE_BATCH_ACCOUNT: ${{ secrets.BATCH_ACCOUNT_NAME }}
               with:
                   azcliversion: "2.59.0"
                   inlineScript: |
-                      az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }} --command-line "echo 'Hello World'" --debug
+                      az batch task create --job-id ${{ env.BATCH_JOB_ID }} --task-id ${{ github.sha }} --command-line "echo 'Hello World'" --debug
