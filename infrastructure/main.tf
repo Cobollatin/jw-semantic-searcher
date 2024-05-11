@@ -36,6 +36,30 @@ resource "azurerm_network_security_group" "use2_swa_nsg" {
   location            = azurerm_resource_group.use2_main_rg.location
   resource_group_name = azurerm_resource_group.use2_main_rg.name
   tags                = var.common_tags
+  security_rule {
+    name                   = "BatchNodeManagementInbound"
+    priority               = 100
+    protocol               = "Tcp"
+    direction              = "Inbound"
+    access                 = "Allow"
+    destination_port_range = "29876-29877"
+  }
+  security_rule {
+    name                   = "BatchNodeManagementOutbound"
+    priority               = 100
+    protocol               = "*"
+    direction              = "Outbound"
+    access                 = "Allow"
+    destination_port_range = "443"
+  }
+  security_rule {
+    name                   = "SSHInbound"
+    priority               = 200
+    protocol               = "Tcp"
+    direction              = "Inbound"
+    access                 = "Allow"
+    destination_port_range = "22"
+  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "use2_as_subnet_nsg_association" {
