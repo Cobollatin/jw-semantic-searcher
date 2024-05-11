@@ -42,6 +42,7 @@ resource "azurerm_network_security_group" "use2_swa_nsg" {
     protocol               = "Tcp"
     direction              = "Inbound"
     access                 = "Allow"
+    source_port_range      = "*"
     destination_port_range = "29876-29877"
   }
   security_rule {
@@ -50,6 +51,7 @@ resource "azurerm_network_security_group" "use2_swa_nsg" {
     protocol               = "*"
     direction              = "Outbound"
     access                 = "Allow"
+    source_port_range      = "*"
     destination_port_range = "443"
   }
   security_rule {
@@ -58,6 +60,7 @@ resource "azurerm_network_security_group" "use2_swa_nsg" {
     protocol               = "Tcp"
     direction              = "Inbound"
     access                 = "Allow"
+    source_port_range      = "*"
     destination_port_range = "22"
   }
 }
