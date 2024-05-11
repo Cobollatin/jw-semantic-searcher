@@ -38,34 +38,37 @@ resource "azurerm_network_security_group" "use2_swa_nsg" {
   resource_group_name = azurerm_resource_group.use2_main_rg.name
   tags                = var.common_tags
   security_rule {
-    name                   = "BatchNodeManagementInbound"
-    priority               = 100
-    protocol               = "Tcp"
-    direction              = "Inbound"
-    access                 = "Allow"
-    source_port_range      = "*"
-    source_address_prefix  = "*"
-    destination_port_range = "29876-29877"
+    name                       = "BatchNodeManagementInbound"
+    priority                   = 100
+    protocol                   = "Tcp"
+    direction                  = "Inbound"
+    access                     = "Allow"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_port_range     = "29876-29877"
+    destination_address_prefix = "*"
   }
   security_rule {
-    name                   = "BatchNodeManagementOutbound"
-    priority               = 100
-    protocol               = "*"
-    direction              = "Outbound"
-    access                 = "Allow"
-    source_port_range      = "*"
-    source_address_prefix  = "*"
-    destination_port_range = "443"
+    name                       = "BatchNodeManagementOutbound"
+    priority                   = 100
+    protocol                   = "*"
+    direction                  = "Outbound"
+    access                     = "Allow"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_port_range     = "443"
+    destination_address_prefix = "*"
   }
   security_rule {
-    name                   = "SSHInbound"
-    priority               = 200
-    protocol               = "Tcp"
-    direction              = "Inbound"
-    access                 = "Allow"
-    source_port_range      = "*"
-    source_address_prefix  = "*"
-    destination_port_range = "22"
+    name                       = "SSHInbound"
+    priority                   = 200
+    protocol                   = "Tcp"
+    direction                  = "Inbound"
+    access                     = "Allow"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_port_range     = "22"
+    destination_address_prefix = "*"
   }
 }
 
