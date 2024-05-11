@@ -41,6 +41,7 @@ No modules.
 | [azurerm_user_assigned_identity.use2_main_batch_identity](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/user_assigned_identity) | resource |
 | [azurerm_user_assigned_identity.use2_main_swa_identity](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/user_assigned_identity) | resource |
 | [azurerm_virtual_network.use2_main_vnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/virtual_network) | resource |
+| [github_actions_secret.use2_main_acr_login_server](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_acr_name](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_acr_rg](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_batch_account_endpoint](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
