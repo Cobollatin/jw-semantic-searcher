@@ -63,6 +63,19 @@ jobs:
                                 \"imageName\": \"${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest\",
                                 \"containerRunOptions\": \"--log-driver local --log-opt max-size=10m\"
                             }
+                            \"OutputFiles\": [
+                                {
+                                    \"filePattern\": \"*.log\",
+                                    \"destination\": {
+                                        \"container\": {
+                                            \"path\": \"logs\"
+                                        }
+                                    },
+                                    \"uploadOptions\": {
+                                        \"uploadCondition\": \"taskCompletion\"
+                                    }
+                                }
+                            ]
                         }" > task.json
             - name: Deploy to Azure Batch
               uses: azure/CLI@v2.0.0
