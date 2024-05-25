@@ -183,7 +183,6 @@ resource "azurerm_storage_table" "use2_main_law_table" {
   storage_account_name = azurerm_storage_account.use2_main_sa.name
 }
 
-
 resource "azurerm_log_analytics_workspace_table" "use2_main_law_table" {
   name         = azurerm_storage_table.use2_main_law_table.name
   workspace_id = azurerm_log_analytics_workspace.use2_main_law.id
