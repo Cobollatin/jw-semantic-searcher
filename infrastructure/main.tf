@@ -594,7 +594,7 @@ resource "azurerm_subnet_network_security_group_association" "use2_bp_subnet_nsg
 }
 
 resource "azurerm_batch_pool" "use2_main_batch_pool" {
-  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-main-batch-pool"
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool"
   resource_group_name = azurerm_resource_group.use2_main_rg.name
   account_name        = azurerm_batch_account.use2_main_batch.name
   node_agent_sku_id   = "batch.node.ubuntu 20.04"
@@ -628,8 +628,9 @@ EOF
     azure_blob_file_system {
       account_name        = azurerm_storage_account.use2_main_sa.name
       container_name      = azurerm_storage_container.use2_main_batch_container.name
-      relative_mount_path = azurerm_storage_container.use2_main_batch_container.name
+      relative_mount_path = "batch"
       account_key         = azurerm_storage_account.use2_main_sa.primary_access_key
+      blobfuse_options    = "/persistent:Yes"
     }
   }
   network_configuration {
@@ -649,7 +650,7 @@ EOF
   identity {
     type = "UserAssigned"
     identity_ids = [
-      azurerm_user_assigned_identity.use2_main_batch_identity.id,
+      azurerm_user_assigned_identity.use2_main_batch_identity.id
     ]
   }
 }

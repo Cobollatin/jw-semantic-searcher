@@ -1,6 +1,7 @@
 name: Azure Batch CI/CD
 run-name: "Azure Batch CI/CD for commit ${{ github.sha }}"
 on:
+    workflow_dispatch:
     push:
         branches:
             - main
