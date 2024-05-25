@@ -599,6 +599,7 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
   account_name        = azurerm_batch_account.use2_main_batch.name
   node_agent_sku_id   = "batch.node.ubuntu 20.04"
   vm_size             = "Standard_A1_v2"
+  metadata            = var.common_tags
   max_tasks_per_node  = 1
   storage_image_reference {
     publisher = "microsoft-azure-batch"
@@ -623,14 +624,14 @@ EOF
     disk_size_gb         = 10
     storage_account_type = "Standard_LRS"
   }
-  # mount {
-  #   azure_blob_file_system {
-  #     account_name        = azurerm_storage_account.use2_main_sa.name
-  #     container_name      = azurerm_storage_container.use2_main_batch_container.name
-  #     relative_mount_path = "batch"
-  #     account_key         = azurerm_storage_account.use2_main_sa.primary_access_key
-  #   }
-  # }
+  mount {
+    azure_blob_file_system {
+      account_name        = azurerm_storage_account.use2_main_sa.name
+      container_name      = azurerm_storage_container.use2_main_batch_container.name
+      relative_mount_path = azurerm_storage_container.use2_main_batch_container.name
+      account_key         = azurerm_storage_account.use2_main_sa.primary_access_key
+    }
+  }
   network_configuration {
     subnet_id                        = azurerm_subnet.use2_bp_subnet.id
     public_address_provisioning_type = "NoPublicIPAddresses"
