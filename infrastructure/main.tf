@@ -619,7 +619,7 @@ EOF
     azure_blob_file_system {
       account_name        = azurerm_storage_account.use2_main_sa.name
       container_name      = azurerm_storage_container.use2_main_batch_container.name
-      relative_mount_path = ""
+      relative_mount_path = "batch"
       account_key         = azurerm_storage_account.use2_main_sa.primary_access_key
       blobfuse_options    = "/persistent:Yes"
     }
@@ -645,6 +645,13 @@ EOF
       azurerm_user_assigned_identity.use2_main_batch_identity.id
     ]
   }
+}
+
+resource "azurerm_role_assignment" "use2_main_batch_sa_role" {
+  scope                = azurerm_resource_group.use2_main_rg.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_user_assigned_identity.use2_main_batch_identity.principal_id
+  description          = "Allow the Service Principal to manage the Storage Account"
 }
 
 resource "azurerm_batch_job" "use2_main_batch_job" {
