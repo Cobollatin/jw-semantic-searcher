@@ -71,6 +71,7 @@ No modules.
 | [github_actions_secret.use2_main_batch_account_key](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_batch_account_name](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_batch_job_id](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.use2_main_sa_account_container_url](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_swa_api_key](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [azuread_service_principal.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/data-sources/client_config) | data source |
