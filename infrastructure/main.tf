@@ -621,7 +621,7 @@ EOF
       container_name      = azurerm_storage_container.use2_main_batch_container.name
       relative_mount_path = "batch"
       account_key         = azurerm_storage_account.use2_main_sa.primary_access_key
-      blobfuse_options    = "/persistent:Yes"
+      blobfuse_options    = "--log-level=LOG_INFO"
     }
   }
   network_configuration {
