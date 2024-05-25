@@ -582,7 +582,7 @@ resource "azurerm_subnet_network_security_group_association" "use2_bp_subnet_nsg
 }
 
 resource "azurerm_batch_pool" "use2_main_batch_pool" {
-  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool"
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool-v2"
   resource_group_name = azurerm_resource_group.use2_main_rg.name
   account_name        = azurerm_batch_account.use2_main_batch.name
   node_agent_sku_id   = "batch.node.ubuntu 20.04"
@@ -624,7 +624,7 @@ EOF
   network_configuration {
     subnet_id                      = azurerm_subnet.use2_bp_subnet.id
     accelerated_networking_enabled = false
-    # dynamic_vnet_assignment_scope  = "none"
+    dynamic_vnet_assignment_scope  = "none"
     # TODO: Bugged, need to report to the provider azurerm
     # public_address_provisioning_type = "NoPublicIPAddresses"
   }
