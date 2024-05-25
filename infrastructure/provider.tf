@@ -5,7 +5,11 @@ provider "azurerm" {
   # This block is used to enable or disable certain features of the Azure provider if needed.
   # Leaving it empty, as shown here, means that the default configuration is used and no specific features are enabled or disabled.
   # Service principal credentials are the pipeline's responsibility.
-  features {}
+  features {
+    key_vault {
+      recover_soft_deleted_key_vaults = true
+    }
+  }
 }
 
 provider "github" {

@@ -22,61 +22,6 @@ resource "azurerm_virtual_network" "use2_main_vnet" {
   tags                = var.common_tags
 }
 
-resource "azurerm_subnet" "use2_swb_subnet" {
-  name                                      = "${var.app_name}-${var.location_short}-${var.environment_name}-as-subnet"
-  resource_group_name                       = azurerm_resource_group.use2_main_rg.name
-  virtual_network_name                      = azurerm_virtual_network.use2_main_vnet.name
-  address_prefixes                          = ["10.0.0.0/24"]
-  private_endpoint_network_policies_enabled = false
-  service_endpoints                         = ["Microsoft.Web", ]
-}
-
-resource "azurerm_network_security_group" "use2_swa_nsg" {
-  #checkov:skip=CKV_AZURE_10:We need to allow ssh from the internet
-  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-as-nsg"
-  location            = azurerm_resource_group.use2_main_rg.location
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
-  tags                = var.common_tags
-  security_rule {
-    name                       = "BatchNodeManagementInbound"
-    priority                   = 100
-    protocol                   = "Tcp"
-    direction                  = "Inbound"
-    access                     = "Allow"
-    source_port_range          = "*"
-    source_address_prefix      = "*"
-    destination_port_range     = "29876-29877"
-    destination_address_prefix = "*"
-  }
-  security_rule {
-    name                       = "BatchNodeManagementOutbound"
-    priority                   = 100
-    protocol                   = "*"
-    direction                  = "Outbound"
-    access                     = "Allow"
-    source_port_range          = "*"
-    source_address_prefix      = "*"
-    destination_port_range     = "443"
-    destination_address_prefix = "*"
-  }
-  security_rule {
-    name                       = "SSHInbound"
-    priority                   = 200
-    protocol                   = "Tcp"
-    direction                  = "Inbound"
-    access                     = "Allow"
-    source_port_range          = "*"
-    source_address_prefix      = "*"
-    destination_port_range     = "22"
-    destination_address_prefix = "*"
-  }
-}
-
-resource "azurerm_subnet_network_security_group_association" "use2_as_subnet_nsg_association" {
-  subnet_id                 = azurerm_subnet.use2_swb_subnet.id
-  network_security_group_id = azurerm_network_security_group.use2_swa_nsg.id
-}
-
 ############################################################################################################################
 # Network Watcher
 resource "azurerm_network_watcher" "use2_main_nwwatcher" {
@@ -209,7 +154,75 @@ EOF
 }
 
 ############################################################################################################################
+# Logging
+
+resource "azurerm_log_analytics_workspace" "use2_main_law" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-law"
+  location            = azurerm_resource_group.use2_main_rg.location
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
+  daily_quota_gb      = 0.2
+  tags                = var.common_tags
+}
+
+############################################################################################################################
 # SWA
+
+resource "azurerm_subnet" "use2_swa_subnet" {
+  name                                      = "${var.app_name}-${var.location_short}-${var.environment_name}-as-subnet"
+  resource_group_name                       = azurerm_resource_group.use2_main_rg.name
+  virtual_network_name                      = azurerm_virtual_network.use2_main_vnet.name
+  address_prefixes                          = ["10.0.0.0/24"]
+  private_endpoint_network_policies_enabled = false
+  service_endpoints                         = ["Microsoft.Web", ]
+}
+
+resource "azurerm_network_security_group" "use2_swa_nsg" {
+  #checkov:skip=CKV_AZURE_10:We need to allow ssh from the internet
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-as-nsg"
+  location            = azurerm_resource_group.use2_main_rg.location
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  tags                = var.common_tags
+  security_rule {
+    name                       = "BatchNodeManagementInbound"
+    priority                   = 100
+    protocol                   = "Tcp"
+    direction                  = "Inbound"
+    access                     = "Allow"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_port_range     = "29876-29877"
+    destination_address_prefix = "*"
+  }
+  security_rule {
+    name                       = "BatchNodeManagementOutbound"
+    priority                   = 100
+    protocol                   = "*"
+    direction                  = "Outbound"
+    access                     = "Allow"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_port_range     = "443"
+    destination_address_prefix = "*"
+  }
+  security_rule {
+    name                       = "SSHInbound"
+    priority                   = 200
+    protocol                   = "Tcp"
+    direction                  = "Inbound"
+    access                     = "Allow"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_port_range     = "22"
+    destination_address_prefix = "*"
+  }
+}
+
+resource "azurerm_subnet_network_security_group_association" "use2_swa_subnet_nsg_association" {
+  subnet_id                 = azurerm_subnet.use2_swa_subnet.id
+  network_security_group_id = azurerm_network_security_group.use2_swa_nsg.id
+}
 
 resource "azurerm_user_assigned_identity" "use2_main_swa_identity" {
   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-swa-identity"
@@ -248,7 +261,157 @@ resource "github_actions_secret" "use2_main_swa_api_key" {
 }
 
 ############################################################################################################################
+# Key Vault
+
+resource "azurerm_subnet" "use2_kv_subnet" {
+  name                                      = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-subnet"
+  resource_group_name                       = azurerm_resource_group.use2_main_rg.name
+  virtual_network_name                      = azurerm_virtual_network.use2_main_vnet.name
+  address_prefixes                          = ["10.0.10.0/24"]
+  private_endpoint_network_policies_enabled = false
+  service_endpoints                         = ["Microsoft.KeyVault", ]
+}
+
+resource "azurerm_network_security_group" "use2_kv_nsg" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-nsg"
+  location            = azurerm_resource_group.use2_main_rg.location
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  tags                = var.common_tags
+}
+
+resource "azurerm_subnet_network_security_group_association" "use2_kv_subnet_nsg_association" {
+  subnet_id                 = azurerm_subnet.use2_kv_subnet.id
+  network_security_group_id = azurerm_network_security_group.use2_kv_nsg.id
+}
+
+resource "azurerm_key_vault" "use2_main_kv" {
+  #checkov:skip=CKV_AZURE_189:We dont have a self-hosted runner in the pipeline yet, so we need to skip this check because the runner needs access
+  #checkov:skip=CKV_AZURE_109:We dont have a self-hosted runner in the pipeline yet, so we need to skip this check because the runner needs access
+  name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-kv"
+  location                      = azurerm_resource_group.use2_main_rg.location
+  resource_group_name           = azurerm_resource_group.use2_main_rg.name
+  enabled_for_disk_encryption   = true
+  tenant_id                     = data.azurerm_client_config.current.tenant_id
+  soft_delete_retention_days    = 7
+  purge_protection_enabled      = true
+  public_network_access_enabled = true // This will be false when we have a self-hosted runner
+  sku_name                      = "standard"
+  tags                          = var.common_tags
+
+  network_acls {
+    bypass                     = "AzureServices"
+    default_action             = "Allow"
+    virtual_network_subnet_ids = [azurerm_subnet.use2_kv_subnet.id]
+  }
+}
+
+resource "azurerm_key_vault_access_policy" "use2_main_kv_access_policy" {
+  key_vault_id = azurerm_key_vault.use2_main_kv.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azuread_service_principal.current.object_id
+  key_permissions = [
+    "Create",
+    "Delete",
+    "Get",
+    "Purge",
+    "Recover",
+    "Update",
+    "GetRotationPolicy",
+    "SetRotationPolicy"
+  ]
+
+  secret_permissions = [
+    "Get",
+    "Delete",
+  ]
+
+  storage_permissions = [
+    "Get",
+    "Delete",
+  ]
+}
+
+resource "azurerm_private_endpoint" "use2_main_kv_pe" {
+  name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-pe"
+  location                      = azurerm_resource_group.use2_main_rg.location
+  resource_group_name           = azurerm_resource_group.use2_main_rg.name
+  subnet_id                     = azurerm_subnet.use2_kv_subnet.id
+  custom_network_interface_name = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-pe-nic"
+  tags                          = var.common_tags
+
+  private_service_connection {
+    name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-pe-connection"
+    is_manual_connection           = false
+    private_connection_resource_id = azurerm_key_vault.use2_main_kv.id
+    subresource_names              = ["vault"]
+  }
+}
+
+resource "azurerm_user_assigned_identity" "use2_main_sb_identity" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-sb-identity"
+  location            = azurerm_resource_group.use2_main_rg.location
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  tags                = var.common_tags
+}
+
+############################################################################################################################
 # Storage Account
+
+resource "azurerm_subnet" "use2_sa_subnet" {
+  name                                      = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-subnet"
+  resource_group_name                       = azurerm_resource_group.use2_main_rg.name
+  virtual_network_name                      = azurerm_virtual_network.use2_main_vnet.name
+  address_prefixes                          = ["10.0.20.0/24"]
+  private_endpoint_network_policies_enabled = false
+  service_endpoints                         = ["Microsoft.Storage", ]
+}
+
+resource "azurerm_network_security_group" "use2_sa_nsg" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-nsg"
+  location            = azurerm_resource_group.use2_main_rg.location
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  tags                = var.common_tags
+}
+
+resource "azurerm_subnet_network_security_group_association" "use2_sa_subnet_nsg_association" {
+  subnet_id                 = azurerm_subnet.use2_sa_subnet.id
+  network_security_group_id = azurerm_network_security_group.use2_sa_nsg.id
+}
+
+resource "azurerm_key_vault_key" "use2_main_sa_kv_key" {
+  #checkov:skip=CKV_AZURE_112:We need premium tier for HSM keys
+  name            = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-key"
+  key_vault_id    = azurerm_key_vault.use2_main_kv.id
+  key_type        = "RSA"
+  key_size        = 2048
+  expiration_date = "2024-12-30T20:00:00Z"
+  tags            = var.common_tags
+
+  key_opts = [
+    "decrypt",
+    "encrypt",
+    "sign",
+    "unwrapKey",
+    "verify",
+    "wrapKey",
+  ]
+
+  rotation_policy {
+    automatic {
+      time_before_expiry = "P30D"
+    }
+
+    expire_after         = "P90D"
+    notify_before_expiry = "P29D"
+  }
+}
+
+resource "azurerm_user_assigned_identity" "use2_main_sa_identity" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-identity"
+  location            = azurerm_resource_group.use2_main_rg.location
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  tags                = var.common_tags
+}
 
 resource "azurerm_storage_account" "use2_main_sa" {
   #checkov:skip=CKV_AZURE_59:We need to allow public access to the storage account
@@ -262,12 +425,102 @@ resource "azurerm_storage_account" "use2_main_sa" {
   #checkov:skip=CKV2_AZURE_40:We want to use shared key authentication
   #checkov:skip=CKV2_AZURE_1:We dont need encryption at rest for this storage account
   #checkov:skip=CKV_AZURE_43:False positive, the name follows the naming convention
+  #checkov:skip=CKV_AZURE_35:We dont have a self-hosted runner in the pipeline yet, so we need to skip this check because the runner needs access
   name                     = lower("${substr(var.app_name, 0, 4)}${var.location_short}${var.environment_name}sa")
   location                 = azurerm_resource_group.use2_main_rg.location
   resource_group_name      = azurerm_resource_group.use2_main_rg.name
   account_tier             = "Standard"
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
+
+  queue_properties {
+    logging {
+      delete                = true
+      read                  = true
+      write                 = true
+      version               = "1.0"
+      retention_policy_days = 10
+    }
+  }
+
+  blob_properties {
+    delete_retention_policy {
+      days = 7
+    }
+  }
+
+  network_rules {
+    default_action             = "Allow"
+    bypass                     = ["AzureServices", "Logging", "Metrics"]
+    virtual_network_subnet_ids = [azurerm_subnet.use2_sa_subnet.id]
+  }
+
+  identity {
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.use2_main_sa_identity.id,
+    ]
+  }
+
+  sas_policy {
+    expiration_period = "90.00:00:00"
+    expiration_action = "Log"
+  }
+
+  lifecycle {
+    ignore_changes = [
+      customer_managed_key
+    ]
+  }
+}
+
+resource "azurerm_storage_container" "use2_main_batch_container" {
+  #checkov:skip=CKV_AZURE_34:We want to allow public access to the container, we will serve static content from it
+  name                  = "batch"
+  storage_account_name  = azurerm_storage_account.use2_main_sa.name
+  container_access_type = "blob"
+}
+
+resource "azurerm_key_vault_access_policy" "use2_main_sa_kv_access_policy" {
+  key_vault_id       = azurerm_key_vault.use2_main_kv.id
+  tenant_id          = data.azurerm_client_config.current.tenant_id
+  object_id          = azurerm_user_assigned_identity.use2_main_sa_identity.principal_id
+  key_permissions    = ["Get", "Create", "List", "Restore", "Recover", "UnwrapKey", "WrapKey", "Purge", "Encrypt", "Decrypt", "Sign", "Verify"]
+  secret_permissions = ["Get"]
+}
+
+resource "azurerm_storage_account_customer_managed_key" "use2_main_sa_cmek" {
+  storage_account_id        = azurerm_storage_account.use2_main_sa.id
+  key_vault_id              = azurerm_key_vault.use2_main_kv.id
+  key_name                  = azurerm_key_vault_key.use2_main_sa_kv_key.name
+  user_assigned_identity_id = azurerm_user_assigned_identity.use2_main_sa_identity.id
+  depends_on                = [azurerm_key_vault_access_policy.use2_main_sa_kv_access_policy]
+}
+
+resource "azurerm_log_analytics_storage_insights" "use2_sa_main_law_si" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-law-si"
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  workspace_id        = azurerm_log_analytics_workspace.use2_main_law.id
+  storage_account_id  = azurerm_storage_account.use2_main_sa.id
+  storage_account_key = azurerm_storage_account.use2_main_sa.primary_access_key
+  blob_container_names = [
+    azurerm_storage_container.use2_main_batch_container.name,
+  ]
+}
+
+resource "azurerm_private_endpoint" "use2_main_sa_pe" {
+  name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-pe"
+  location                      = azurerm_resource_group.use2_main_rg.location
+  resource_group_name           = azurerm_resource_group.use2_main_rg.name
+  subnet_id                     = azurerm_subnet.use2_sa_subnet.id
+  custom_network_interface_name = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-pe-nic"
+  tags                          = var.common_tags
+  private_service_connection {
+    name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-pe-connection"
+    is_manual_connection           = false
+    private_connection_resource_id = azurerm_storage_account.use2_main_sa.id
+    subresource_names              = ["blob"]
+  }
 }
 
 ############################################################################################################################
@@ -305,6 +558,27 @@ resource "azurerm_role_assignment" "use2_main_batch_acr_role" {
   description          = "Allow the Batch Pool VM to pull images from the ACR"
 }
 
+resource "azurerm_subnet" "use2_bp_subnet" {
+  name                                      = "${var.app_name}-${var.location_short}-${var.environment_name}-bp-subnet"
+  resource_group_name                       = azurerm_resource_group.use2_main_rg.name
+  virtual_network_name                      = azurerm_virtual_network.use2_main_vnet.name
+  address_prefixes                          = ["10.0.30.0/24"]
+  private_endpoint_network_policies_enabled = false
+  service_endpoints                         = ["Microsoft.Storage"]
+}
+
+resource "azurerm_network_security_group" "use2_bp_nsg" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-bp-nsg"
+  location            = azurerm_resource_group.use2_main_rg.location
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  tags                = var.common_tags
+}
+
+resource "azurerm_subnet_network_security_group_association" "use2_bp_subnet_nsg_association" {
+  subnet_id                 = azurerm_subnet.use2_bp_subnet.id
+  network_security_group_id = azurerm_network_security_group.use2_bp_nsg.id
+}
+
 resource "azurerm_batch_pool" "use2_main_batch_pool" {
   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool"
   resource_group_name = azurerm_resource_group.use2_main_rg.name
@@ -330,8 +604,21 @@ $TargetDedicatedNodes = max(minPoolSize, min($targetVMs, cappedPoolSize));
 $NodeDeallocationOption = taskcompletion;
 EOF
   }
+  data_disks {
+    lun                  = 0
+    disk_size_gb         = 10
+    storage_account_type = "Standard_LRS"
+  }
+  mount {
+    azure_blob_file_system {
+      account_name        = azurerm_storage_account.use2_main_sa.name
+      container_name      = azurerm_storage_container.use2_main_batch_container.name
+      relative_mount_path = "batch"
+      account_key         = azurerm_storage_account.use2_main_sa.primary_access_key
+    }
+  }
   network_configuration {
-    subnet_id = azurerm_subnet.use2_swb_subnet.id
+    subnet_id = azurerm_subnet.use2_bp_subnet.id
   }
   container_configuration {
     type = "DockerCompatible"
