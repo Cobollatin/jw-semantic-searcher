@@ -178,10 +178,16 @@ resource "azurerm_log_analytics_workspace" "use2_main_law" {
   }
 }
 
+resource "azurerm_storage_table" "use2_main_law_table" {
+  name                 = "${var.app_name}${var.location_short}${var.environment_name}law"
+  storage_account_name = azurerm_storage_account.use2_main_sa.name
+}
+
+
 resource "azurerm_log_analytics_workspace_table" "use2_main_law_table" {
-  name                    = "LogManagement"
-  workspace_id            = azurerm_log_analytics_workspace.use2_main_law.id
-  plan                    = "Basic"
+  name         = azurerm_storage_table.use2_main_law_table.name
+  workspace_id = azurerm_log_analytics_workspace.use2_main_law.id
+  plan         = "Basic"
   # Error: cannot set retention_in_days because the retention is fixed at eight days on Basic plan
   # retention_in_days       = 30
   total_retention_in_days = 30
