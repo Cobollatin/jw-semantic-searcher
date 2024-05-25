@@ -49,14 +49,24 @@ jobs:
               name: Azure login
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
+            - name: Creates Batch Task Configuration
+              run: |
+                  echo "{
+                            \"id\": \"${{ github.sha }}\",
+                            \"displayName\": \"Indexer Task for commit ${{ github.sha }}\",
+                            \"commandLine\": \"azcli-task\",
+                            \"taskContainerSettings\": {
+                                \"imageName\": \"${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest\",
+                                \"containerRunOptions\": \"\"
+                            }
+                        }" > task.json
             - name: Deploy to Azure Batch
               uses: azure/CLI@v2.0.0
               env:
                   AZURE_BATCH_ENDPOINT: ${{ secrets.BATCH_ACCOUNT_ENDPOINT }}
                   AZURE_BATCH_ACCESS_KEY: ${{ secrets.BATCH_ACCOUNT_KEY }}
                   AZURE_BATCH_ACCOUNT: ${{ secrets.BATCH_ACCOUNT_NAME }}
-                  COMMAND_LINE: sudo docker run ${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest && sudo docker logs $(sudo docker ps -lq)
               with:
                   azcliversion: "2.59.0"
                   inlineScript: |
-                      az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }} --command-line "/bin/sh -c '${{env.COMMAND_LINE}}'"
+                      az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --json-file task.json
