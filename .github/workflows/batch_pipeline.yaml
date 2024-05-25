@@ -68,7 +68,7 @@ jobs:
                                     \"filePattern\": \"*.log\",
                                     \"destination\": {
                                         \"container\": {
-                                            \"containerUrl\": \"\https://jwseeus2devsa.blob.core.windows.net/batch\",
+                                            \"containerUrl\": \"${{ secrets.AZURE_STORAGE_CONTAINER_URL }}\",
                                             \"path\": \"logs\"
                                         }
                                     },
