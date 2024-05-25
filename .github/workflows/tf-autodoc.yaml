@@ -45,7 +45,9 @@ jobs:
 
             - name: Output README.md
               id: output
+              working-directory: ${{ matrix.path }}
               run: |
+                  cd ..
                   readme_contents=""
                   while IFS= read -r file; do
                     base_dir_name=$(dirname "$file")
