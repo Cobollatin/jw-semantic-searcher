@@ -53,7 +53,7 @@ jobs:
             - name: Creates Batch Task Configuration
               env:
                   #   COMMAND_LINE: docker run ${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest && docker logs $(docker ps -lq)
-                  COMMAND_LINE: cat /output/log.txt && ls -al /output
+                  COMMAND_LINE: ls -al /output/
               run: |
                   echo "{
                             \"id\": \"${{ github.sha }}\",
