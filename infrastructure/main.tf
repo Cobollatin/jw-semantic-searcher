@@ -162,20 +162,6 @@ resource "azurerm_user_assigned_identity" "use2_main_law_identity" {
   tags                = var.common_tags
 }
 
-resource "azurerm_log_analytics_cluster" "use2_main_law" {
-  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-law"
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
-  location            = azurerm_resource_group.use2_main_rg.location
-  size_gb             = 500
-
-  identity {
-    type = "UserAssigned"
-    identity_ids = [
-      azurerm_user_assigned_identity.use2_main_law_identity.id,
-    ]
-  }
-}
-
 resource "azurerm_log_analytics_workspace" "use2_main_law" {
   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-law"
   location            = azurerm_resource_group.use2_main_rg.location
@@ -261,22 +247,6 @@ resource "azurerm_network_security_group" "use2_kv_nsg" {
 resource "azurerm_subnet_network_security_group_association" "use2_kv_subnet_nsg_association" {
   subnet_id                 = azurerm_subnet.use2_kv_subnet.id
   network_security_group_id = azurerm_network_security_group.use2_kv_nsg.id
-}
-
-resource "azurerm_key_vault_access_policy" "use2_main_log_law_access_policy" {
-  key_vault_id = azurerm_key_vault.use2_main_kv.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = azurerm_user_assigned_identity.use2_main_law_identity.principal_id
-  key_permissions = [
-    "Get",
-    "Unwrapkey",
-    "Wrapkey",
-  ]
-}
-
-resource "azurerm_log_analytics_cluster_customer_managed_key" "use2_main_kv_cmek" {
-  log_analytics_cluster_id = azurerm_log_analytics_cluster.use2_main_law.id
-  key_vault_key_id         = azurerm_key_vault_key.use2_main_sa_kv_key.id
 }
 
 resource "azurerm_key_vault" "use2_main_kv" {
@@ -477,7 +447,7 @@ resource "azurerm_storage_account" "use2_main_sa" {
 }
 
 resource "azurerm_log_analytics_linked_storage_account" "use2_main_sa_law_lsa" {
-  data_source_type      = "AzureBlob"
+  data_source_type      = "Ingestion"
   resource_group_name   = azurerm_resource_group.use2_main_rg.name
   workspace_resource_id = azurerm_log_analytics_workspace.use2_main_law.id
   storage_account_ids   = [azurerm_storage_account.use2_main_sa.id]
