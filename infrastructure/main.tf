@@ -184,7 +184,7 @@ resource "azurerm_log_analytics_workspace_table" "use2_main_law_table" {
   plan         = "Basic"
   # Error: cannot set retention_in_days because the retention is fixed at eight days on Basic plan
   # retention_in_days       = 30
-  total_retention_in_days = 30
+  total_retention_in_days = 0
 }
 
 ############################################################################################################################
@@ -619,20 +619,20 @@ $TargetDedicatedNodes = max(minPoolSize, min($targetVMs, cappedPoolSize));
 $NodeDeallocationOption = taskcompletion;
 EOF
   }
-  data_disks {
-    lun                  = 0
-    disk_size_gb         = 10
-    storage_account_type = "Standard_LRS"
-  }
-  mount {
-    azure_blob_file_system {
-      account_name        = azurerm_storage_account.use2_main_sa.name
-      container_name      = azurerm_storage_container.use2_main_batch_container.name
-      relative_mount_path = "batch"
-      account_key         = azurerm_storage_account.use2_main_sa.primary_access_key
-      blobfuse_options    = "/persistent:Yes"
-    }
-  }
+  # data_disks {
+  #   lun                  = 0
+  #   disk_size_gb         = 10
+  #   storage_account_type = "Standard_LRS"
+  # }
+  # mount {
+  #   azure_blob_file_system {
+  #     account_name        = azurerm_storage_account.use2_main_sa.name
+  #     container_name      = azurerm_storage_container.use2_main_batch_container.name
+  #     relative_mount_path = "batch"
+  #     account_key         = azurerm_storage_account.use2_main_sa.primary_access_key
+  #     blobfuse_options    = "/persistent:Yes"
+  #   }
+  # }
   network_configuration {
     subnet_id                        = azurerm_subnet.use2_bp_subnet.id
     public_address_provisioning_type = "NoPublicIPAddresses"
