@@ -625,11 +625,11 @@ EOF
     }
   }
   network_configuration {
-    subnet_id = azurerm_subnet.use2_bp_subnet.id
-    # TODO: Bugged, need to report to the provider
-    # public_address_provisioning_type = "NoPublicIPAddresses"
+    subnet_id                      = azurerm_subnet.use2_bp_subnet.id
     accelerated_networking_enabled = false
     dynamic_vnet_assignment_scope  = "none"
+    # TODO: Bugged, need to report to the provider azurerm
+    # public_address_provisioning_type = "NoPublicIPAddresses"
   }
   container_configuration {
     type = "DockerCompatible"
@@ -645,6 +645,13 @@ EOF
       azurerm_user_assigned_identity.use2_main_batch_identity.id
     ]
   }
+}
+
+resource "azurerm_role_assignment" "use2_main_batch_sa_role" {
+  scope                = azurerm_resource_group.use2_main_rg.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_user_assigned_identity.use2_main_batch_identity.principal_id
+  description          = "Allow the Service Principal to manage the Storage Account"
 }
 
 resource "azurerm_batch_job" "use2_main_batch_job" {
