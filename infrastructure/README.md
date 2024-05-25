@@ -16,6 +16,7 @@ This is a generated README.md file. Please do not edit directly. Instead, edit t
 | <a name="provider_azuread"></a> [azuread](#provider\_azuread) | 2.50.0 |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.101.0 |
 | <a name="provider_github"></a> [github](#provider\_github) | 6.2.1 |
+| <a name="provider_null"></a> [null](#provider\_null) | n/a |
 
 ## Modules
 
@@ -72,6 +73,7 @@ No modules.
 | [github_actions_secret.use2_main_batch_account_name](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_batch_job_id](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_swa_api_key](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [null_resource.always_replace](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [azuread_service_principal.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/data-sources/client_config) | data source |
 | [github_actions_public_key.use2_main_acr_github_key](https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/actions_public_key) | data source |
