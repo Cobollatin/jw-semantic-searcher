@@ -41,7 +41,6 @@ resource "azurerm_user_assigned_identity" "use2_main_acr_identity" {
   tags                = var.common_tags
 }
 
-
 resource "azurerm_container_registry" "use2_main_acr" {
   #checkov:skip=CKV_AZURE_233:We need premium tier for zone-redundancy
   #checkov:skip=CKV_AZURE_167:We need premium tier for retention policy
@@ -303,6 +302,13 @@ resource "azurerm_key_vault" "use2_main_kv" {
     default_action             = "Allow"
     virtual_network_subnet_ids = [azurerm_subnet.use2_kv_subnet.id]
   }
+}
+
+resource "azurerm_role_assignment" "use2_main_kv_role" {
+  scope                = azurerm_resource_group.use2_main_rg.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = data.azuread_service_principal.current.object_id
+  description          = "Allow the Service Principal to manage the Key Vault"
 }
 
 resource "azurerm_key_vault_access_policy" "use2_main_kv_access_policy" {
