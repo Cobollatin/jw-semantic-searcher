@@ -50,11 +50,13 @@ jobs:
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
             - name: Creates Batch Task Configuration
+              env:
+                  COMMAND_LINE: sudo docker run ${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest && sudo docker logs $(sudo docker ps -lq)
               run: |
                   echo "{
                             \"id\": \"${{ github.sha }}\",
                             \"displayName\": \"Indexer Task for commit ${{ github.sha }}\",
-                            \"commandLine\": \"echo hello\",
+                            \"commandLine\": \"${{ env.COMMAND_LINE }}\",
                             \"containerSettings\": {
                                 \"imageName\": \"${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest\",
                                 \"containerRunOptions\": \"\"
