@@ -180,7 +180,6 @@ resource "azurerm_user_assigned_identity" "use2_main_acr_indexer_purge_identity"
 resource "azurerm_container_registry_task" "use2_main_acr_indexer_purge_task" {
   name                  = "${var.app_name}-${var.location_short}-${var.environment_name}-acr-purge-task"
   container_registry_id = azurerm_container_registry.use2_main_acr.id
-  agent_pool_name       = "Default"
   is_system_task        = false
   enabled               = true
   tags                  = var.common_tags
@@ -188,7 +187,7 @@ resource "azurerm_container_registry_task" "use2_main_acr_indexer_purge_task" {
     task_content = <<EOF
 version: v1.1.0
 steps: 
-  - cmd: acr purge acr purge --filter 'indexer:.*' --untagged --keep 10
+  - cmd: acr purge acr purge --filter 'indexer:.*' --keep 10 --untagged
     disableWorkingDirectoryOverride: true
     timeout: 3600
 EOF
