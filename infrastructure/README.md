@@ -32,11 +32,8 @@ No modules.
 | [azurerm_container_registry_task.use2_main_acr_indexer_purge_task](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/container_registry_task) | resource |
 | [azurerm_key_vault.use2_main_kv](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/key_vault) | resource |
 | [azurerm_key_vault_access_policy.use2_main_kv_access_policy](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/key_vault_access_policy) | resource |
-| [azurerm_key_vault_access_policy.use2_main_log_law_access_policy](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/key_vault_access_policy) | resource |
 | [azurerm_key_vault_access_policy.use2_main_sa_kv_access_policy](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/key_vault_access_policy) | resource |
 | [azurerm_key_vault_key.use2_main_sa_kv_key](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/key_vault_key) | resource |
-| [azurerm_log_analytics_cluster.use2_main_law](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/log_analytics_cluster) | resource |
-| [azurerm_log_analytics_cluster_customer_managed_key.use2_main_kv_cmek](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/log_analytics_cluster_customer_managed_key) | resource |
 | [azurerm_log_analytics_linked_storage_account.use2_main_sa_law_lsa](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/log_analytics_linked_storage_account) | resource |
 | [azurerm_log_analytics_storage_insights.use2_sa_main_law_si](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/log_analytics_storage_insights) | resource |
 | [azurerm_log_analytics_workspace.use2_main_law](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/log_analytics_workspace) | resource |
