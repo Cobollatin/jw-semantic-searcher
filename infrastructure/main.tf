@@ -168,67 +168,12 @@ resource "azurerm_log_analytics_workspace" "use2_main_law" {
 ############################################################################################################################
 # SWA
 
-resource "azurerm_subnet" "use2_swa_subnet" {
-  name                                      = "${var.app_name}-${var.location_short}-${var.environment_name}-as-subnet"
-  resource_group_name                       = azurerm_resource_group.use2_main_rg.name
-  virtual_network_name                      = azurerm_virtual_network.use2_main_vnet.name
-  address_prefixes                          = ["10.0.0.0/24"]
-  private_endpoint_network_policies_enabled = false
-  service_endpoints                         = ["Microsoft.Web", ]
-}
-
-resource "azurerm_network_security_group" "use2_swa_nsg" {
-  #checkov:skip=CKV_AZURE_10:We need to allow ssh from the internet
-  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-as-nsg"
-  location            = azurerm_resource_group.use2_main_rg.location
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
-  tags                = var.common_tags
-  security_rule {
-    name                       = "BatchNodeManagementInbound"
-    priority                   = 100
-    protocol                   = "Tcp"
-    direction                  = "Inbound"
-    access                     = "Allow"
-    source_port_range          = "*"
-    source_address_prefix      = "*"
-    destination_port_range     = "29876-29877"
-    destination_address_prefix = "*"
-  }
-  security_rule {
-    name                       = "BatchNodeManagementOutbound"
-    priority                   = 100
-    protocol                   = "*"
-    direction                  = "Outbound"
-    access                     = "Allow"
-    source_port_range          = "*"
-    source_address_prefix      = "*"
-    destination_port_range     = "443"
-    destination_address_prefix = "*"
-  }
-  security_rule {
-    name                       = "SSHInbound"
-    priority                   = 200
-    protocol                   = "Tcp"
-    direction                  = "Inbound"
-    access                     = "Allow"
-    source_port_range          = "*"
-    source_address_prefix      = "*"
-    destination_port_range     = "22"
-    destination_address_prefix = "*"
-  }
-}
-
-resource "azurerm_subnet_network_security_group_association" "use2_swa_subnet_nsg_association" {
-  subnet_id                 = azurerm_subnet.use2_swa_subnet.id
-  network_security_group_id = azurerm_network_security_group.use2_swa_nsg.id
-}
-
-resource "azurerm_user_assigned_identity" "use2_main_swa_identity" {
-  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-swa-identity"
-  location            = azurerm_resource_group.use2_main_rg.location
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
-  tags                = var.common_tags
-}
+# resource "azurerm_user_assigned_identity" "use2_main_swa_identity" {
+#   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-swa-identity"
+#   location            = azurerm_resource_group.use2_main_rg.location
+#   resource_group_name = azurerm_resource_group.use2_main_rg.name
+#   tags                = var.common_tags
+# }
 
 resource "azurerm_static_web_app" "use2_main_swa" {
   name                               = "${var.app_name}-${var.location_short}-${var.environment_name}-swa"
@@ -574,10 +519,44 @@ resource "azurerm_subnet" "use2_bp_subnet" {
 }
 
 resource "azurerm_network_security_group" "use2_bp_nsg" {
+  #checkov:skip=CKV_AZURE_10:We need to allow ssh from the internet
   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-bp-nsg"
   location            = azurerm_resource_group.use2_main_rg.location
   resource_group_name = azurerm_resource_group.use2_main_rg.name
   tags                = var.common_tags
+  security_rule {
+    name                       = "BatchNodeManagementInbound"
+    priority                   = 100
+    protocol                   = "Tcp"
+    direction                  = "Inbound"
+    access                     = "Allow"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_port_range     = "29876-29877"
+    destination_address_prefix = "*"
+  }
+  security_rule {
+    name                       = "BatchNodeManagementOutbound"
+    priority                   = 100
+    protocol                   = "*"
+    direction                  = "Outbound"
+    access                     = "Allow"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_port_range     = "443"
+    destination_address_prefix = "*"
+  }
+  security_rule {
+    name                       = "SSHInbound"
+    priority                   = 200
+    protocol                   = "Tcp"
+    direction                  = "Inbound"
+    access                     = "Allow"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_port_range     = "22"
+    destination_address_prefix = "*"
+  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "use2_bp_subnet_nsg_association" {
