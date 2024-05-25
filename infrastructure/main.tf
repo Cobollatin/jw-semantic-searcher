@@ -221,12 +221,11 @@ resource "github_actions_secret" "use2_main_swa_api_key" {
 # Key Vault
 
 resource "azurerm_subnet" "use2_kv_subnet" {
-  name                                      = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-subnet"
-  resource_group_name                       = azurerm_resource_group.use2_main_rg.name
-  virtual_network_name                      = azurerm_virtual_network.use2_main_vnet.name
-  address_prefixes                          = ["10.0.10.0/24"]
-  private_endpoint_network_policies_enabled = false
-  service_endpoints                         = ["Microsoft.KeyVault", ]
+  name                              = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-subnet"
+  resource_group_name               = azurerm_resource_group.use2_main_rg.name
+  virtual_network_name              = azurerm_virtual_network.use2_main_vnet.name
+  address_prefixes                  = ["10.0.10.0/24"]
+  service_endpoints                 = ["Microsoft.KeyVault", ]
 }
 
 resource "azurerm_network_security_group" "use2_kv_nsg" {
@@ -326,7 +325,6 @@ resource "azurerm_subnet" "use2_sa_subnet" {
   resource_group_name                       = azurerm_resource_group.use2_main_rg.name
   virtual_network_name                      = azurerm_virtual_network.use2_main_vnet.name
   address_prefixes                          = ["10.0.20.0/24"]
-  private_endpoint_network_policies_enabled = false
   service_endpoints                         = ["Microsoft.Storage", ]
 }
 
@@ -534,7 +532,6 @@ resource "azurerm_subnet" "use2_bp_subnet" {
   resource_group_name                       = azurerm_resource_group.use2_main_rg.name
   virtual_network_name                      = azurerm_virtual_network.use2_main_vnet.name
   address_prefixes                          = ["10.0.30.0/24"]
-  private_endpoint_network_policies_enabled = false
   service_endpoints                         = ["Microsoft.Storage"]
 }
 
@@ -627,7 +624,7 @@ EOF
   network_configuration {
     subnet_id                      = azurerm_subnet.use2_bp_subnet.id
     accelerated_networking_enabled = false
-    dynamic_vnet_assignment_scope  = "none"
+    # dynamic_vnet_assignment_scope  = "none"
     # TODO: Bugged, need to report to the provider azurerm
     # public_address_provisioning_type = "NoPublicIPAddresses"
   }
