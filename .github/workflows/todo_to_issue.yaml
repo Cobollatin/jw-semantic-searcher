@@ -1,6 +1,7 @@
 name: "GitHub Issue for TODOs"
 run-name: "GitHub Issue for TODOs for commit ${{ github.sha }}"
 on:
+    workflow_dispatch:
     push:
         branches:
             - main
