@@ -626,7 +626,8 @@ EOF
   }
   network_configuration {
     subnet_id                        = azurerm_subnet.use2_bp_subnet.id
-    public_address_provisioning_type = "UserManaged"
+    # TODO: Bugged, need to report to the provider
+    # public_address_provisioning_type = "NoPublicIPAddresses"
     accelerated_networking_enabled   = false
     dynamic_vnet_assignment_scope    = "none"
   }

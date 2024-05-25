@@ -68,7 +68,7 @@ jobs:
             - name: Terraform Init
               id: init
               run: |
-                  terraform init -backend-config="resource_group_name=${TF_VAR_azure_backend_rg}" -backend-config="storage_account_name=${TF_VAR_azure_backend_sa}" -backend-config="container_name=${TF_VAR_azure_backend_container}"
+                  terraform init -backend-config="resource_group_name=${TF_VAR_azure_backend_rg}" -backend-config="storage_account_name=${TF_VAR_azure_backend_sa}" -backend-config="container_name=${TF_VAR_azure_backend_container}" -upgrade
             - name: Install Checkov
               id: checkov
               if: github.event_name == 'pull_request'
