@@ -652,6 +652,11 @@ EOF
       azurerm_user_assigned_identity.use2_main_batch_identity.id,
     ]
   }
+  lifecycle {
+    replace_triggered_by = [
+      azurerm_batch_pool.use2_main_batch_pool.network_configuration
+    ]
+  }
 }
 
 resource "azurerm_batch_job" "use2_main_batch_job" {
