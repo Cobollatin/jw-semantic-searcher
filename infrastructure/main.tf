@@ -155,6 +155,13 @@ EOF
 ############################################################################################################################
 # Logging
 
+resource "azurerm_user_assigned_identity" "use2_main_law_identity" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-law-identity"
+  location            = azurerm_resource_group.use2_main_rg.location
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  tags                = var.common_tags
+}
+
 resource "azurerm_log_analytics_workspace" "use2_main_law" {
   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-law"
   location            = azurerm_resource_group.use2_main_rg.location
@@ -163,72 +170,32 @@ resource "azurerm_log_analytics_workspace" "use2_main_law" {
   retention_in_days   = 30
   daily_quota_gb      = 0.2
   tags                = var.common_tags
+  identity {
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.use2_main_law_identity.id,
+    ]
+  }
+}
+
+resource "azurerm_log_analytics_workspace_table" "use2_main_law_table" {
+  name                    = "LogManagement"
+  workspace_id            = azurerm_log_analytics_workspace.use2_main_law.id
+  plan                    = "Basic"
+  # Error: cannot set retention_in_days because the retention is fixed at eight days on Basic plan
+  # retention_in_days       = 30
+  total_retention_in_days = 30
 }
 
 ############################################################################################################################
 # SWA
 
-resource "azurerm_subnet" "use2_swa_subnet" {
-  name                                      = "${var.app_name}-${var.location_short}-${var.environment_name}-as-subnet"
-  resource_group_name                       = azurerm_resource_group.use2_main_rg.name
-  virtual_network_name                      = azurerm_virtual_network.use2_main_vnet.name
-  address_prefixes                          = ["10.0.0.0/24"]
-  private_endpoint_network_policies_enabled = false
-  service_endpoints                         = ["Microsoft.Web", ]
-}
-
-resource "azurerm_network_security_group" "use2_swa_nsg" {
-  #checkov:skip=CKV_AZURE_10:We need to allow ssh from the internet
-  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-as-nsg"
-  location            = azurerm_resource_group.use2_main_rg.location
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
-  tags                = var.common_tags
-  security_rule {
-    name                       = "BatchNodeManagementInbound"
-    priority                   = 100
-    protocol                   = "Tcp"
-    direction                  = "Inbound"
-    access                     = "Allow"
-    source_port_range          = "*"
-    source_address_prefix      = "*"
-    destination_port_range     = "29876-29877"
-    destination_address_prefix = "*"
-  }
-  security_rule {
-    name                       = "BatchNodeManagementOutbound"
-    priority                   = 100
-    protocol                   = "*"
-    direction                  = "Outbound"
-    access                     = "Allow"
-    source_port_range          = "*"
-    source_address_prefix      = "*"
-    destination_port_range     = "443"
-    destination_address_prefix = "*"
-  }
-  security_rule {
-    name                       = "SSHInbound"
-    priority                   = 200
-    protocol                   = "Tcp"
-    direction                  = "Inbound"
-    access                     = "Allow"
-    source_port_range          = "*"
-    source_address_prefix      = "*"
-    destination_port_range     = "22"
-    destination_address_prefix = "*"
-  }
-}
-
-resource "azurerm_subnet_network_security_group_association" "use2_swa_subnet_nsg_association" {
-  subnet_id                 = azurerm_subnet.use2_swa_subnet.id
-  network_security_group_id = azurerm_network_security_group.use2_swa_nsg.id
-}
-
-resource "azurerm_user_assigned_identity" "use2_main_swa_identity" {
-  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-swa-identity"
-  location            = azurerm_resource_group.use2_main_rg.location
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
-  tags                = var.common_tags
-}
+# resource "azurerm_user_assigned_identity" "use2_main_swa_identity" {
+#   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-swa-identity"
+#   location            = azurerm_resource_group.use2_main_rg.location
+#   resource_group_name = azurerm_resource_group.use2_main_rg.name
+#   tags                = var.common_tags
+# }
 
 resource "azurerm_static_web_app" "use2_main_swa" {
   name                               = "${var.app_name}-${var.location_short}-${var.environment_name}-swa"
@@ -480,6 +447,13 @@ resource "azurerm_storage_account" "use2_main_sa" {
   }
 }
 
+resource "azurerm_log_analytics_linked_storage_account" "use2_main_sa_law_lsa" {
+  data_source_type      = "Ingestion"
+  resource_group_name   = azurerm_resource_group.use2_main_rg.name
+  workspace_resource_id = azurerm_log_analytics_workspace.use2_main_law.id
+  storage_account_ids   = [azurerm_storage_account.use2_main_sa.id]
+}
+
 resource "azurerm_storage_container" "use2_main_batch_container" {
   #checkov:skip=CKV_AZURE_34:We want to allow public access to the container, we will serve static content from it
   name                  = "batch"
@@ -574,10 +548,44 @@ resource "azurerm_subnet" "use2_bp_subnet" {
 }
 
 resource "azurerm_network_security_group" "use2_bp_nsg" {
+  #checkov:skip=CKV_AZURE_10:We need to allow ssh from the internet
   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-bp-nsg"
   location            = azurerm_resource_group.use2_main_rg.location
   resource_group_name = azurerm_resource_group.use2_main_rg.name
   tags                = var.common_tags
+  security_rule {
+    name                       = "BatchNodeManagementInbound"
+    priority                   = 100
+    protocol                   = "Tcp"
+    direction                  = "Inbound"
+    access                     = "Allow"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_port_range     = "29876-29877"
+    destination_address_prefix = "*"
+  }
+  security_rule {
+    name                       = "BatchNodeManagementOutbound"
+    priority                   = 100
+    protocol                   = "*"
+    direction                  = "Outbound"
+    access                     = "Allow"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_port_range     = "443"
+    destination_address_prefix = "*"
+  }
+  security_rule {
+    name                       = "SSHInbound"
+    priority                   = 200
+    protocol                   = "Tcp"
+    direction                  = "Inbound"
+    access                     = "Allow"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_port_range     = "22"
+    destination_address_prefix = "*"
+  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "use2_bp_subnet_nsg_association" {
