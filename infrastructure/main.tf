@@ -179,7 +179,7 @@ resource "azurerm_log_analytics_workspace" "use2_main_law" {
 }
 
 resource "azurerm_log_analytics_workspace_table" "use2_main_law_table" {
-  name         = "Usage"
+  name         = "StorageBlobLogs"
   workspace_id = azurerm_log_analytics_workspace.use2_main_law.id
   plan         = "Basic"
   # Error: cannot set retention_in_days because the retention is fixed at eight days on Basic plan
