@@ -130,7 +130,6 @@ jobs:
                       <summary>Plan File</summary>
 
                       \`\`\`${process.env.TPLAN}\`\`\`
-                      </details>
                       `
                       github.rest.issues.createComment({
                         issue_number: context.issue.number,
