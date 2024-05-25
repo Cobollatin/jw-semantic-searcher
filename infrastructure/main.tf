@@ -654,8 +654,14 @@ EOF
   }
   lifecycle {
     replace_triggered_by = [
-      azurerm_batch_pool.use2_main_batch_pool.network_configuration
+      null_resource.always_replace
     ]
+  }
+}
+
+resource "null_resource" "always_replace" {
+  triggers = {
+    always_recreate = "${timestamp()}"
   }
 }
 
