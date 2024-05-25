@@ -598,7 +598,7 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
   resource_group_name = azurerm_resource_group.use2_main_rg.name
   account_name        = azurerm_batch_account.use2_main_batch.name
   node_agent_sku_id   = "batch.node.ubuntu 20.04"
-  vm_size             = "Standard_A1_v2"
+  vm_size             = "Standard_A1"
   metadata            = var.common_tags
   max_tasks_per_node  = 1
   storage_image_reference {
@@ -636,6 +636,8 @@ EOF
   network_configuration {
     subnet_id                        = azurerm_subnet.use2_bp_subnet.id
     public_address_provisioning_type = "NoPublicIPAddresses"
+    accelerated_networking_enabled   = false
+    dynamic_vnet_assignment_scope    = "none"
   }
   container_configuration {
     type = "DockerCompatible"
