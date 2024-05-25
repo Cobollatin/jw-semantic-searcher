@@ -625,11 +625,11 @@ EOF
     }
   }
   network_configuration {
-    subnet_id                        = azurerm_subnet.use2_bp_subnet.id
+    subnet_id = azurerm_subnet.use2_bp_subnet.id
     # TODO: Bugged, need to report to the provider
     # public_address_provisioning_type = "NoPublicIPAddresses"
-    accelerated_networking_enabled   = false
-    dynamic_vnet_assignment_scope    = "none"
+    accelerated_networking_enabled = false
+    dynamic_vnet_assignment_scope  = "none"
   }
   container_configuration {
     type = "DockerCompatible"
