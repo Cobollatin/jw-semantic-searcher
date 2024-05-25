@@ -204,7 +204,7 @@ EOF
   identity {
     type = "UserAssigned"
     identity_ids = [
-      azurerm_user_assigned_identity.use2_main_acr_purge_identity.id,
+      azurerm_user_assigned_identity.use2_main_acr_indexer_purge_identity.id,
     ]
   }
 }
