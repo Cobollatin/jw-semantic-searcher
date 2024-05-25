@@ -54,6 +54,7 @@ jobs:
                   echo "{
                             \"id\": \"${{ github.sha }}\",
                             \"displayName\": \"Indexer Task for commit ${{ github.sha }}\",
+                            \"commandLine\": \"echo hello\",
                             \"containerSettings\": {
                                 \"imageName\": \"${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest\",
                                 \"containerRunOptions\": \"\"
