@@ -51,7 +51,6 @@ No modules.
 | [azurerm_storage_account.use2_main_sa](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/storage_account) | resource |
 | [azurerm_storage_account_customer_managed_key.use2_main_sa_cmek](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/storage_account_customer_managed_key) | resource |
 | [azurerm_storage_container.use2_main_batch_container](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/storage_container) | resource |
-| [azurerm_storage_table.use2_main_law_table](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/storage_table) | resource |
 | [azurerm_subnet.use2_bp_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/subnet) | resource |
 | [azurerm_subnet.use2_kv_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/subnet) | resource |
 | [azurerm_subnet.use2_sa_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/resources/subnet) | resource |
