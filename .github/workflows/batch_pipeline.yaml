@@ -71,7 +71,7 @@ jobs:
                                             \"containerUrl\": \"${{ secrets.AZURE_STORAGE_CONTAINER_URL }}\",
                                             \"path\": \"logs\",
                                             \"identityReference\": {
-                                                \"resourceId\": \"${{ secrets.BATCH_POOL_IDENTITY }}\",
+                                                \"resourceId\": \"${{ secrets.BATCH_POOL_IDENTITY_ID }}\",
                                             }
                                         }
                                     },

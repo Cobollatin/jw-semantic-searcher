@@ -701,10 +701,10 @@ resource "github_actions_secret" "use2_main_batch_account_name" {
   plaintext_value = azurerm_batch_account.use2_main_batch.name
 }
 
-resource "github_actions_secret" "use2_main_batch_pool_identity" {
+resource "github_actions_secret" "use2_main_batch_pool_identity_id" {
   #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
   for_each        = toset(var.batch_repositories)
   repository      = each.value
-  secret_name     = "BATCH_POOL_IDENTITY"
+  secret_name     = "BATCH_POOL_IDENTITY_ID"
   plaintext_value = azurerm_user_assigned_identity.use2_main_batch_identity.id
 }
