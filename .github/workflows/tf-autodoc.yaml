@@ -47,13 +47,12 @@ jobs:
               id: output
               working-directory: ${{ matrix.path }}
               run: |
-                  cd ..
                   readme_contents=""
                   while IFS= read -r file; do
-                    base_dir_name=$(dirname "$file")
+                    base_dir_name=$(realpath --relative-to=$GITHUB_WORKSPACE $(dirname "$(pwd)/$file"))
                     base_dir_name="${base_dir_name#./}" # Remove the leading ./
                     readme_contents+="<details><summary><h2>${base_dir_name}</h1></summary>$(cat "$file")</details>"
-                  done < <(find . -type f -name 'README.md' -not -path './README.md')
+                  done < <(find . -type f -name 'README.md')
                   echo 'readme<<EOF' >> $GITHUB_ENV
                   echo "$readme_contents" >> $GITHUB_ENV
                   echo 'EOF' >> $GITHUB_ENV
