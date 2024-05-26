@@ -590,7 +590,7 @@ resource "azurerm_subnet_network_security_group_association" "use2_bp_subnet_nsg
 }
 
 resource "azurerm_batch_pool" "use2_main_batch_pool" {
-  name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool-v2"
+  name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool-v1"
   resource_group_name            = azurerm_resource_group.use2_main_rg.name
   account_name                   = azurerm_batch_account.use2_main_batch.name
   node_agent_sku_id              = "batch.node.ubuntu 20.04"
@@ -665,15 +665,6 @@ EOF
       azurerm_user_assigned_identity.use2_main_batch_identity.id
     ]
   }
-}
-
-resource "azurerm_batch_application" "use2_main_batch_app" {
-  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-app"
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
-  account_name        = azurerm_batch_account.use2_main_batch.name
-  allow_updates       = true
-  default_version     = "latest"
-  display_name        = "Batch Application"
 }
 
 resource "azurerm_role_assignment" "use2_main_batch_sa_role" {
