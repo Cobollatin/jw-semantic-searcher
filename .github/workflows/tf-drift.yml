@@ -49,7 +49,7 @@ jobs:
               with:
                   terraform_wrapper: false
             - name: Terraform Init
-              run: terraform init -backend-config="resource_group_name=${TF_VAR_azure_backend_rg}" -backend-config="storage_account_name=${TF_VAR_azure_backend_sa}" -backend-config="container_name=${TF_VAR_azure_backend_container}" -var="github_token=${{ secrets.TF_GITHUB_TOKEN }}"  -upgrade
+              run: terraform init -backend-config="resource_group_name=${TF_VAR_azure_backend_rg}" -backend-config="storage_account_name=${TF_VAR_azure_backend_sa}" -backend-config="container_name=${TF_VAR_azure_backend_container}" -upgrade
             - name: Terraform Plan
               id: tf-plan
               run: |
