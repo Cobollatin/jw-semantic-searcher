@@ -12,6 +12,11 @@ data "azuread_service_principal" "current" {
   client_id = data.azurerm_client_config.current.client_id
 }
 
+data "github_repository" "use2_acr_github_repos" {
+  for_each = toset(var.acr_repositories)
+  name     = each.value
+}
+
 ############################################################################################################################
 # Networking
 resource "azurerm_virtual_network" "use2_main_vnet" {
@@ -131,13 +136,31 @@ resource "azurerm_container_registry_task" "use2_main_acr_indexer_purge_task" {
     task_content = <<EOF
 version: v1.1.0
 steps: 
-  - cmd: acr purge acr purge --filter 'indexer:.*' --keep 10 --untagged
+  - cmd: |
+      PURGE_CMD="acr purge --ago 1d --untagged --keep 5"
+      for i in $(az acr repository list -n ${azurerm_container_registry.use2_main_acr.name} -o tsv);do PURGE_CMD+=" --filter '"$i":.'";done
+      echo $PURGE_CMD
     disableWorkingDirectoryOverride: true
     timeout: 3600
 EOF
   }
   platform {
     os = "Linux"
+  }
+  dynamic "source_trigger" {
+    for_each = toset(var.acr_repositories)
+    content {
+      name           = "GithubTrigger"
+      source_type    = "Github"
+      repository_url = data.github_repository.use2_acr_github_repos[source_trigger.key].html_url
+      events         = ["push"]
+      branch         = "main"
+      authentication {
+        token      = var.github_token
+        token_type = "PAT"
+      }
+    }
+
   }
   timer_trigger {
     name     = "PurgeTimer"
@@ -362,7 +385,6 @@ resource "azurerm_key_vault_key" "use2_main_sa_kv_key" {
     automatic {
       time_before_expiry = "P30D"
     }
-
     expire_after         = "P90D"
     notify_before_expiry = "P29D"
   }
@@ -590,16 +612,17 @@ resource "azurerm_subnet_network_security_group_association" "use2_bp_subnet_nsg
 }
 
 resource "azurerm_batch_pool" "use2_main_batch_pool" {
-  name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool-v1"
+  name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool"
   resource_group_name            = azurerm_resource_group.use2_main_rg.name
   account_name                   = azurerm_batch_account.use2_main_batch.name
   node_agent_sku_id              = "batch.node.ubuntu 20.04"
-  vm_size                        = "Standard_A1_V2"
+  vm_size                        = "Standard_B1s" # Standard_A1_V2
   metadata                       = var.common_tags
   max_tasks_per_node             = 1
-  os_disk_placement              = "CacheDisk"
   inter_node_communication       = "Disabled"
   target_node_communication_mode = "Default"
+  # Ephemeral OS disk is not supported for VM size Standard_A1_v2.
+  # os_disk_placement              = "CacheDisk"
   storage_image_reference {
     publisher = "microsoft-azure-batch"
     offer     = "ubuntu-server-container"
@@ -620,14 +643,15 @@ EOF
   }
   data_disks {
     lun                  = 0
-    disk_size_gb         = 10
+    disk_size_gb         = 4
     storage_account_type = "Standard_LRS"
+    caching              = "None"
   }
   mount {
     azure_blob_file_system {
       account_name        = azurerm_storage_account.use2_main_sa.name
       container_name      = azurerm_storage_container.use2_main_batch_container.name
-      relative_mount_path = "ba tch"
+      relative_mount_path = "batch"
       identity_id         = azurerm_user_assigned_identity.use2_main_batch_identity.id
       blobfuse_options    = "--log-level=LOG_INFO"
     }
