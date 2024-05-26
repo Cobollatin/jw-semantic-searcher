@@ -141,7 +141,7 @@ EOF
   }
   timer_trigger {
     name     = "PurgeTimer"
-    schedule = "0 0 * * *"
+    schedule = "0 */6 * * *" # Every 6 hours
     enabled  = true
   }
   identity {
@@ -590,13 +590,16 @@ resource "azurerm_subnet_network_security_group_association" "use2_bp_subnet_nsg
 }
 
 resource "azurerm_batch_pool" "use2_main_batch_pool" {
-  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool-v2"
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
-  account_name        = azurerm_batch_account.use2_main_batch.name
-  node_agent_sku_id   = "batch.node.ubuntu 20.04"
-  vm_size             = "Standard_A1_V2"
-  metadata            = var.common_tags
-  max_tasks_per_node  = 1
+  name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-pool-v2"
+  resource_group_name            = azurerm_resource_group.use2_main_rg.name
+  account_name                   = azurerm_batch_account.use2_main_batch.name
+  node_agent_sku_id              = "batch.node.ubuntu 20.04"
+  vm_size                        = "Standard_A1_V2"
+  metadata                       = var.common_tags
+  max_tasks_per_node             = 1
+  os_disk_placement              = "CacheDisk"
+  inter_node_communication       = "Disabled"
+  target_node_communication_mode = "Default"
   storage_image_reference {
     publisher = "microsoft-azure-batch"
     offer     = "ubuntu-server-container"
@@ -624,8 +627,8 @@ EOF
     azure_blob_file_system {
       account_name        = azurerm_storage_account.use2_main_sa.name
       container_name      = azurerm_storage_container.use2_main_batch_container.name
-      relative_mount_path = "batch"
-      account_key         = azurerm_storage_account.use2_main_sa.primary_access_key
+      relative_mount_path = "ba tch"
+      identity_id         = azurerm_user_assigned_identity.use2_main_batch_identity.id
       blobfuse_options    = "--log-level=LOG_INFO"
     }
   }
@@ -644,12 +647,33 @@ EOF
     }
     container_image_names = [for name in var.batch_docker_images : "${azurerm_container_registry.use2_main_acr.login_server}/${name}:latest"]
   }
+  start_task {
+    command_line                  = "echo 'Start Task'"
+    task_retry_maximum            = 1
+    wait_for_success              = true
+    common_environment_properties = var.common_tags
+    user_identity {
+      auto_user {
+        elevation_level = "NonAdmin"
+        scope           = "Task"
+      }
+    }
+  }
   identity {
     type = "UserAssigned"
     identity_ids = [
       azurerm_user_assigned_identity.use2_main_batch_identity.id
     ]
   }
+}
+
+resource "azurerm_batch_application" "use2_main_batch_app" {
+  name                = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-app"
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  account_name        = azurerm_batch_account.use2_main_batch.name
+  allow_updates       = true
+  default_version     = "latest"
+  display_name        = "Batch Application"
 }
 
 resource "azurerm_role_assignment" "use2_main_batch_sa_role" {
@@ -660,8 +684,12 @@ resource "azurerm_role_assignment" "use2_main_batch_sa_role" {
 }
 
 resource "azurerm_batch_job" "use2_main_batch_job" {
-  name          = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-job"
-  batch_pool_id = azurerm_batch_pool.use2_main_batch_pool.id
+  name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-job"
+  batch_pool_id                 = azurerm_batch_pool.use2_main_batch_pool.id
+  display_name                  = "Batch Job"
+  priority                      = 0
+  task_retry_maximum            = 0
+  common_environment_properties = var.common_tags
 }
 
 data "github_actions_public_key" "use2_main_batch_github_key" {
