@@ -18,7 +18,6 @@ on:
 permissions:
     contents: read
     id-token: write
-    packages: read
 env:
     IMAGE_NAME: "indexer"
     IMAGE_TAG: ${{ github.sha }}

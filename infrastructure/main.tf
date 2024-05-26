@@ -147,21 +147,21 @@ EOF
   platform {
     os = "Linux"
   }
-  dynamic "source_trigger" {
-    for_each = toset(var.acr_repositories)
-    content {
-      name           = "GithubTrigger"
-      source_type    = "Github"
-      repository_url = data.github_repository.use2_acr_github_repos[source_trigger.key].html_url
-      events         = ["commit"]
-      branch         = "main"
-      authentication {
-        token      = var.github_token
-        token_type = "PAT"
-      }
-    }
-
-  }
+  # Not working, the azure provider says 409, the datails says "Forbidden", token has all the permissions
+  # dynamic "source_trigger" {
+  #   for_each = toset(var.acr_repositories)
+  #   content {
+  #     name           = "GithubTrigger"
+  #     source_type    = "Github"
+  #     repository_url = data.github_repository.use2_acr_github_repos[source_trigger.key].html_url
+  #     events         = ["commit"]
+  #     branch         = "main"
+  #     authentication {
+  #       token      = var.github_token
+  #       token_type = "PAT"
+  #     }
+  #   }
+  # }
   timer_trigger {
     name     = "PurgeTimer"
     schedule = "0 */6 * * *" # Every 6 hours
