@@ -153,7 +153,7 @@ EOF
       name           = "GithubTrigger"
       source_type    = "Github"
       repository_url = data.github_repository.use2_acr_github_repos[source_trigger.key].html_url
-      events         = ["push"]
+      events         = ["commit"]
       branch         = "main"
       authentication {
         token      = var.github_token
