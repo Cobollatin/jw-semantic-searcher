@@ -53,3 +53,9 @@ variable "batch_docker_images" {
   description = "The list of Docker images for the batch job" # Specifies a list of Docker images that are used for the batch job.
   type        = list(string)                                  # Indicates that this variable is a list of strings.
 }
+
+variable "github_token" {
+  description = "The GitHub token for the GitHub Actions" # Specifies the GitHub token used for GitHub Actions.
+  type        = string                                    # The value of this variable is a string.
+  sensitive   = true                                      # Indicates that the value of this variable should be treated as sensitive and not displayed in logs or outputs.
+}

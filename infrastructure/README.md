@@ -79,6 +79,7 @@ No modules.
 | [github_actions_public_key.use2_main_acr_github_key](https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/actions_public_key) | data source |
 | [github_actions_public_key.use2_main_batch_github_key](https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/actions_public_key) | data source |
 | [github_actions_public_key.use2_main_swa_github_key](https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/actions_public_key) | data source |
+| [github_repository.use2_acr_github_repos](https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/repository) | data source |
 
 ## Inputs
 
@@ -90,6 +91,7 @@ No modules.
 | <a name="input_batch_repositories"></a> [batch\_repositories](#input\_batch\_repositories) | The list of repositories with Docker images | `list(string)` | n/a | yes |
 | <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Common tags for all resources | `map(string)` | n/a | yes |
 | <a name="input_environment_name"></a> [environment\_name](#input\_environment\_name) | The name of the environment (e.g., development, staging, production) | `string` | n/a | yes |
+| <a name="input_github_token"></a> [github\_token](#input\_github\_token) | The GitHub token for the GitHub Actions | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | The Azure region where resources will be created | `string` | n/a | yes |
 | <a name="input_location_short"></a> [location\_short](#input\_location\_short) | The short name of the Azure region where resources will be created | `string` | n/a | yes |
 | <a name="input_swa_repository"></a> [swa\_repository](#input\_swa\_repository) | The GitHub repository for the Static Web App | `string` | n/a | yes |
