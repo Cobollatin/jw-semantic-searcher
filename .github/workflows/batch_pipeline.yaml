@@ -51,9 +51,6 @@ jobs:
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
             - name: Creates Batch Task Configuration
-              env:
-                  #   COMMAND_LINE: docker run ${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest && docker logs $(docker ps -lq)
-                  COMMAND_LINE: ls -al /indexer/
               run: |
                   echo "{
                             \"id\": \"${{ github.sha }}\",
@@ -61,15 +58,15 @@ jobs:
                             \"commandLine\": \"\",
                             \"containerSettings\": {
                                 \"imageName\": \"${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest\",
-                                \"containerRunOptions\": \"--log-driver local --log-opt max-size=10m --pull always\"
+                                \"containerRunOptions\": \"--pull always\"
                             },
                             \"OutputFiles\": [
                                 {
-                                    \"filePattern\": \"/indexer/**/*.txt\",
+                                    \"filePattern\": \"../**/*.txt\",
                                     \"destination\": {
                                         \"container\": {
                                             \"containerUrl\": \"${{ secrets.AZURE_STORAGE_CONTAINER_URL }}\",
-                                            \"path\": \"logs\",
+                                            \"path\": \"logs\${{ github.sha }}\",
                                             \"identityReference\": {
                                                 \"resourceId\": \"${{ secrets.BATCH_POOL_IDENTITY_ID }}\",
                                             }
