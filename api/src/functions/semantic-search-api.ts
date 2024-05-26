@@ -21,7 +21,6 @@ export async function getSourceSemanticSearch(
             };
         }
         context.log(`Performing source semantic search of: ${query}`);
-        await setTimeout(5000);
         const fake_sources: Array<Source> = [
             {
                 title: "The first source",

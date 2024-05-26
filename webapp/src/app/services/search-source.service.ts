@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, catchError, throwError } from "rxjs";
 import { ComponentError, Source } from "../models";
@@ -17,10 +17,15 @@ export class SearchSourceService {
             )
             .pipe(
                 catchError((error: unknown) => {
-                    console.error("Handle");
+                    let errCode: number = 500;
+
+                    if (error instanceof HttpErrorResponse) {
+                        errCode = error.status;
+                    }
+
                     return throwError((): ComponentError => {
                         return {
-                            code: 500,
+                            code: errCode,
                             message:
                                 "An error occurred while searching for sources.",
                         };

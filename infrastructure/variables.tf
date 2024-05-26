@@ -29,3 +29,27 @@ variable "common_tags" {
   description = "Common tags for all resources" # Tags are key-value pairs associated with resources. Common tags might include metadata like project name, environment, or cost center.
   type        = map(string)                     # Specifies that this variable is a map of strings, allowing for key-value pairs where both keys and values are strings.
 }
+
+# Variable for a swa repository
+variable "swa_repository" {
+  description = "The GitHub repository for the Static Web App" # Specifies the GitHub repository where the Static Web App is hosted.
+  type        = string                                         # The value of this variable is a string.
+}
+
+# Variable for the repositories with docker images
+variable "acr_repositories" {
+  description = "The list of repositories with Docker images" # Specifies a list of repositories that contain Docker images.
+  type        = list(string)                                  # Indicates that this variable is a list of strings.
+}
+
+# Variable for the repositories with batch jobs
+variable "batch_repositories" {
+  description = "The list of repositories with Docker images" # Specifies a list of repositories that contain a batch job.
+  type        = list(string)                                  # Indicates that this variable is a list of strings.
+}
+
+# Variable for the batch docker images
+variable "batch_docker_images" {
+  description = "The list of Docker images for the batch job" # Specifies a list of Docker images that are used for the batch job.
+  type        = list(string)                                  # Indicates that this variable is a list of strings.
+}

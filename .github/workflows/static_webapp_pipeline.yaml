@@ -7,6 +7,7 @@ on:
         paths:
             - "webapp/**"
             - "api/**"
+            - ".github/workflows/static_webapp_pipeline.yaml"
     pull_request:
         types: [opened, synchronize, reopened, closed]
         branches:
@@ -14,9 +15,60 @@ on:
         paths:
             - "webapp/**"
             - "api/**"
+            - ".github/workflows/static_webapp_pipeline.yaml"
+env:
+    APP_LOCATION: "webapp"
+    API_LOCATION: "api"
+    OUTPUT_LOCATION: "dist/semantic-searcher"
+permissions:
+    issues: write
+    contents: read
+    pull-requests: write
 jobs:
-    do_nothing:
+    webapp_ci:
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
         runs-on: ubuntu-latest
+        name: Test Webapp
+        defaults:
+            run:
+                working-directory: ${{ env.APP_LOCATION }}
         steps:
-            - name: Do Nothing
-              run: echo "This is a do nothing job"
+            - uses: actions/checkout@v4.1.4
+            - uses: actions/setup-node@v4.0.2
+              with:
+                  node-version: "18"
+            - name: Test
+              run: npm install && npm test
+    api_ci:
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
+        runs-on: ubuntu-latest
+        name: Test API
+        defaults:
+            run:
+                working-directory: ${{ env.API_LOCATION }}
+        steps:
+            - uses: actions/checkout@v4.1.4
+            - uses: actions/setup-node@v4.0.2
+              with:
+                  node-version: "18"
+            - name: Test
+              run: npm install && npm test
+    build_and_deploy:
+        if: github.event_name == 'push'
+        runs-on: ubuntu-latest
+        name: Build and Deploy
+        steps:
+            - uses: actions/checkout@v4.1.4
+            - name: Build And Deploy
+              uses: Azure/static-web-apps-deploy@v1
+              env:
+                  NODE_VERSION: "18.14.0"
+              with:
+                  azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+                  repo_token: ${{ secrets.GITHUB_TOKEN }}
+                  action: "upload"
+                  app_location: ${{ env.APP_LOCATION }}
+                  api_location: ${{ env.API_LOCATION }}
+                  app_build_command: "npm run build"
+                  api_build_command: "npm run build"
+                  output_location: ${{ env.OUTPUT_LOCATION }}

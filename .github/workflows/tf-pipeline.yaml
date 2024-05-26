@@ -4,11 +4,13 @@ on:
     pull_request:
         paths:
             - "infrastructure/**"
+            - ".github/workflows/tf-pipeline.yaml"
     push:
         branches:
             - main
         paths:
             - "infrastructure/**"
+            - ".github/workflows/tf-pipeline.yaml"
 permissions:
     id-token: write
     contents: read
@@ -28,12 +30,14 @@ jobs:
             TF_VAR_azure_backend_rg: ${{ secrets.AZURE_TF_RESOURCE_GROUP }}
             TF_VAR_azure_backend_sa: ${{ secrets.AZURE_TF_STORAGE_ACCOUNT_NAME }}
             TF_VAR_azure_backend_container: ${{ secrets.AZURE_TF_CONTAINER_NAME }}
+            GITHUB_TOKEN: ${{ secrets.TF_GITHUB_TOKEN }}
+            GITHUB_OWNER: ${{ github.repository_owner }}
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v4.1.4
             - name: Azure Authentication
               id: login
-              uses: azure/login@v1
+              uses: azure/login@v2.1.0
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
             - name: JSON Parse
@@ -58,13 +62,13 @@ jobs:
                   git config --global url."https://github.com/".insteadOf "git://github.com/"
                   git config --global advice.detachedHead false
             - name: Install Terraform
-              uses: hashicorp/setup-terraform@v2.0.3
+              uses: hashicorp/setup-terraform@v3.1.0
               with:
                   terraform_wrapper: false
             - name: Terraform Init
               id: init
               run: |
-                  terraform init -backend-config="resource_group_name=${TF_VAR_azure_backend_rg}" -backend-config="storage_account_name=${TF_VAR_azure_backend_sa}" -backend-config="container_name=${TF_VAR_azure_backend_container}"
+                  terraform init -backend-config="resource_group_name=${TF_VAR_azure_backend_rg}" -backend-config="storage_account_name=${TF_VAR_azure_backend_sa}" -backend-config="container_name=${TF_VAR_azure_backend_container}" -upgrade
             - name: Install Checkov
               id: checkov
               if: github.event_name == 'pull_request'
@@ -101,7 +105,7 @@ jobs:
                   # checkov -f tfplan.json --framework terraform_plan
             - name: Pull Request Comment
               id: comment
-              uses: actions/github-script@v3
+              uses: actions/github-script@v7.0.1
               if: github.event_name == 'pull_request'
               env:
                   TPLAN: "terraform\n${{ steps.tplan.outputs.plan }}"
@@ -126,9 +130,8 @@ jobs:
                       <summary>Plan File</summary>
 
                       \`\`\`${process.env.TPLAN}\`\`\`
-                      </details>
                       `
-                      github.issues.createComment({
+                      github.rest.issues.createComment({
                         issue_number: context.issue.number,
                         owner: context.repo.owner,
                         repo: context.repo.repo,
