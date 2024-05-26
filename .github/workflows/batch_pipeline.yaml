@@ -24,9 +24,9 @@ env:
 jobs:
     pre_job:
         runs-on: ubuntu-latest
-        if: github.event_name == 'workflow_dispatch' && github.event.ref != 'refs/heads/main'
         steps:
             - name: Invalid branch
+              if: github.event_name == 'workflow_dispatch' && github.event.ref != 'refs/heads/main'
               run: |
                   echo "Invalid branch"
                   exit 1
