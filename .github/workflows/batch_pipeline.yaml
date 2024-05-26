@@ -58,10 +58,10 @@ jobs:
                   echo "{
                             \"id\": \"${{ github.sha }}\",
                             \"displayName\": \"Indexer Task for commit ${{ github.sha }}\",
-                            \"commandLine\": \"${{env.COMMAND_LINE}}\",
+                            \"commandLine\": \"\",
                             \"containerSettings\": {
                                 \"imageName\": \"${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest\",
-                                \"containerRunOptions\": \"--log-driver local --log-opt max-size=10m\"
+                                \"containerRunOptions\": \"--log-driver local --log-opt max-size=10m --pull always\"
                             },
                             \"OutputFiles\": [
                                 {
