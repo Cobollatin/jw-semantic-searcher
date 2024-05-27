@@ -201,6 +201,15 @@ resource "azurerm_log_analytics_workspace" "use2_main_law" {
   }
 }
 
+resource "azurerm_log_analytics_workspace_table" "use2_main_law_table" {
+  name         = "ContainerLog"
+  workspace_id = azurerm_log_analytics_workspace.use2_main_law.id
+
+  plan              = "Basic" # or "Analytics"
+  # cannot set retention_in_days because the retention is fixed at eight days on Basic plan
+  # retention_in_days = 7       # per docs, setting to null defaults to workspace default
+}
+
 ############################################################################################################################
 # SWA
 
@@ -683,12 +692,36 @@ EOF
       }
     }
   }
+  extensions {
+    name                       = "AzureMonitorLinuxAgent"
+    publisher                  = "Microsoft.Azure.Monitor"
+    type                       = "AzureMonitorLinuxAgent"
+    type_handler_version       = "1.0"
+    auto_upgrade_minor_version = true
+    automatic_upgrade_enabled  = true
+  }
   identity {
     type = "UserAssigned"
     identity_ids = [
       azurerm_user_assigned_identity.use2_main_batch_identity.id
     ]
   }
+}
+
+resource "azurerm_monitor_data_collection_endpoint" "use2_main_batch_monitor" {
+  name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-monitor"
+  resource_group_name           = azurerm_resource_group.use2_main_rg.name
+  location                      = azurerm_resource_group.use2_main_rg.location
+  kind                          = "Linux"
+  public_network_access_enabled = true
+  tags                          = var.common_tags
+}
+
+resource "azurerm_monitor_data_collection_rule_association" "use2_main_batch_monitor_association" {
+  name                    = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-monitor-association"
+  target_resource_id      = azurerm_user_assigned_identity.use2_main_batch_identity.id
+  data_collection_rule_id = azurerm_monitor_data_collection_endpoint.use2_main_batch_monitor.id
+  description             = "Monitor the Batch Pool"
 }
 
 resource "azurerm_role_assignment" "use2_main_batch_sa_role" {

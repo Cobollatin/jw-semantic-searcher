@@ -37,6 +37,9 @@ No modules.
 | [azurerm_log_analytics_linked_storage_account.use2_main_sa_law_lsa](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/log_analytics_linked_storage_account) | resource |
 | [azurerm_log_analytics_storage_insights.use2_sa_main_law_si](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/log_analytics_storage_insights) | resource |
 | [azurerm_log_analytics_workspace.use2_main_law](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/log_analytics_workspace) | resource |
+| [azurerm_log_analytics_workspace_table.use2_main_law_table](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/log_analytics_workspace_table) | resource |
+| [azurerm_monitor_data_collection_endpoint.use2_main_batch_monitor](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/monitor_data_collection_endpoint) | resource |
+| [azurerm_monitor_data_collection_rule_association.use2_main_batch_monitor_association](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/monitor_data_collection_rule_association) | resource |
 | [azurerm_network_security_group.use2_bp_nsg](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/network_security_group) | resource |
 | [azurerm_network_security_group.use2_kv_nsg](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/network_security_group) | resource |
 | [azurerm_network_security_group.use2_sa_nsg](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/network_security_group) | resource |
