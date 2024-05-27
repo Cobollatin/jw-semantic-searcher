@@ -725,10 +725,10 @@ resource "azurerm_monitor_data_collection_endpoint" "use2_main_batch_monitor" {
 }
 
 resource "azurerm_monitor_data_collection_rule_association" "use2_main_batch_monitor_association" {
-  name                    = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-monitor-association"
-  target_resource_id      = azurerm_user_assigned_identity.use2_main_batch_identity.id
-  data_collection_rule_id = azurerm_monitor_data_collection_endpoint.use2_main_batch_monitor.id
-  description             = "Monitor the Batch Pool"
+  name                        = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-monitor-association"
+  target_resource_id          = azurerm_user_assigned_identity.use2_main_batch_identity.id
+  data_collection_endpoint_id = azurerm_monitor_data_collection_endpoint.use2_main_batch_monitor.id
+  description                 = "Monitor the Batch Pool"
 }
 
 resource "azurerm_role_assignment" "use2_main_batch_sa_role" {
