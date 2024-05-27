@@ -500,7 +500,8 @@ resource "azurerm_monitor_data_collection_endpoint" "use2_main_sa_monitor" {
 }
 
 resource "azurerm_monitor_data_collection_rule_association" "use2_main_sa_monitor_association" {
-  name                        = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-monitor-association"
+  # InvalidEndpointAssociationName: An association of data collection endpoint must be named 'configurationAccessEndpoint'.
+  name                        = "configurationAccessEndpoint"
   target_resource_id          = azurerm_storage_account.use2_main_sa.id
   data_collection_endpoint_id = azurerm_monitor_data_collection_endpoint.use2_main_sa_monitor.id
   description                 = "Monitor the storage account"
