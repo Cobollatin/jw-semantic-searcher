@@ -206,7 +206,8 @@ resource "azurerm_log_analytics_workspace_table" "use2_main_law_table" {
   workspace_id = azurerm_log_analytics_workspace.use2_main_law.id
 
   plan              = "Basic" # or "Analytics"
-  retention_in_days = 7       # per docs, setting to null defaults to workspace default
+  # cannot set retention_in_days because the retention is fixed at eight days on Basic plan
+  # retention_in_days = 7       # per docs, setting to null defaults to workspace default
 }
 
 ############################################################################################################################
