@@ -201,6 +201,15 @@ resource "azurerm_log_analytics_workspace" "use2_main_law" {
   }
 }
 
+resource "azurerm_log_analytics_workspace_table" "use2_main_law_storage_logs_table" {
+  name         = "StorageBlobLogs"
+  workspace_id = azurerm_log_analytics_workspace.use2_main_law.id
+  plan         = "Basic" # or "Analytics"
+  # cannot set retention_in_days because the retention is fixed at eight days on Basic plan
+  # retention_in_days = 7       # per docs, setting to null defaults to workspace default
+}
+
+
 resource "azurerm_log_analytics_workspace_table" "use2_main_law_container_logs_table" {
   name         = "ContainerLogV2"
   workspace_id = azurerm_log_analytics_workspace.use2_main_law.id
@@ -210,7 +219,7 @@ resource "azurerm_log_analytics_workspace_table" "use2_main_law_container_logs_t
 }
 
 resource "azurerm_log_analytics_workspace_table" "use2_main_law_app_console_logs_table" {
-  name         = "	ContainerAppConsoleLogs"
+  name         = "ContainerAppConsoleLogs"
   workspace_id = azurerm_log_analytics_workspace.use2_main_law.id
   plan         = "Basic" # or "Analytics"
   # cannot set retention_in_days because the retention is fixed at eight days on Basic plan
@@ -481,6 +490,22 @@ resource "azurerm_log_analytics_linked_storage_account" "use2_main_sa_law_lsa" {
   storage_account_ids   = [azurerm_storage_account.use2_main_sa.id]
 }
 
+resource "azurerm_monitor_data_collection_endpoint" "use2_main_sa_monitor" {
+  name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-monitor"
+  resource_group_name           = azurerm_resource_group.use2_main_rg.name
+  location                      = azurerm_resource_group.use2_main_rg.location
+  kind                          = "Linux"
+  public_network_access_enabled = true
+  tags                          = var.common_tags
+}
+
+resource "azurerm_monitor_data_collection_rule_association" "use2_main_sa_monitor_association" {
+  name                        = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-monitor-association"
+  target_resource_id          = azurerm_storage_account.use2_main_sa.id
+  data_collection_endpoint_id = azurerm_monitor_data_collection_endpoint.use2_main_sa_monitor.id
+  description                 = "Monitor the storage account"
+}
+
 resource "azurerm_storage_container" "use2_main_batch_container" {
   #checkov:skip=CKV_AZURE_34:We want to allow public access to the container, we will serve static content from it
   name                  = "batch"
@@ -713,22 +738,6 @@ EOF
       azurerm_user_assigned_identity.use2_main_batch_identity.id
     ]
   }
-}
-
-resource "azurerm_monitor_data_collection_endpoint" "use2_main_batch_monitor" {
-  name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-monitor"
-  resource_group_name           = azurerm_resource_group.use2_main_rg.name
-  location                      = azurerm_resource_group.use2_main_rg.location
-  kind                          = "Linux"
-  public_network_access_enabled = true
-  tags                          = var.common_tags
-}
-
-resource "azurerm_monitor_data_collection_rule_association" "use2_main_batch_monitor_association" {
-  name                        = "${var.app_name}-${var.location_short}-${var.environment_name}-batch-monitor-association"
-  target_resource_id          = azurerm_user_assigned_identity.use2_main_batch_identity.id
-  data_collection_endpoint_id = azurerm_monitor_data_collection_endpoint.use2_main_batch_monitor.id
-  description                 = "Monitor the Batch Pool"
 }
 
 resource "azurerm_role_assignment" "use2_main_batch_sa_role" {
