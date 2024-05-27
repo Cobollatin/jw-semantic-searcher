@@ -513,13 +513,6 @@ resource "azurerm_storage_container" "use2_main_batch_container" {
   container_access_type = "blob"
 }
 
-resource "azurerm_monitor_data_collection_rule_association" "use2_main_sa_container_monitor_association" {
-  name                        = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-container-monitor-association"
-  target_resource_id          = azurerm_storage_container.use2_main_batch_container.id
-  data_collection_endpoint_id = azurerm_monitor_data_collection_endpoint.use2_main_sa_monitor.id
-  description                 = "Monitor the storage container"
-}
-
 resource "azurerm_key_vault_access_policy" "use2_main_sa_kv_access_policy" {
   key_vault_id       = azurerm_key_vault.use2_main_kv.id
   tenant_id          = data.azurerm_client_config.current.tenant_id
