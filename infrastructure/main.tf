@@ -204,8 +204,7 @@ resource "azurerm_log_analytics_workspace" "use2_main_law" {
 resource "azurerm_log_analytics_workspace_table" "use2_main_law_container_logs_table" {
   name         = "ContainerLogV2"
   workspace_id = azurerm_log_analytics_workspace.use2_main_law.id
-
-  plan = "Basic" # or "Analytics"
+  plan         = "Basic" # or "Analytics"
   # cannot set retention_in_days because the retention is fixed at eight days on Basic plan
   # retention_in_days = 7       # per docs, setting to null defaults to workspace default
 }
@@ -213,8 +212,7 @@ resource "azurerm_log_analytics_workspace_table" "use2_main_law_container_logs_t
 resource "azurerm_log_analytics_workspace_table" "use2_main_law_app_console_logs_table" {
   name         = "	ContainerAppConsoleLogs"
   workspace_id = azurerm_log_analytics_workspace.use2_main_law.id
-
-  plan = "Basic" # or "Analytics"
+  plan         = "Basic" # or "Analytics"
   # cannot set retention_in_days because the retention is fixed at eight days on Basic plan
   # retention_in_days = 7       # per docs, setting to null defaults to workspace default
 }
