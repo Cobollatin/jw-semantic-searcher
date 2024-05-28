@@ -366,6 +366,35 @@ resource "azurerm_user_assigned_identity" "use2_main_sb_identity" {
 }
 
 ############################################################################################################################
+# Search Service
+
+resource "azurerm_search_service" "use2_main_ss" {
+  name                                     = "${var.app_name}-${var.location_short}-${var.environment_name}-ss"
+  resource_group_name                      = azurerm_resource_group.use2_main_rg.name
+  location                                 = azurerm_resource_group.use2_main_rg.location
+  hosting_mode                             = "default"
+  authentication_failure_mode              = "http403"
+  customer_managed_key_enforcement_enabled = false
+  public_network_access_enabled            = true
+  local_authentication_enabled             = true
+  sku                                      = "free"
+  semantic_search_sku                      = "free"
+  tags                                     = var.common_tags
+  identity {
+    # The only possible value is SystemAssigned.
+    type = "SystemAssigned"
+  }
+}
+
+resource "github_actions_secret" "use2_main_ss_api_key" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
+  for_each        = toset(concat(var.batch_repositories, [var.swa_repository]))
+  repository      = each.value
+  secret_name     = "AZURE_SEARCH_SERVICE_API_KEY"
+  plaintext_value = azurerm_search_service.use2_main_ss.primary_key
+}
+
+############################################################################################################################
 # Storage Account
 
 resource "azurerm_subnet" "use2_sa_subnet" {
