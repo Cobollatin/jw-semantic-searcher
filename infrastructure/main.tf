@@ -394,6 +394,14 @@ resource "github_actions_secret" "use2_main_ss_api_key" {
   plaintext_value = azurerm_search_service.use2_main_ss.primary_key
 }
 
+resource "github_actions_secret" "use2_main_ss_name" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
+  for_each        = toset(concat(var.batch_repositories, [var.swa_repository]))
+  repository      = each.value
+  secret_name     = "AZURE_SEARCH_SERVICE_NAME"
+  plaintext_value = azurerm_search_service.use2_main_ss.name
+}
+
 ############################################################################################################################
 # Storage Account
 
