@@ -1,11 +1,6 @@
-﻿using Azure.Search.Documents;
-using Azure.Search.Documents.Indexes;
-using Azure.Search.Documents.Indexes.Models;
-using Azure.Search.Documents.Models;
+﻿using Azure.Search.Documents.Indexes.Models;
 using Indexer.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Indexer.Services;
 
 string serviceName = Environment.GetEnvironmentVariable("AZURE_SEARCH_SERVICE_NAME");
 string indexName = Environment.GetEnvironmentVariable("AZURE_SEARCH_INDEX_NAME");
