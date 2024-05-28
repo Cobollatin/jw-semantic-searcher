@@ -381,8 +381,9 @@ resource "azurerm_search_service" "use2_main_ss" {
   public_network_access_enabled            = true
   local_authentication_enabled             = true
   sku                                      = "free"
-  semantic_search_sku                      = "free"
   tags                                     = var.common_tags
+  # Error: `semantic_search_sku` can only be specified when `sku` is not set to "free"
+  # semantic_search_sku                      = "free"
   identity {
     # The only possible value is SystemAssigned.
     type = "SystemAssigned"
