@@ -8,6 +8,6 @@ RUN dotnet publish -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/runtime:8.0
 USER root
-WORKDIR /indexer
-COPY --from=build-env /app/out /indexer
+WORKDIR /
+COPY --from=build-env /app/out /
 ENTRYPOINT ["dotnet", "indexer.dll"]
