@@ -52,6 +52,7 @@ No modules.
 | [azurerm_role_assignment.use2_main_batch_acr_role](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.use2_main_batch_sa_role](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.use2_main_kv_role](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/role_assignment) | resource |
+| [azurerm_search_service.use2_main_ss](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/search_service) | resource |
 | [azurerm_static_web_app.use2_main_swa](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/static_web_app) | resource |
 | [azurerm_storage_account.use2_main_sa](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/storage_account) | resource |
 | [azurerm_storage_account_customer_managed_key.use2_main_sa_cmek](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/storage_account_customer_managed_key) | resource |
@@ -78,6 +79,8 @@ No modules.
 | [github_actions_secret.use2_main_batch_job_id](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_batch_pool_identity_id](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_sa_account_container_url](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.use2_main_ss_api_key](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.use2_main_ss_name](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_swa_api_key](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [azuread_service_principal.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/data-sources/client_config) | data source |
