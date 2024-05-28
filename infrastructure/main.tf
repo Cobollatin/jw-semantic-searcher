@@ -838,21 +838,3 @@ resource "github_actions_secret" "use2_main_batch_pool_identity_id" {
   secret_name     = "BATCH_POOL_IDENTITY_ID"
   plaintext_value = azurerm_user_assigned_identity.use2_main_batch_identity.id
 }
-
-################################################################################
-# Azure Search Index
-
-resource "azurerm_resource_group" "example" {
-  name     = "example-resources"
-  location = "West Europe"
-}
-
-resource "azurerm_search_service" "example" {
-  name                = "example-search-service"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
-  sku                 = "basic"
-
-  replica_count = 1
-  partition_count = 1
-}
