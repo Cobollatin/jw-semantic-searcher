@@ -384,10 +384,11 @@ resource "azurerm_search_service" "use2_main_ss" {
   tags                                     = var.common_tags
   # Error: `semantic_search_sku` can only be specified when `sku` is not set to "free"
   # semantic_search_sku                      = "free"
-  identity {
-    # The only possible value is SystemAssigned.
-    type = "SystemAssigned"
-  }
+  # Resource identity is not supported for the selected SKU
+  # identity {
+  #   # The only possible value is SystemAssigned.
+  #   type = "SystemAssigned"
+  # }
 }
 
 resource "github_actions_secret" "use2_main_ss_api_key" {
