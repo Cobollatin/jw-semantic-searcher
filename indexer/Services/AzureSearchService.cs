@@ -2,7 +2,10 @@ using Azure;
 using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Indexes.Models;
+using Azure.Search.Documents.Models;
+using Indexer.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Indexer.Services
@@ -29,6 +32,12 @@ namespace Indexer.Services
         public async Task CreateOrUpdateIndexAsync(SearchIndex index)
         {
             await _indexClient.CreateOrUpdateIndexAsync(index);
+        }
+
+        public async Task UploadDocumentsAsync(IEnumerable<Document> documents)
+        {
+            IndexDocumentsBatch<Document> batch = IndexDocumentsBatch.Upload(documents);
+            await _searchClient.IndexDocumentsAsync(batch);
         }
     }
 }
