@@ -372,6 +372,7 @@ resource "azurerm_search_service" "use2_main_ss" {
   #checkov:skip=CKV_AZURE_124:We need to allow public access to the search service
   #checkov:skip=CKV_AZURE_208:No replication in free tier
   #checkov:skip=CKV_AZURE_209:Same as above
+  #checkov:skip=CKV_AZURE_207:Managed identity is not supported for the free tier
   name                                     = "${var.app_name}-${var.location_short}-${var.environment_name}-ss"
   resource_group_name                      = azurerm_resource_group.use2_main_rg.name
   location                                 = azurerm_resource_group.use2_main_rg.location
