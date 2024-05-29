@@ -136,10 +136,7 @@ resource "azurerm_container_registry_task" "use2_main_acr_indexer_purge_task" {
     task_content = <<EOF
 version: v1.1.0
 steps: 
-  - cmd: |
-      PURGE_CMD="acr purge --ago 1d --untagged --keep 5"
-      for i in $(acr repository list -n ${azurerm_container_registry.use2_main_acr.name} -o tsv);do PURGE_CMD+=" --filter '"$i":.'";done
-      echo $PURGE_CMD
+  - cmd: acr purge --registry $RegistryName --filter .*:.* --ago 1d --keep 5 --untagged
     disableWorkingDirectoryOverride: true
     timeout: 3600
 EOF
