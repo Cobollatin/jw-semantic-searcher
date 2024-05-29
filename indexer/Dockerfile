@@ -11,6 +11,7 @@ FROM mcr.microsoft.com/dotnet/runtime:8.0
 USER root
 RUN mkdir /indexer
 WORKDIR /indexer
+COPY "docker-entrypoint.sh" /indexer
 COPY --from=build-env /app/out /indexer
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["dotnet", "indexer.dll"]
