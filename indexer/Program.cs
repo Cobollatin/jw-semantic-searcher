@@ -6,7 +6,7 @@ string serviceNamePath = Environment.GetEnvironmentVariable("AZURE_SEARCH_SERVIC
 string indexNamePath = Environment.GetEnvironmentVariable("AZURE_SEARCH_INDEX_NAME") ?? throw new ArgumentNullException("AZURE_SEARCH_INDEX_NAME");
 string apiKeyPath = Environment.GetEnvironmentVariable("AZURE_SEARCH_API_KEY") ?? throw new ArgumentNullException("AZURE_SEARCH_API_KEY");
 
-var serviceName = File.ReadAllText(apiKeyPath);
+var serviceName = File.ReadAllText(serviceNamePath);
 var indexName = File.ReadAllText(indexNamePath);
 var apiKey = File.ReadAllText(apiKeyPath);
 
