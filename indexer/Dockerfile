@@ -12,4 +12,5 @@ USER root
 RUN mkdir /indexer
 WORKDIR /indexer
 COPY --from=build-env /app/out /indexer
-ENTRYPOINT ["dotnet", "indexer.dll"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["dotnet", "indexer.dll"]
