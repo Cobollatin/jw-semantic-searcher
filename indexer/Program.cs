@@ -12,7 +12,7 @@ var index = new SearchIndex(indexName)
 {
     Fields =
     {
-        new SimpleField("id", SearchFieldDataType.String) { IsKey = true, IsFilterable = true },
+        new SearchableField("title") { IsFilterable = true, IsSortable = true},
         new SearchableField("preview") { IsFilterable = true, IsSortable = true },
         new SearchableField("url") { IsFilterable = true, IsSortable = true }
     }
@@ -22,9 +22,9 @@ await searchService.CreateOrUpdateIndexAsync(index);
 
 var documents = new List<Document>
 {
-    new Document { Id = "1", Preview = "This is a preview of document 1", Url = "http://example.com/1" },
-    new Document { Id = "2", Preview = "This is a preview of document 2", Url = "http://example.com/2" },
-    new Document { Id = "3", Preview = "This is a preview of document 3", Url = "http://example.com/3" }
+    new Document { Title = "", Preview = "This is a preview of document 1", Url = "http://example.com/1" },
+    new Document { Title = "2", Preview = "This is a preview of document 2", Url = "http://example.com/2" },
+    new Document { Title = "3", Preview = "This is a preview of document 3", Url = "http://example.com/3" }
 };
 
 await searchService.UploadDocumentsAsync(documents);
