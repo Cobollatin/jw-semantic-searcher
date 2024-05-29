@@ -2,8 +2,9 @@ namespace Indexer.Models
 {
     public class Document
     {
-        public string Title { get; set; }
-        public string Preview { get; set; }
-        public string Url { get; set; }
+        public required Guid Id { private get; set; }
+        public required string Title { private get; set; }
+        public required string Content { private get; set; }
+        public required string Url { private get; set; }
     }
 }
