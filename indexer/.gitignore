@@ -56,7 +56,6 @@ terraform.tfstate.backup
 .terraform.lock.hcl
 
 # Docker files
-*.dockerignore
 **/Dockerfile
 **/Dockerfile.*
 
