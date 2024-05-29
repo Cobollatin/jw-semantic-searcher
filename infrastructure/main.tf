@@ -138,7 +138,7 @@ version: v1.1.0
 steps: 
   - cmd: |
       PURGE_CMD="acr purge --ago 1d --untagged --keep 5"
-      for i in $(az acr repository list -n ${azurerm_container_registry.use2_main_acr.name} -o tsv);do PURGE_CMD+=" --filter '"$i":.'";done
+      for i in $(acr repository list -n ${azurerm_container_registry.use2_main_acr.name} -o tsv);do PURGE_CMD+=" --filter '"$i":.'";done
       echo $PURGE_CMD
     disableWorkingDirectoryOverride: true
     timeout: 3600
