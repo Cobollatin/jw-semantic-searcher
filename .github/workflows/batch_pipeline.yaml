@@ -48,8 +48,19 @@ jobs:
               name: Azure login
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
+            # We check if the image already exists in the ACR, if it does we skip the build
+            - name: Check if image exists
+              id: check-if-image-exists
+              if: (github.event_name == 'workflow_dispatch' && github.event.ref == 'refs/heads/main')
+              run: |
+                  az acr repository show --name ${{ secrets.AZURE_CONTAINER_REGISTRY }} --image ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} > /dev/null
+                  if [ $? -eq 0 ]; then
+                      echo "Image already exists in ACR, skipping build"
+                      echo "::set-output name=skip_build::true"
+                  fi
             - name: Build and push image to ACR
               working-directory: ./indexer
+              if: github.event_name == 'push' || steps.check-if-image-exists.outputs.skip_build != 'true'
               run: az acr build --image ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --image ${{ env.IMAGE_NAME }}:latest --registry ${{ secrets.AZURE_CONTAINER_REGISTRY }} -g ${{ secrets.ACR_RESOURCE_GROUP }} --secret-build-arg AZURE_SEARCH_API_KEY=${{ secrets.AZURE_SEARCH_SERVICE_API_KEY }} --secret-build-arg AZURE_SEARCH_SERVICE_NAME=${{ secrets.AZURE_SEARCH_SERVICE_NAME }} --secret-build-arg AZURE_SEARCH_INDEX_NAME=INDEXER .
     deploy:
         runs-on: ubuntu-latest
@@ -96,6 +107,7 @@ jobs:
                         }" > task.json
             - name: Deploy to Azure Batch
               uses: azure/CLI@v2.0.0
+              if: github.event_name == 'push'
               env:
                   AZURE_BATCH_ENDPOINT: ${{ secrets.BATCH_ACCOUNT_ENDPOINT }}
                   AZURE_BATCH_ACCESS_KEY: ${{ secrets.BATCH_ACCOUNT_KEY }}
