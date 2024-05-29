@@ -50,7 +50,7 @@ jobs:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
             - name: Build and push image to ACR
               working-directory: ./indexer
-              run: az acr build --image ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --image ${{ env.IMAGE_NAME }}:latest --registry ${{ secrets.AZURE_CONTAINER_REGISTRY }} -g ${{ secrets.ACR_RESOURCE_GROUP }} . --secret-build-arg "AZURE_SEARCH_API_KEY=${{ secrets.AZURE_SEARCH_SERVICE_API_KEY }};AZURE_SEARCH_SERVICE_NAME=${{ secrets.AZURE_SEARCH_SERVICE_NAME }};AZURE_SEARCH_INDEX_NAME=INDEXER"
+              run: az acr build --image ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --image ${{ env.IMAGE_NAME }}:latest --registry ${{ secrets.AZURE_CONTAINER_REGISTRY }} -g ${{ secrets.ACR_RESOURCE_GROUP }} --secret-build-arg AZURE_SEARCH_API_KEY=${{ secrets.AZURE_SEARCH_SERVICE_API_KEY }} --secret-build-arg AZURE_SEARCH_SERVICE_NAME=${{ secrets.AZURE_SEARCH_SERVICE_NAME }} --secret-build-arg AZURE_SEARCH_INDEX_NAME=INDEXER .
     deploy:
         runs-on: ubuntu-latest
         needs: buildImage
