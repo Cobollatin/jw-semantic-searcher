@@ -4,9 +4,6 @@ using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Indexes.Models;
 using Azure.Search.Documents.Models;
 using Indexer.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Indexer.Services
 {

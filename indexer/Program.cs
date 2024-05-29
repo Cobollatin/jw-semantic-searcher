@@ -2,9 +2,13 @@
 using Indexer.Models;
 using Indexer.Services;
 
-string serviceName = Environment.GetEnvironmentVariable("AZURE_SEARCH_SERVICE_NAME");
-string indexName = Environment.GetEnvironmentVariable("AZURE_SEARCH_INDEX_NAME");
-string apiKey = Environment.GetEnvironmentVariable("AZURE_SEARCH_API_KEY");
+string serviceNamePath = Environment.GetEnvironmentVariable("AZURE_SEARCH_SERVICE_NAME") ?? throw new ArgumentNullException("AZURE_SEARCH_SERVICE_NAME");
+string indexNamePath = Environment.GetEnvironmentVariable("AZURE_SEARCH_INDEX_NAME") ?? throw new ArgumentNullException("AZURE_SEARCH_INDEX_NAME");
+string apiKeyPath = Environment.GetEnvironmentVariable("AZURE_SEARCH_API_KEY") ?? throw new ArgumentNullException("AZURE_SEARCH_API_KEY");
+
+var serviceName = File.ReadAllText(serviceNamePath);
+var indexName = File.ReadAllText(indexNamePath);
+var apiKey = File.ReadAllText(apiKeyPath);
 
 var searchService = new AzureSearchService(serviceName, indexName, apiKey);
 
@@ -12,9 +16,8 @@ var index = new SearchIndex(indexName)
 {
     Fields =
     {
-        new SimpleField("id", SearchFieldDataType.String) { IsKey = true, IsFilterable = true },
-        new SearchableField("preview") { IsFilterable = true, IsSortable = true },
-        new SearchableField("url") { IsFilterable = true, IsSortable = true }
+        new SearchableField("Title") { IsFilterable = true, IsSortable = true},
+        new SearchableField("Content") { IsFilterable = true, IsSortable = true },
     }
 };
 
@@ -22,9 +25,9 @@ await searchService.CreateOrUpdateIndexAsync(index);
 
 var documents = new List<Document>
 {
-    new Document { Id = "1", Preview = "This is a preview of document 1", Url = "http://example.com/1" },
-    new Document { Id = "2", Preview = "This is a preview of document 2", Url = "http://example.com/2" },
-    new Document { Id = "3", Preview = "This is a preview of document 3", Url = "http://example.com/3" }
+    new Document { Id =  Guid.NewGuid(), Title = "1", Content = "This is a preview of document 1", Url = "http://example.com/1" },
+    new Document { Id =  Guid.NewGuid(), Title = "2", Content = "This is a preview of document 2", Url = "http://example.com/2" },
+    new Document { Id =  Guid.NewGuid(), Title = "3", Content = "This is a preview of document 3", Url = "http://example.com/3" }
 };
 
 await searchService.UploadDocumentsAsync(documents);
