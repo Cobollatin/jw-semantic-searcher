@@ -14,5 +14,5 @@ WORKDIR /indexer
 COPY "docker-entrypoint.sh" /indexer
 RUN chmod +x /indexer/docker-entrypoint.sh
 COPY --from=build-env /app/out /indexer
-ENTRYPOINT ["./docker-entrypoint.sh"]
+ENTRYPOINT ["/indexer/docker-entrypoint.sh"]
 CMD ["dotnet", "indexer.dll"]
