@@ -108,8 +108,6 @@ No modules.
 | <a name="input_batch_repositories"></a> [batch\_repositories](#input\_batch\_repositories) | The list of repositories with Docker images | `list(string)` | n/a | yes |
 | <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Common tags for all resources | `map(string)` | n/a | yes |
 | <a name="input_environment_name"></a> [environment\_name](#input\_environment\_name) | The name of the environment (e.g., development, staging, production) | `string` | n/a | yes |
-| <a name="input_github_runner_allow_out_bound_github_actions_ip_addressess"></a> [github\_runner\_allow\_out\_bound\_github\_actions\_ip\_addressess](#input\_github\_runner\_allow\_out\_bound\_github\_actions\_ip\_addressess) | The list of IP addresses that are allowed to connect to the github actions runners | `list(string)` | n/a | yes |
-| <a name="input_github_runner_allow_out_bound_github_ip_addressess"></a> [github\_runner\_allow\_out\_bound\_github\_ip\_addressess](#input\_github\_runner\_allow\_out\_bound\_github\_ip\_addressess) | The list of IP addresses that are allowed to connect to GitHub | `list(string)` | n/a | yes |
 | <a name="input_github_token"></a> [github\_token](#input\_github\_token) | The GitHub token for the GitHub Actions | `string` | n/a | yes |
 | <a name="input_indexer_name"></a> [indexer\_name](#input\_indexer\_name) | The name of the Azure Search indexer | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | The Azure region where resources will be created | `string` | n/a | yes |
