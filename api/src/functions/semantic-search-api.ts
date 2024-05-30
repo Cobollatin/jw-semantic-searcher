@@ -1,4 +1,3 @@
-// Recommended pattern
 import {
     app,
     HttpFunctionOptions,
@@ -7,12 +6,7 @@ import {
     InvocationContext,
 } from "@azure/functions";
 import { Document } from "../models";
-import {
-    AzureKeyCredential,
-    SearchClient,
-    GeographyPoint,
-    SearchIndexClient,
-} from "@azure/search-documents";
+import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
 
 const endpoint = process.env.AZURE_SEARCH_API_KEY || "";
 const apiKey = process.env.AZURE_SEARCH_SERVICE_NAME || "";
@@ -23,6 +17,14 @@ export async function getSourceSemanticSearch(
     context: InvocationContext
 ): Promise<HttpResponseInit> {
     try {
+        const query = request.query.get("query");
+
+        if (!query) {
+            return {
+                status: 400,
+            };
+        }
+
         if (!endpoint || !apiKey) {
             console.log(
                 "Make sure to set valid values for endpoint and apiKey with proper authorization."
@@ -40,7 +42,7 @@ export async function getSourceSemanticSearch(
             credential
         );
 
-        const searchResults = await searchClient.search("*", {
+        const searchResults = await searchClient.search(query, {
             includeTotalCount: true,
             orderBy: ["@search.score desc"],
             select: ["id", "title", "content", "url"],
