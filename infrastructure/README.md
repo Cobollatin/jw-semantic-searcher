@@ -25,7 +25,6 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [azurerm_application_insights.use2_main_swa_ai](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/application_insights) | resource |
 | [azurerm_batch_account.use2_main_batch](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/batch_account) | resource |
 | [azurerm_batch_job.use2_main_batch_job](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/batch_job) | resource |
 | [azurerm_batch_pool.use2_main_batch_pool](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/batch_pool) | resource |
