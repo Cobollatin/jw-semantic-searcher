@@ -9,8 +9,9 @@ common_tags = {
   CreatedBy   = "Terraform"
   Location    = "East US 2"
 }
-swa_repository      = "jw-semantic-searcher"
-acr_repositories    = ["jw-semantic-searcher"]
-batch_repositories  = ["jw-semantic-searcher"]
-batch_docker_images = ["indexer"]
-indexer_name        = "indexer"
+swa_repository              = "jw-semantic-searcher"
+acr_repositories            = ["jw-semantic-searcher"]
+batch_repositories          = ["jw-semantic-searcher"]
+batch_docker_images         = ["indexer"]
+indexer_name                = "indexer"
+semantic_search_config_name = "semantic-search-config"

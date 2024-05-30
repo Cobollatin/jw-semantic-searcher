@@ -16,7 +16,7 @@ namespace Indexer.Services
         {
             string endpoint = $"https://{serviceName}.search.windows.net";
             _searchClient = new SearchClient(new Uri(endpoint), indexName, new AzureKeyCredential(apiKey));
-            _indexClient = new SearchIndexClient(new Uri(endpoint), new AzureKeyCredential(apiKey));
+            _indexClient = new SearchIndexClient(new Uri(endpoint), new AzureKeyCredential(apiKey), new SearchClientOptions());
         }
 
         public async Task CreateOrUpdateIndexAsync(SearchIndex index, CancellationToken cancellationToken = default)
