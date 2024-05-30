@@ -180,15 +180,17 @@ var documents = new List<Document>();
 foreach (var document in partialDocuments)
 {
     var model = new Model(deploymentName);
-    var descriptionVector = await openAIClient.Embeddings.GetEmbeddingsAsync("A test text for embedding", model);
-    documents.Add(new Document
+    var descriptionVector = await openAIClient.Embeddings.GetEmbeddingsAsync("A test text for embedding", model, DocumentConstants.DescriptionVectorDimension);
+    var documentToAdd = new Document
     {
         Id = document.Id,
         Title = document.Title,
         Content = document.Content,
         Url = document.Url,
         DescriptionVector = descriptionVector
-    });
+    };
+    documents.Add(documentToAdd);
+    Console.WriteLine("Added document {0}", documentToAdd.ToString());
 }
 
 await searchService.UploadDocumentsAsync(documents, cancellationToken);
