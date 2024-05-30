@@ -18,7 +18,6 @@ export async function getSourceSemanticSearch(
 ): Promise<HttpResponseInit> {
     try {
         const query = request.query.get("query");
-
         if (!query) {
             return {
                 status: 400,
@@ -46,7 +45,7 @@ export async function getSourceSemanticSearch(
         const searchResults = await searchClient.search(query, {
             includeTotalCount: true,
             orderBy: ["@search.score desc"],
-            select: ["id", "title", "content", "url"],
+            select: ["Id", "Title", "Content", "Url"],
         });
 
         const results: Array<Document> = new Array<Document>();
