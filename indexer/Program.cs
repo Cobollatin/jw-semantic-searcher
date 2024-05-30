@@ -1,7 +1,11 @@
-﻿using Azure.Search.Documents.Indexes;
+﻿using Azure;
+using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Indexes.Models;
 using Indexer.Models;
 using Indexer.Services;
+using OpenAI_API;
+using OpenAI_API.Embedding;
+using OpenAI_API.Models;
 
 string serviceName = Environment.GetEnvironmentVariable("AZURE_SEARCH_SERVICE_NAME") ?? throw new ArgumentNullException("AZURE_SEARCH_SERVICE_NAME");
 string indexName = Environment.GetEnvironmentVariable("AZURE_SEARCH_INDEX_NAME") ?? throw new ArgumentNullException("AZURE_SEARCH_INDEX_NAME");
@@ -9,10 +13,22 @@ string apiKey = Environment.GetEnvironmentVariable("AZURE_SEARCH_API_KEY") ?? th
 string semanticConfigName = Environment.GetEnvironmentVariable("AZURE_SEARCH_SEMANTIC_CONFIG_NAME") ?? throw new ArgumentNullException("AZURE_SEARCH_SEMANTIC_CONFIG_NAME");
 
 var searchService = new AzureSearchService(serviceName, indexName, apiKey);
+const string vectorSearchConfigName = "semantic-search-config";
+const int modelDimensions = 1536;
+
+var fields = new FieldBuilder().Build(typeof(Document));
+fields.Add(
+    new SearchField("DescriptionVector", SearchFieldDataType.Collection(SearchFieldDataType.Single))
+    {
+        IsSearchable = true,
+        VectorSearchDimensions = modelDimensions,
+        VectorSearchProfileName = vectorSearchConfigName
+    }
+    );
 
 var index = new SearchIndex(indexName)
 {
-    Fields = new FieldBuilder().Build(typeof(Document)),
+    Fields = fields,
     SemanticSearch = new()
     {
         Configurations =
@@ -27,11 +43,29 @@ var index = new SearchIndex(indexName)
                 KeywordsFields =
                 {
                     new SemanticField("Url")
-                }
+                },
             })
+        }
+    },
+    VectorSearch = new()
+    {
+        Algorithms = {
+            new HnswAlgorithmConfiguration(vectorSearchConfigName){
+                Parameters = {
+                        EfConstruction = 400,
+                        EfSearch = 500,
+                        M = 4,
+                        Metric = VectorSearchAlgorithmMetric.Cosine
+                    }
+            }
         }
     }
 };
+
+string openAiKey = Environment.GetEnvironmentVariable("OPENAI_KEY") ?? throw new ArgumentNullException("OPENAI_KEY");
+string openAiOrg = Environment.GetEnvironmentVariable("OPENAI_ORG") ?? throw new ArgumentNullException("OPENAI_ORG");
+string deploymentName = Environment.GetEnvironmentVariable("OPENAI_DEPLOYMENT_NAME") ?? throw new ArgumentNullException("OPENAI_DEPLOYMENT_NAME");
+var openAIClient = new OpenAIAPI(new APIAuthentication(openAiKey, openAiOrg));
 
 CancellationTokenSource cancellationTokenSource = new();
 CancellationToken cancellationToken = cancellationTokenSource.Token;
@@ -39,7 +73,7 @@ CancellationToken cancellationToken = cancellationTokenSource.Token;
 await searchService.DeleteIndexAsync(indexName, cancellationToken);
 await searchService.CreateOrUpdateIndexAsync(index, cancellationToken);
 
-var documents = new List<Document>
+var partialDocuments = new List<PartialDocument>
 {
     new() { Id = "1", Title = "The Fall of the Berlin Wall", Content = "On November 9, 1989, the Berlin Wall fell, marking the end of the Cold War.", Url = "http://example.com/berlin_wall" },
     new() { Id = "2", Title = "Moon Landing", Content = "On July 20, 1969, Neil Armstrong became the first human to walk on the moon.", Url = "http://example.com/moon_landing" },
@@ -142,6 +176,22 @@ var documents = new List<Document>
     new() { Id = "99", Title = "The Launch of the Hubble Space Telescope", Content = "The Hubble Space Telescope was launched into low Earth orbit in 1990 and has provided numerous discoveries.", Url = "http://example.com/hubble" },
     new() { Id = "100", Title = "The Invention of the Airplane", Content = "The Wright brothers made the first powered flight on December 17, 1903.", Url = "http://example.com/airplane_invention" }
 };
+
+var documents = new List<Document>();
+
+foreach (var document in partialDocuments)
+{
+    var model = new Model(deploymentName);
+    var descriptionVector = await openAIClient.Embeddings.GetEmbeddingsAsync("A test text for embedding", model);
+    documents.Add(new Document
+    {
+        Id = document.Id,
+        Title = document.Title,
+        Content = document.Content,
+        Url = document.Url,
+        DescriptionVector = descriptionVector
+    });
+}
 
 await searchService.UploadDocumentsAsync(documents, cancellationToken);
 

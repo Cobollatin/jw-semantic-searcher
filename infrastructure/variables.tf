@@ -54,6 +54,25 @@ variable "semantic_search_config_name" {
   type        = string                                                       # The value of this variable is a string.
 }
 
+# Variable for the repositories with docker images
+variable "openai_key" {
+  description = "The OpenAI API key" # Specifies the OpenAI API key used for the semantic search configuration.
+  type        = string               # The value of this variable is a string.
+  sensitive   = true                 # Indicates that the value of this variable should be treated as sensitive and not displayed in logs or outputs.
+}
+
+# Variable for the repositories with docker images
+variable "openai_org" {
+  description = "The OpenAI API organization" # Specifies the OpenAI API organization used for the semantic search configuration.
+  type        = string                        # The value of this variable is a string.
+}
+
+# Variable for the repositories with docker images
+variable "openai_model" {
+  description = "The OpenAI model used for semantic search" # Specifies the OpenAI model used for the semantic search configuration.
+  type        = string                                      # The value of this variable is a string.
+}
+
 # Variable for the repositories with batch jobs
 variable "batch_repositories" {
   description = "The list of repositories with Docker images" # Specifies a list of repositories that contain a batch job.

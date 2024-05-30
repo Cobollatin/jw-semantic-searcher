@@ -7,12 +7,17 @@ import {
 } from "@azure/functions";
 import { Document } from "../models";
 import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
+import OpenAI from "openai";
 
 const serviceName = process.env.AZURE_SEARCH_SERVICE_NAME || "";
 const apiKey = process.env.AZURE_SEARCH_API_KEY || "";
 const indexName = process.env.AZURE_SEARCH_INDEX_NAME || "";
 const semanticSearchConfig =
     process.env.AZURE_SEARCH_SEMANTIC_CONFIG_NAME || "";
+
+const openAiKey = process.env["OPENAI_KEY"] || "";
+const openAiOrg = process.env["OPENAI_ORG"] || "";
+const deploymentName = process.env["OPENAI_DEPLOYMENT_NAME"] || "";
 
 export async function getSourceSemanticSearch(
     request: HttpRequest,
@@ -35,14 +40,32 @@ export async function getSourceSemanticSearch(
             };
         }
 
-        const credential = new AzureKeyCredential(apiKey);
-        const endpoint = `https://${serviceName}.search.windows.net`;
+        if (!openAiKey || !openAiOrg || !deploymentName) {
+            context.error(
+                "Make sure to set valid values for OPENAI_KEY, OPENAI_ORG, and OPENAI_DEPLOYMENT_NAME in your environment variables."
+            );
+            return {
+                status: 500,
+            };
+        }
+
+        const searchServiceCredentials = new AzureKeyCredential(apiKey);
+        const searchServiceEndpoint = `https://${serviceName}.search.windows.net`;
 
         const searchClient: SearchClient<Document> = new SearchClient<Document>(
-            endpoint,
+            searchServiceEndpoint,
             indexName,
-            credential
+            searchServiceCredentials
         );
+
+        const openAiClient = new OpenAI({
+            apiKey: openAiKey,
+            organization: openAiOrg,
+        });
+        const embeddings = await openAiClient.embeddings.create({
+            input: query,
+            model: deploymentName,
+        });
 
         const searchResults = await searchClient.search(query, {
             includeTotalCount: true,
@@ -51,18 +74,18 @@ export async function getSourceSemanticSearch(
             select: ["Id", "Title", "Content", "Url"],
             facets: ["Content"],
             queryType: "semantic",
-            // vectorSearchOptions: {
-            //     filterMode: "preFilter",
-            //     queries: [
-            //         {
-            //             kind: "vector",
-            //             kNearestNeighborsCount: 3,
-            //             exhaustive: false,
-            //             fields: ["Content"],
-            //             vector: [],
-            //         },
-            //     ],
-            // },
+            vectorSearchOptions: {
+                filterMode: "preFilter",
+                queries: [
+                    {
+                        kind: "vector",
+                        kNearestNeighborsCount: 3,
+                        exhaustive: false,
+                        fields: ["Content"],
+                        vector: embeddings.data[0].embedding,
+                    },
+                ],
+            },
             semanticSearchOptions: {
                 configurationName: semanticSearchConfig,
                 errorMode: "partial",
