@@ -87,7 +87,7 @@ jobs:
                             \"commandLine\": \"\",
                             \"containerSettings\": {
                                 \"imageName\": \"${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest\",
-                                \"containerRunOptions\": \"--rm --workdir /indexer --env AZURE_SEARCH_API_KEY=${{ secrets.AZURE_SEARCH_SERVICE_API_KEY }} --env AZURE_SEARCH_SERVICE_NAME=${{ secrets.AZURE_SEARCH_SERVICE_NAME }} --env AZURE_SEARCH_INDEX_NAME=indexer\",
+                                \"containerRunOptions\": \"--rm --workdir /indexer --env AZURE_SEARCH_API_KEY=${{ secrets.AZURE_SEARCH_SERVICE_API_KEY }} --env AZURE_SEARCH_SERVICE_NAME=${{ secrets.AZURE_SEARCH_SERVICE_NAME }} --env AZURE_SEARCH_INDEX_NAME=${{ secrets.AZURE_SEARCH_INDEX_NAME }}\",
                             },
                             \"OutputFiles\": [
                                 {

@@ -42,6 +42,13 @@ variable "acr_repositories" {
   type        = list(string)                                  # Indicates that this variable is a list of strings.
 }
 
+# Variable for the repositories with docker images
+variable "indexer_name" {
+  description = "The name of the Azure Search indexer" # Specifies the name of the Azure Search indexer.
+  type        = string                                 # The value of this variable is a string.
+}
+
+
 # Variable for the repositories with batch jobs
 variable "batch_repositories" {
   description = "The list of repositories with Docker images" # Specifies a list of repositories that contain a batch job.
