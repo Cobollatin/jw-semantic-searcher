@@ -49,7 +49,7 @@ export async function getSourceSemanticSearch(
             // Order by is not supported for semantic search
             // orderBy: ["search.score() desc"],
             select: ["Id", "Title", "Content", "Url"],
-            facets: ["Title"],
+            facets: ["Content"],
             queryType: "semantic",
             // vectorSearchOptions: {
             //     filterMode: "preFilter",
