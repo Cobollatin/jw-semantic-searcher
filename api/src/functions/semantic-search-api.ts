@@ -6,34 +6,52 @@ import {
     HttpResponseInit,
     InvocationContext,
 } from "@azure/functions";
-import { setTimeout } from "timers/promises";
-import { Source } from "../models";
+import { Document } from "../models";
+import {
+    AzureKeyCredential,
+    SearchClient,
+    GeographyPoint,
+    SearchIndexClient,
+} from "@azure/search-documents";
+
+const endpoint = process.env.AZURE_SEARCH_API_KEY || "";
+const apiKey = process.env.AZURE_SEARCH_SERVICE_NAME || "";
+const indexName = process.env.AZURE_SEARCH_INDEX_NAME || "";
 
 export async function getSourceSemanticSearch(
     request: HttpRequest,
     context: InvocationContext
 ): Promise<HttpResponseInit> {
     try {
-        const query = request.query.get("query");
-        if (!query) {
+        if (!endpoint || !apiKey) {
+            console.log(
+                "Make sure to set valid values for endpoint and apiKey with proper authorization."
+            );
             return {
-                status: 400,
+                status: 500,
             };
         }
-        context.log(`Performing source semantic search of: ${query}`);
-        const fake_sources: Array<Source> = [
-            {
-                title: "The first source",
-                preview: "The first source description",
-                url: "https://www.google.com",
-            },
-            {
-                title: "The second source",
-                preview: "The second source description",
-                url: "https://www.google.com",
-            },
-        ];
-        return { body: JSON.stringify(fake_sources) };
+
+        const credential = new AzureKeyCredential(apiKey);
+
+        const searchClient: SearchClient<Document> = new SearchClient<Document>(
+            endpoint,
+            indexName,
+            credential
+        );
+
+        const searchResults = await searchClient.search("*", {
+            includeTotalCount: true,
+            orderBy: ["@search.score desc"],
+            select: ["id", "title", "content", "url"],
+        });
+
+        const results: Array<Document> = new Array<Document>();
+        for await (const result of searchResults.results) {
+            results.push(result.document);
+        }
+
+        return { body: JSON.stringify(results) };
     } catch (err) {
         context.error(err);
         // This rethrown exception will only fail the individual invocation, instead of crashing the whole process
