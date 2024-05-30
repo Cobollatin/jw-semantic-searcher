@@ -126,7 +126,9 @@ jobs:
                   exit 0
             - name: Reactivate Batch Job Task
               if: steps.check-if-job-exists.outputs.task_exists == 'true'
-              run: az batch task reactivate --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }}
+              run: |
+                  az batch task stop --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }}
+                  az batch task reactivate --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }}
             - name: Deploy to Azure Batch
               if: github.event_name == 'push' || steps.check-if-job-exists.outputs.task_exists != 'true'
               run: az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --json-file task.json
