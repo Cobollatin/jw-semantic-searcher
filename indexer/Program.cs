@@ -13,22 +13,10 @@ string apiKey = Environment.GetEnvironmentVariable("AZURE_SEARCH_API_KEY") ?? th
 string semanticConfigName = Environment.GetEnvironmentVariable("AZURE_SEARCH_SEMANTIC_CONFIG_NAME") ?? throw new ArgumentNullException("AZURE_SEARCH_SEMANTIC_CONFIG_NAME");
 
 var searchService = new AzureSearchService(serviceName, indexName, apiKey);
-const string vectorSearchConfigName = "semantic-search-config";
-const int modelDimensions = 1536;
-
-var fields = new FieldBuilder().Build(typeof(Document));
-fields.Add(
-    new SearchField("DescriptionVector", SearchFieldDataType.Collection(SearchFieldDataType.Single))
-    {
-        IsSearchable = true,
-        VectorSearchDimensions = modelDimensions,
-        VectorSearchProfileName = vectorSearchConfigName
-    }
-    );
 
 var index = new SearchIndex(indexName)
 {
-    Fields = fields,
+    Fields = new FieldBuilder().Build(typeof(Document)),
     SemanticSearch = new()
     {
         Configurations =
@@ -49,8 +37,11 @@ var index = new SearchIndex(indexName)
     },
     VectorSearch = new()
     {
+        Profiles = {
+            new VectorSearchProfile(DocumentConstants.DocumentSearchProfile, semanticConfigName)
+        },
         Algorithms = {
-            new HnswAlgorithmConfiguration(vectorSearchConfigName){
+            new HnswAlgorithmConfiguration(semanticConfigName){
                 Parameters = {
                         EfConstruction = 400,
                         EfSearch = 500,
@@ -63,11 +54,11 @@ var index = new SearchIndex(indexName)
 };
 
 string openAiKey = Environment.GetEnvironmentVariable("OPENAI_KEY") ?? throw new ArgumentNullException("OPENAI_KEY");
-// string openAiOrgName = Environment.GetEnvironmentVariable("OPENAI_ORG_NAME") ?? throw new ArgumentNullException("OPENAI_ORG_NAME");
-string openAiOrgId = Environment.GetEnvironmentVariable("OPENAI_ORG_ID") ?? throw new ArgumentNullException("OPENAI_ORG_ID");
-// string openAiProjectName = Environment.GetEnvironmentVariable("OPENAI_PROJECT_NAME") ?? throw new ArgumentNullException("OPENAI_PROJECT_NAME");
-// string openAiProjectId = Environment.GetEnvironmentVariable("OPENAI_PROJECT_ID") ?? throw new ArgumentNullException("OPENAI_PROJECT_ID");
 string deploymentName = Environment.GetEnvironmentVariable("OPENAI_DEPLOYMENT_NAME") ?? throw new ArgumentNullException("OPENAI_DEPLOYMENT_NAME");
+string openAiOrgId = Environment.GetEnvironmentVariable("OPENAI_ORG_ID") ?? throw new ArgumentNullException("OPENAI_ORG_ID");
+// string openAiOrgName = Environment.GetEnvironmentVariable("OPENAI_ORG_NAME") ?? throw new ArgumentNullException("OPENAI_ORG_NAME");
+// string openAiProjectId = Environment.GetEnvironmentVariable("OPENAI_PROJECT_ID") ?? throw new ArgumentNullException("OPENAI_PROJECT_ID");
+// string openAiProjectName = Environment.GetEnvironmentVariable("OPENAI_PROJECT_NAME") ?? throw new ArgumentNullException("OPENAI_PROJECT_NAME");
 var openAIClient = new OpenAIAPI(new APIAuthentication(openAiKey, openAiOrgId));
 
 CancellationTokenSource cancellationTokenSource = new();
