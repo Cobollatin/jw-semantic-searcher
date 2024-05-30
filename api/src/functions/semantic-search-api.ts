@@ -18,7 +18,6 @@ export async function getSourceSemanticSearch(
 ): Promise<HttpResponseInit> {
     try {
         const query = request.query.get("query");
-
         if (!query) {
             return {
                 status: 400,
