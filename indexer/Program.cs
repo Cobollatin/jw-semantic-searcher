@@ -14,7 +14,11 @@ var index = new SearchIndex(indexName)
     Fields = new FieldBuilder().Build(typeof(Document)),
 };
 
-await searchService.CreateOrUpdateIndexAsync(index);
+CancellationTokenSource cancellationTokenSource = new();
+CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+await searchService.DeleteIndexAsync(indexName, cancellationToken);
+await searchService.CreateOrUpdateIndexAsync(index, cancellationToken);
 
 var documents = new List<Document>
 {
@@ -65,6 +69,6 @@ var documents = new List<Document>
     new() { Id = "45", Title = "The Construction of the Great Wall of China", Content = "The Great Wall of China was built over several centuries, starting in the 7th century BC.", Url = "http://example.com/great_wall" }
 };
 
-await searchService.UploadDocumentsAsync(documents);
+await searchService.UploadDocumentsAsync(documents, cancellationToken);
 
 Console.WriteLine("Index updated successfully with mock data.");
