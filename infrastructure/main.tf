@@ -362,39 +362,39 @@ resource "azurerm_key_vault_access_policy" "use2_main_kv_access_policy" {
   ]
 }
 
-resource "azurerm_private_dns_zone" "use2_main_kv_dns_zone" {
-  name                = "privatelink.vaultcore.azure.net"
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
-  tags                = var.common_tags
-}
+# resource "azurerm_private_dns_zone" "use2_main_kv_dns_zone" {
+#   name                = "privatelink.vaultcore.azure.net"
+#   resource_group_name = azurerm_resource_group.use2_main_rg.name
+#   tags                = var.common_tags
+# }
 
-resource "azurerm_private_endpoint" "use2_main_kv_pe" {
-  name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-pe"
-  location                      = azurerm_resource_group.use2_main_rg.location
-  resource_group_name           = azurerm_resource_group.use2_main_rg.name
-  subnet_id                     = azurerm_subnet.use2_kv_subnet.id
-  custom_network_interface_name = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-pe-nic"
-  tags                          = var.common_tags
-  private_service_connection {
-    name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-pe-connection"
-    is_manual_connection           = false
-    private_connection_resource_id = azurerm_key_vault.use2_main_kv.id
-    subresource_names              = ["vault"]
-  }
-  private_dns_zone_group {
-    name = "vault"
-    private_dns_zone_ids = [
-      azurerm_private_dns_zone.use2_main_kv_dns_zone.id,
-    ]
-  }
-}
+# resource "azurerm_private_endpoint" "use2_main_kv_pe" {
+#   name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-pe"
+#   location                      = azurerm_resource_group.use2_main_rg.location
+#   resource_group_name           = azurerm_resource_group.use2_main_rg.name
+#   subnet_id                     = azurerm_subnet.use2_kv_subnet.id
+#   custom_network_interface_name = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-pe-nic"
+#   tags                          = var.common_tags
+#   private_service_connection {
+#     name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-pe-connection"
+#     is_manual_connection           = false
+#     private_connection_resource_id = azurerm_key_vault.use2_main_kv.id
+#     subresource_names              = ["vault"]
+#   }
+#   private_dns_zone_group {
+#     name = "vault"
+#     private_dns_zone_ids = [
+#       azurerm_private_dns_zone.use2_main_kv_dns_zone.id,
+#     ]
+#   }
+# }
 
-resource "azurerm_private_dns_zone_virtual_network_link" "use2_main_kv_vn_link" {
-  name                  = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-vn-link"
-  resource_group_name   = azurerm_resource_group.use2_main_rg.name
-  private_dns_zone_name = azurerm_private_dns_zone.use2_main_kv_dns_zone.name
-  virtual_network_id    = azurerm_virtual_network.use2_main_vnet.id
-}
+# resource "azurerm_private_dns_zone_virtual_network_link" "use2_main_kv_vn_link" {
+#   name                  = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-vn-link"
+#   resource_group_name   = azurerm_resource_group.use2_main_rg.name
+#   private_dns_zone_name = azurerm_private_dns_zone.use2_main_kv_dns_zone.name
+#   virtual_network_id    = azurerm_virtual_network.use2_main_vnet.id
+# }
 
 resource "azurerm_user_assigned_identity" "use2_main_sb_identity" {
   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-sb-identity"
@@ -430,47 +430,59 @@ resource "azurerm_search_service" "use2_main_ss" {
   # }
 }
 
-resource "azurerm_subnet" "use2_ss_subnet" {
-  name                 = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-subnet"
-  resource_group_name  = azurerm_resource_group.use2_main_rg.name
-  virtual_network_name = azurerm_virtual_network.use2_main_vnet.name
-  address_prefixes     = ["10.0.40.0/24"]
-  service_endpoints    = ["Microsoft.CognitiveServices"]
-}
+# resource "azurerm_subnet" "use2_ss_subnet" {
+#   name                 = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-subnet"
+#   resource_group_name  = azurerm_resource_group.use2_main_rg.name
+#   virtual_network_name = azurerm_virtual_network.use2_main_vnet.name
+#   address_prefixes     = ["10.0.40.0/24"]
+#   service_endpoints    = ["Microsoft.CognitiveServices"]
+# }
 
-resource "azurerm_private_dns_zone" "example" {
-  name                = "privatelink.search.windows.net"
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
-  tags                = var.common_tags
-}
+# resource "azurerm_network_security_group" "use2_ss_nsg" {
+#   name                = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-nsg"
+#   location            = azurerm_resource_group.use2_main_rg.location
+#   resource_group_name = azurerm_resource_group.use2_main_rg.name
+#   tags                = var.common_tags
+# }
 
-resource "azurerm_private_endpoint" "use2_main_ss_pe" {
-  name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-pe"
-  location                      = azurerm_resource_group.use2_main_rg.location
-  resource_group_name           = azurerm_resource_group.use2_main_rg.name
-  subnet_id                     = azurerm_subnet.use2_kv_subnet.id
-  custom_network_interface_name = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-pe-nic"
-  tags                          = var.common_tags
-  private_service_connection {
-    name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-pe-connection"
-    is_manual_connection           = false
-    private_connection_resource_id = azurerm_search_service.use2_main_ss.id
-    subresource_names              = ["search"]
-  }
-  private_dns_zone_group {
-    name = "search"
-    private_dns_zone_ids = [
-      azurerm_private_dns_zone.example.id,
-    ]
-  }
-}
+# resource "azurerm_subnet_network_security_group_association" "use2_ss_subnet_nsg_association" {
+#   subnet_id                 = azurerm_subnet.use2_ss_subnet.id
+#   network_security_group_id = azurerm_network_security_group.use2_ss_nsg.id
+# }
 
-resource "azurerm_private_dns_zone_virtual_network_link" "use2_main_ss_vn_link" {
-  name                  = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-vn-link"
-  resource_group_name   = azurerm_resource_group.use2_main_rg.name
-  private_dns_zone_name = azurerm_private_dns_zone.example.name
-  virtual_network_id    = azurerm_virtual_network.use2_main_vnet.id
-}
+# resource "azurerm_private_dns_zone" "example" {
+#   name                = "privatelink.search.windows.net"
+#   resource_group_name = azurerm_resource_group.use2_main_rg.name
+#   tags                = var.common_tags
+# }
+
+# resource "azurerm_private_endpoint" "use2_main_ss_pe" {
+#   name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-pe"
+#   location                      = azurerm_resource_group.use2_main_rg.location
+#   resource_group_name           = azurerm_resource_group.use2_main_rg.name
+#   subnet_id                     = azurerm_subnet.use2_kv_subnet.id
+#   custom_network_interface_name = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-pe-nic"
+#   tags                          = var.common_tags
+#   private_service_connection {
+#     name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-pe-connection"
+#     is_manual_connection           = false
+#     private_connection_resource_id = azurerm_search_service.use2_main_ss.id
+#     subresource_names              = ["search"]
+#   }
+#   private_dns_zone_group {
+#     name = "search"
+#     private_dns_zone_ids = [
+#       azurerm_private_dns_zone.example.id,
+#     ]
+#   }
+# }
+
+# resource "azurerm_private_dns_zone_virtual_network_link" "use2_main_ss_vn_link" {
+#   name                  = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-vn-link"
+#   resource_group_name   = azurerm_resource_group.use2_main_rg.name
+#   private_dns_zone_name = azurerm_private_dns_zone.example.name
+#   virtual_network_id    = azurerm_virtual_network.use2_main_vnet.id
+# }
 
 resource "github_actions_secret" "use2_main_ss_api_key" {
   #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
@@ -672,39 +684,39 @@ resource "azurerm_log_analytics_storage_insights" "use2_sa_main_law_si" {
   ]
 }
 
-resource "azurerm_private_dns_zone" "use2_main_sa_dns_zone" {
-  name                = "privatelink.blob.core.windows.net"
-  resource_group_name = azurerm_resource_group.use2_main_rg.name
-  tags                = var.common_tags
-}
+# resource "azurerm_private_dns_zone" "use2_main_sa_dns_zone" {
+#   name                = "privatelink.blob.core.windows.net"
+#   resource_group_name = azurerm_resource_group.use2_main_rg.name
+#   tags                = var.common_tags
+# }
 
-resource "azurerm_private_endpoint" "use2_main_sa_pe" {
-  name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-pe"
-  location                      = azurerm_resource_group.use2_main_rg.location
-  resource_group_name           = azurerm_resource_group.use2_main_rg.name
-  subnet_id                     = azurerm_subnet.use2_sa_subnet.id
-  custom_network_interface_name = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-pe-nic"
-  tags                          = var.common_tags
-  private_service_connection {
-    name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-pe-connection"
-    is_manual_connection           = false
-    private_connection_resource_id = azurerm_storage_account.use2_main_sa.id
-    subresource_names              = ["blob"]
-  }
-  private_dns_zone_group {
-    name = "blob"
-    private_dns_zone_ids = [
-      azurerm_private_dns_zone.use2_main_sa_dns_zone.id,
-    ]
-  }
-}
+# resource "azurerm_private_endpoint" "use2_main_sa_pe" {
+#   name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-pe"
+#   location                      = azurerm_resource_group.use2_main_rg.location
+#   resource_group_name           = azurerm_resource_group.use2_main_rg.name
+#   subnet_id                     = azurerm_subnet.use2_sa_subnet.id
+#   custom_network_interface_name = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-pe-nic"
+#   tags                          = var.common_tags
+#   private_service_connection {
+#     name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-pe-connection"
+#     is_manual_connection           = false
+#     private_connection_resource_id = azurerm_storage_account.use2_main_sa.id
+#     subresource_names              = ["blob"]
+#   }
+#   private_dns_zone_group {
+#     name = "blob"
+#     private_dns_zone_ids = [
+#       azurerm_private_dns_zone.use2_main_sa_dns_zone.id,
+#     ]
+#   }
+# }
 
-resource "azurerm_private_dns_zone_virtual_network_link" "use2_main_sa_vn_link" {
-  name                  = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-vn-link"
-  resource_group_name   = azurerm_resource_group.use2_main_rg.name
-  private_dns_zone_name = azurerm_private_dns_zone.use2_main_sa_dns_zone.name
-  virtual_network_id    = azurerm_virtual_network.use2_main_vnet.id
-}
+# resource "azurerm_private_dns_zone_virtual_network_link" "use2_main_sa_vn_link" {
+#   name                  = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-vn-link"
+#   resource_group_name   = azurerm_resource_group.use2_main_rg.name
+#   private_dns_zone_name = azurerm_private_dns_zone.use2_main_sa_dns_zone.name
+#   virtual_network_id    = azurerm_virtual_network.use2_main_vnet.id
+# }
 
 resource "github_actions_secret" "use2_main_sa_account_container_url" {
   #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
