@@ -243,7 +243,6 @@ resource "azurerm_static_web_app" "use2_main_swa" {
   sku_size                           = "Free"
   tags                               = var.common_tags
   app_settings = {
-    "WEBSITE_RUN_FROM_PACKAGE"  = "1",
     "AZURE_SEARCH_API_KEY"      = azurerm_search_service.use2_main_ss.primary_key,
     "AZURE_SEARCH_SERVICE_NAME" = azurerm_search_service.use2_main_ss.name,
     "AZURE_SEARCH_INDEX_NAME"   = var.indexer_name,
