@@ -728,7 +728,7 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
   auto_scale {
     evaluation_interval = "PT5M"
     formula             = <<EOF
-$sample = $PendingTasks.GetSample(TimeInterval_Minute * 15);
+$sample = $PendingTasks.GetSample(TimeInterval_Minute * 5);
 $tasks = max($sample);
 $targetVMs = $tasks > 0 ? $tasks : max(0, $TargetDedicatedNodes / 2);
 minPoolSize = 0;
