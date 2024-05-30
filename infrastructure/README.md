@@ -77,6 +77,7 @@ No modules.
 | [github_actions_secret.use2_main_batch_account_name](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_batch_job_id](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_batch_pool_identity_id](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.use2_main_indexer_config_name](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_indexer_name](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_sa_account_container_url](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_ss_api_key](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
@@ -103,6 +104,7 @@ No modules.
 | <a name="input_indexer_name"></a> [indexer\_name](#input\_indexer\_name) | The name of the Azure Search indexer | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | The Azure region where resources will be created | `string` | n/a | yes |
 | <a name="input_location_short"></a> [location\_short](#input\_location\_short) | The short name of the Azure region where resources will be created | `string` | n/a | yes |
+| <a name="input_semantic_search_config_name"></a> [semantic\_search\_config\_name](#input\_semantic\_search\_config\_name) | The name of the Azure Search semantic search configuration | `string` | n/a | yes |
 | <a name="input_swa_repository"></a> [swa\_repository](#input\_swa\_repository) | The GitHub repository for the Static Web App | `string` | n/a | yes |
 
 ## Outputs
