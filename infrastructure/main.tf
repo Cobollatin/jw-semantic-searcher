@@ -17,6 +17,14 @@ data "github_repository" "use2_acr_github_repos" {
   name     = each.value
 }
 
+resource "github_actions_secret" "use2_main_github_token" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
+  for_each        = toset(concat(var.batch_repositories, [var.swa_repository]))
+  repository      = each.value
+  secret_name     = "TF_GITHUB_TOKEN"
+  plaintext_value = var.github_token
+}
+
 ############################################################################################################################
 # Networking
 resource "azurerm_virtual_network" "use2_main_vnet" {
