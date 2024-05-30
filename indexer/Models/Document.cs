@@ -18,5 +18,20 @@ namespace Indexer.Models
         [JsonPropertyName("Url")]
         [SearchableField(IsFilterable = true, IsSortable = false, AnalyzerName = LexicalAnalyzerName.Values.Keyword)]
         public required string Url { get; init; }
+        [JsonIgnore]
+        public required IReadOnlyList<float> DescriptionVector { get; init; }
+    }
+
+
+        public class PartialDocument
+    {
+        [JsonPropertyName("Id")]
+        public required string Id { get; init; }
+        [JsonPropertyName("Title")]
+        public required string Title { get; init; }
+        [JsonPropertyName("Content")]
+        public required string Content { get; init; }
+        [JsonPropertyName("Url")]
+        public required string Url { get; init; }
     }
 }

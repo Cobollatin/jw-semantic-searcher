@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Search.Documents" Version="11.5.1" />
+    <PackageReference Include="OpenAI" Version="1.11.0" />
   </ItemGroup>
 
 </Project>

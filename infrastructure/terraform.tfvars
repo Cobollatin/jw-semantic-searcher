@@ -15,3 +15,5 @@ batch_repositories          = ["jw-semantic-searcher"]
 batch_docker_images         = ["indexer"]
 indexer_name                = "indexer"
 semantic_search_config_name = "semantic-search-config"
+openai_model                = "text-embedding-3-small"
+openai_org                  = "jw-semantic-search"
