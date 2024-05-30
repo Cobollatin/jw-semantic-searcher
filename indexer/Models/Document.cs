@@ -7,15 +7,15 @@ namespace Indexer.Models
     {
         [JsonPropertyName("Id")]
         [SimpleField(IsKey = true, IsFilterable = true, IsSortable = true)]
-        public required string Id { get; private set; }
+        public required string Id { get; set; }
         [JsonPropertyName("Title")]
         [SearchableField(IsFilterable = true, IsSortable = true)]
-        public required string Title { get; privateset; }
+        public required string Title { get; set; }
         [JsonPropertyName("Content")]
         [SearchableField(IsFilterable = true, IsSortable = false)]
-        public required string Content { get; privateset; }
+        public required string Content { get; set; }
         [JsonPropertyName("Url")]
         [SearchableField(IsFilterable = true, IsSortable = false)]
-        public required string Url { get; privateset; }
+        public required string Url { get; set; }
     }
 }
