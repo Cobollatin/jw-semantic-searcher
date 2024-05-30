@@ -4,6 +4,11 @@ using Azure.Search.Documents.Indexes.Models;
 
 namespace Indexer.Models
 {
+    public static class DocumentConstants
+    {
+        public const string DocumentSearchProfile = "semantic-search-config";
+    }
+
     public class Document
     {
         [JsonPropertyName("Id")]
@@ -19,11 +24,12 @@ namespace Indexer.Models
         [SearchableField(IsFilterable = true, IsSortable = false, AnalyzerName = LexicalAnalyzerName.Values.Keyword)]
         public required string Url { get; init; }
         [JsonIgnore]
+        [VectorSearchField(VectorSearchDimensions = 1536, VectorSearchProfileName = DocumentConstants.DocumentSearchProfile)]
         public required IReadOnlyList<float> DescriptionVector { get; init; }
     }
 
 
-        public class PartialDocument
+    public class PartialDocument
     {
         [JsonPropertyName("Id")]
         public required string Id { get; init; }

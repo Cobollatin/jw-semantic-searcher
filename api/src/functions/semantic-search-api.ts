@@ -5,7 +5,7 @@ import {
     HttpResponseInit,
     InvocationContext,
 } from "@azure/functions";
-import { Document } from "../models";
+import { Document, PartialDocument } from "../models";
 import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
 import OpenAI from "openai";
 
@@ -113,7 +113,7 @@ export async function getSourceSemanticSearch(
             },
         });
 
-        const results: Array<Document> = new Array<Document>();
+        const results: Array<PartialDocument> = new Array<PartialDocument>();
         for await (const result of searchResults.results) {
             results.push(result.document);
         }
