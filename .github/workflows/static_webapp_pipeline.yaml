@@ -9,7 +9,7 @@ on:
             - "api/**"
             - ".github/workflows/static_webapp_pipeline.yaml"
     pull_request:
-        types: [opened, synchronize, reopened, closed]
+        types: [opened, synchronize, reopened]
         branches:
             - main
         paths:
