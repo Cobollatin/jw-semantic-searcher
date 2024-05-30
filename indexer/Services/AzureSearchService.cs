@@ -21,7 +21,7 @@ namespace Indexer.Services
 
         public async Task<SearchResults<SearchDocument>> SearchDocumentsAsync(string query)
         {
-            SearchOptions options = new SearchOptions { IncludeTotalCount = true };
+            SearchOptions options = new() { IncludeTotalCount = true };
             SearchResults<SearchDocument> results = await _searchClient.SearchAsync<SearchDocument>(query, options);
             return results;
         }
