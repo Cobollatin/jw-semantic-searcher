@@ -639,7 +639,7 @@ resource "azurerm_monitor_data_collection_endpoint" "use2_main_sa_monitor" {
   resource_group_name           = azurerm_resource_group.use2_main_rg.name
   location                      = azurerm_resource_group.use2_main_rg.location
   kind                          = "Linux"
-  public_network_access_enabled = false
+  public_network_access_enabled = true
   tags                          = var.common_tags
 }
 
