@@ -293,7 +293,7 @@ resource "azurerm_application_insights" "use2_main_swa_ai" {
   name                 = "${var.app_name}-${var.location_short}-${var.environment_name}-swa-ai"
   resource_group_name  = azurerm_resource_group.use2_main_rg.name
   location             = azurerm_resource_group.use2_main_rg.location
-  application_type     = "Web"
+  application_type     = "Node.JS"
   retention_in_days    = 30
   daily_data_cap_in_gb = 0.2
   tags                 = var.common_tags
