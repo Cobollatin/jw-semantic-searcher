@@ -313,15 +313,15 @@ resource "azurerm_key_vault" "use2_main_kv" {
   #checkov:skip=CKV_AZURE_189:We dont have a self-hosted runner in the pipeline yet, so we need to skip this check because the runner needs access
   #checkov:skip=CKV_AZURE_109:We dont have a self-hosted runner in the pipeline yet, so we need to skip this check because the runner needs access
   #checkov:skip=CKV2_AZURE_32:We dont need a private endpoint right now
-  name                          = lower("${substr(var.app_name, 0, 4)}${var.location_short}${var.environment_name}kv")
-  location                      = azurerm_resource_group.use2_main_rg.location
-  resource_group_name           = azurerm_resource_group.use2_main_rg.name
-  enabled_for_disk_encryption   = true
-  tenant_id                     = data.azurerm_client_config.current.tenant_id
-  soft_delete_retention_days    = 7
-  purge_protection_enabled      = true
-  sku_name                      = "standard"
-  tags                          = var.common_tags
+  name                        = lower("${substr(var.app_name, 0, 4)}${var.location_short}${var.environment_name}kv")
+  location                    = azurerm_resource_group.use2_main_rg.location
+  resource_group_name         = azurerm_resource_group.use2_main_rg.name
+  enabled_for_disk_encryption = true
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = true
+  sku_name                    = "standard"
+  tags                        = var.common_tags
 
   network_acls {
     bypass                     = "AzureServices"
@@ -743,7 +743,7 @@ resource "azurerm_batch_account" "use2_main_batch" {
   location                            = azurerm_resource_group.use2_main_rg.location
   resource_group_name                 = azurerm_resource_group.use2_main_rg.name
   pool_allocation_mode                = "BatchService"
-  public_network_access_enabled       = false
+  public_network_access_enabled       = true
   storage_account_id                  = azurerm_storage_account.use2_main_sa.id
   storage_account_authentication_mode = "StorageKeys"
   tags                                = var.common_tags
