@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { SourceCardComponent } from "../source-card/source-card.component";
-import { ComponentError, Source } from "src/app/models";
+import { ComponentError, Document } from "src/app/models";
 
 @Component({
     selector: "app-source-search-results",
@@ -11,11 +11,11 @@ import { ComponentError, Source } from "src/app/models";
     styleUrls: ["./source-search-results.component.css"],
 })
 export class SourceSearchResultsComponent {
-    @Input() sources?: Source[] | null;
+    @Input() sources?: Document[] | null;
 
     constructor() {}
 
-    getError(source: Source): ComponentError | undefined {
+    getError(source: Document): ComponentError | undefined {
         if (source === undefined || source === null) {
             return {
                 message: "Source is invalid",
@@ -24,9 +24,9 @@ export class SourceSearchResultsComponent {
         }
 
         if (
-            source.title !== undefined ||
-            source.title === null ||
-            source.title === ""
+            source.Title !== undefined ||
+            source.Title === null ||
+            source.Title === ""
         ) {
             return {
                 message: "Source title is invalid",
@@ -37,7 +37,7 @@ export class SourceSearchResultsComponent {
         return undefined;
     }
 
-    hasError(source: Source): boolean {
+    hasError(source: Document): boolean {
         return this.getError(source) !== undefined;
     }
 }

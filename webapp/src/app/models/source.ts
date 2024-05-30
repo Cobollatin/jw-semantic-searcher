@@ -1,5 +1,6 @@
-export type Source = {
-    title: string;
-    preview: string;
-    url: string;
+export type Document = {
+    Id: string;
+    Title: string;
+    Content: string;
+    Url: string;
 };

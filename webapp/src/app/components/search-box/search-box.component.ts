@@ -32,7 +32,6 @@ export class SearchBoxComponent implements OnDestroy {
         this._searchTerm
             .pipe(
                 debounceTime(500),
-                distinctUntilChanged(),
                 map((term: string) => term.trim()),
                 throwIfEmpty(() => {
                     throw {
