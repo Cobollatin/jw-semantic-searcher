@@ -104,6 +104,12 @@ resource "github_actions_secret" "use2_main_acr_login_server" {
   plaintext_value = azurerm_container_registry.use2_main_acr.login_server
 }
 
+# resource "azurerm_private_dns_zone" "use2_main_acr_dns_zone" {
+#   name                = "privatelink.azurecr.io"
+#   resource_group_name = azurerm_resource_group.use2_main_rg.name
+#   tags                = var.common_tags
+# }
+
 # resource "azurerm_private_endpoint" "use2_main_acr_pe" {
 #   name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-acr-pe"
 #   location                      = azurerm_resource_group.use2_main_rg.location
@@ -117,6 +123,19 @@ resource "github_actions_secret" "use2_main_acr_login_server" {
 #     private_connection_resource_id = azurerm_container_registry.use2_main_acr.id
 #     subresource_names              = ["registry"]
 #   }
+#   private_dns_zone_group {
+#     name = "registry"
+#     private_dns_zone_ids = [
+#       azurerm_private_dns_zone.use2_main_acr_dns_zone.id,
+#     ]
+#   }
+# }
+
+# resource "azurerm_private_dns_zone_virtual_network_link" "use2_main_acr_vn_link" {
+#   name                  = "${var.app_name}-${var.location_short}-${var.environment_name}-acr-vn-link"
+#   resource_group_name   = azurerm_resource_group.use2_main_rg.name
+#   private_dns_zone_name = azurerm_private_dns_zone.use2_main_acr_dns_zone.name
+#   virtual_network_id    = azurerm_virtual_network.use2_main_vnet.id
 # }
 
 resource "azurerm_user_assigned_identity" "use2_main_acr_indexer_purge_identity" {
@@ -300,14 +319,15 @@ resource "azurerm_key_vault" "use2_main_kv" {
   tenant_id                     = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days    = 7
   purge_protection_enabled      = true
-  public_network_access_enabled = true // This will be false when we have a self-hosted runner
+  public_network_access_enabled = false
   sku_name                      = "standard"
   tags                          = var.common_tags
 
   network_acls {
     bypass                     = "AzureServices"
-    default_action             = "Allow"
+    default_action             = "Deny"
     virtual_network_subnet_ids = [azurerm_subnet.use2_kv_subnet.id]
+    ip_rules                   = concat(var.github_runner_allow_out_bound_github_actions_ip_addressess, var.github_runner_allow_out_bound_github_ip_addressess)
   }
 }
 
@@ -344,6 +364,12 @@ resource "azurerm_key_vault_access_policy" "use2_main_kv_access_policy" {
   ]
 }
 
+resource "azurerm_private_dns_zone" "use2_main_kv_dns_zone" {
+  name                = "privatelink.vaultcore.azure.net"
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  tags                = var.common_tags
+}
+
 resource "azurerm_private_endpoint" "use2_main_kv_pe" {
   name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-pe"
   location                      = azurerm_resource_group.use2_main_rg.location
@@ -351,13 +377,25 @@ resource "azurerm_private_endpoint" "use2_main_kv_pe" {
   subnet_id                     = azurerm_subnet.use2_kv_subnet.id
   custom_network_interface_name = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-pe-nic"
   tags                          = var.common_tags
-
   private_service_connection {
     name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-pe-connection"
     is_manual_connection           = false
     private_connection_resource_id = azurerm_key_vault.use2_main_kv.id
     subresource_names              = ["vault"]
   }
+  private_dns_zone_group {
+    name = "vault"
+    private_dns_zone_ids = [
+      azurerm_private_dns_zone.use2_main_kv_dns_zone.id,
+    ]
+  }
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "use2_main_kv_vn_link" {
+  name                  = "${var.app_name}-${var.location_short}-${var.environment_name}-kv-vn-link"
+  resource_group_name   = azurerm_resource_group.use2_main_rg.name
+  private_dns_zone_name = azurerm_private_dns_zone.use2_main_kv_dns_zone.name
+  virtual_network_id    = azurerm_virtual_network.use2_main_vnet.id
 }
 
 resource "azurerm_user_assigned_identity" "use2_main_sb_identity" {
@@ -392,6 +430,48 @@ resource "azurerm_search_service" "use2_main_ss" {
   #   # The only possible value is SystemAssigned.
   #   type = "SystemAssigned"
   # }
+}
+
+resource "azurerm_subnet" "use2_ss_subnet" {
+  name                 = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-subnet"
+  resource_group_name  = azurerm_resource_group.use2_main_rg.name
+  virtual_network_name = azurerm_virtual_network.use2_main_vnet.name
+  address_prefixes     = ["10.0.40.0/24"]
+  service_endpoints    = ["Microsoft.CognitiveServices"]
+}
+
+resource "azurerm_private_dns_zone" "example" {
+  name                = "privatelink.search.windows.net"
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  tags                = var.common_tags
+}
+
+resource "azurerm_private_endpoint" "use2_main_ss_pe" {
+  name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-pe"
+  location                      = azurerm_resource_group.use2_main_rg.location
+  resource_group_name           = azurerm_resource_group.use2_main_rg.name
+  subnet_id                     = azurerm_subnet.use2_kv_subnet.id
+  custom_network_interface_name = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-pe-nic"
+  tags                          = var.common_tags
+  private_service_connection {
+    name                           = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-pe-connection"
+    is_manual_connection           = false
+    private_connection_resource_id = azurerm_search_service.use2_main_ss.id
+    subresource_names              = ["search"]
+  }
+  private_dns_zone_group {
+    name = "search"
+    private_dns_zone_ids = [
+      azurerm_private_dns_zone.example.id,
+    ]
+  }
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "use2_main_ss_vn_link" {
+  name                  = "${var.app_name}-${var.location_short}-${var.environment_name}-ss-vn-link"
+  resource_group_name   = azurerm_resource_group.use2_main_rg.name
+  private_dns_zone_name = azurerm_private_dns_zone.example.name
+  virtual_network_id    = azurerm_virtual_network.use2_main_vnet.id
 }
 
 resource "github_actions_secret" "use2_main_ss_api_key" {
@@ -512,9 +592,10 @@ resource "azurerm_storage_account" "use2_main_sa" {
   }
 
   network_rules {
-    default_action             = "Allow"
+    default_action             = "Deny"
     bypass                     = ["AzureServices", "Logging", "Metrics"]
     virtual_network_subnet_ids = [azurerm_subnet.use2_sa_subnet.id]
+    ip_rules                   = concat(var.github_runner_allow_out_bound_github_actions_ip_addressess, var.github_runner_allow_out_bound_github_ip_addressess)
   }
 
   identity {
@@ -548,7 +629,7 @@ resource "azurerm_monitor_data_collection_endpoint" "use2_main_sa_monitor" {
   resource_group_name           = azurerm_resource_group.use2_main_rg.name
   location                      = azurerm_resource_group.use2_main_rg.location
   kind                          = "Linux"
-  public_network_access_enabled = true
+  public_network_access_enabled = false
   tags                          = var.common_tags
 }
 
@@ -594,6 +675,12 @@ resource "azurerm_log_analytics_storage_insights" "use2_sa_main_law_si" {
   ]
 }
 
+resource "azurerm_private_dns_zone" "use2_main_sa_dns_zone" {
+  name                = "privatelink.blob.core.windows.net"
+  resource_group_name = azurerm_resource_group.use2_main_rg.name
+  tags                = var.common_tags
+}
+
 resource "azurerm_private_endpoint" "use2_main_sa_pe" {
   name                          = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-pe"
   location                      = azurerm_resource_group.use2_main_rg.location
@@ -607,6 +694,19 @@ resource "azurerm_private_endpoint" "use2_main_sa_pe" {
     private_connection_resource_id = azurerm_storage_account.use2_main_sa.id
     subresource_names              = ["blob"]
   }
+  private_dns_zone_group {
+    name = "blob"
+    private_dns_zone_ids = [
+      azurerm_private_dns_zone.use2_main_sa_dns_zone.id,
+    ]
+  }
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "use2_main_sa_vn_link" {
+  name                  = "${var.app_name}-${var.location_short}-${var.environment_name}-sa-vn-link"
+  resource_group_name   = azurerm_resource_group.use2_main_rg.name
+  private_dns_zone_name = azurerm_private_dns_zone.use2_main_sa_dns_zone.name
+  virtual_network_id    = azurerm_virtual_network.use2_main_vnet.id
 }
 
 resource "github_actions_secret" "use2_main_sa_account_container_url" {
@@ -633,7 +733,7 @@ resource "azurerm_batch_account" "use2_main_batch" {
   location                            = azurerm_resource_group.use2_main_rg.location
   resource_group_name                 = azurerm_resource_group.use2_main_rg.name
   pool_allocation_mode                = "BatchService"
-  public_network_access_enabled       = true
+  public_network_access_enabled       = false
   storage_account_id                  = azurerm_storage_account.use2_main_sa.id
   storage_account_authentication_mode = "StorageKeys"
   tags                                = var.common_tags
@@ -642,6 +742,22 @@ resource "azurerm_batch_account" "use2_main_batch" {
     identity_ids = [
       azurerm_user_assigned_identity.use2_main_batch_identity.id,
     ]
+  }
+  network_profile {
+    account_access {
+      default_action = "Deny"
+    }
+    node_management_access {
+      default_action = "Deny"
+      dynamic "ip_rule" {
+        for_each = concat(var.github_runner_allow_out_bound_github_actions_ip_addressess, var.github_runner_allow_out_bound_github_ip_addressess)
+        content {
+          ip_range = ip_rule.value
+          action   = "Allow"
+        }
+      }
+
+    }
   }
 }
 

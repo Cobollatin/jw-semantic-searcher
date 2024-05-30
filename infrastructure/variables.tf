@@ -66,3 +66,14 @@ variable "github_token" {
   type        = string                                    # The value of this variable is a string.
   sensitive   = true                                      # Indicates that the value of this variable should be treated as sensitive and not displayed in logs or outputs.
 }
+
+
+variable "github_runner_allow_out_bound_github_actions_ip_addressess" {
+  description = "The list of IP addresses that are allowed to connect to the github actions runners" # Specifies the list of IP addresses that are allowed to connect to GitHub Actions.
+  type        = list(string)                                                                         # Indicates that this variable is a list of strings.
+}
+
+variable "github_runner_allow_out_bound_github_ip_addressess" {
+  description = "The list of IP addresses that are allowed to connect to GitHub" # Specifies the list of IP addresses that are allowed to connect to GitHub.
+  type        = list(string)                                                     # Indicates that this variable is a list of strings.
+}
