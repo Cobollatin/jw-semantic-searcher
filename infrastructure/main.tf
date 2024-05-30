@@ -324,9 +324,8 @@ resource "azurerm_key_vault" "use2_main_kv" {
 
   network_acls {
     bypass                     = "AzureServices"
-    default_action             = "Deny"
+    default_action             = "Allow"
     virtual_network_subnet_ids = [azurerm_subnet.use2_kv_subnet.id]
-    ip_rules                   = concat(var.github_runner_allow_out_bound_github_actions_ip_addressess, var.github_runner_allow_out_bound_github_ip_addressess)
   }
 }
 
@@ -591,10 +590,9 @@ resource "azurerm_storage_account" "use2_main_sa" {
   }
 
   network_rules {
-    default_action             = "Deny"
+    default_action             = "Allow"
     bypass                     = ["AzureServices", "Logging", "Metrics"]
     virtual_network_subnet_ids = [azurerm_subnet.use2_sa_subnet.id]
-    ip_rules                   = concat(var.github_runner_allow_out_bound_github_actions_ip_addressess, var.github_runner_allow_out_bound_github_ip_addressess)
   }
 
   identity {
@@ -744,18 +742,10 @@ resource "azurerm_batch_account" "use2_main_batch" {
   }
   network_profile {
     account_access {
-      default_action = "Deny"
+      default_action = "Allow"
     }
     node_management_access {
-      default_action = "Deny"
-      dynamic "ip_rule" {
-        for_each = concat(var.github_runner_allow_out_bound_github_actions_ip_addressess, var.github_runner_allow_out_bound_github_ip_addressess)
-        content {
-          ip_range = ip_rule.value
-          action   = "Allow"
-        }
-      }
-
+      default_action = "Allow"
     }
   }
 }
