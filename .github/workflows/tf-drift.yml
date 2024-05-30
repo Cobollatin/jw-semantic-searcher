@@ -54,7 +54,7 @@ jobs:
               id: tf-plan
               run: |
                   export exitcode=0
-                  terraform plan -detailed-exitcode -no-color -out tfplan -var "github_token=${{ secrets.GITHUB_TOKEN }}" -var "openai_key=${{ secrets.OPENAI_KEY }}" || export exitcode=$?
+                  terraform plan -detailed-exitcode -no-color -out tfplan -var "github_token=${{ secrets.TF_GITHUB_TOKEN }}" -var "openai_key=${{ secrets.OPENAI_KEY }}" || export exitcode=$?
 
                   echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
 
