@@ -8,8 +8,8 @@ import {
 import { Document } from "../models";
 import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
 
-const endpoint = process.env.AZURE_SEARCH_API_KEY || "";
-const apiKey = process.env.AZURE_SEARCH_SERVICE_NAME || "";
+const serviceName = process.env.AZURE_SEARCH_SERVICE_NAME || "";
+const apiKey = process.env.AZURE_SEARCH_API_KEY || "";
 const indexName = process.env.AZURE_SEARCH_INDEX_NAME || "";
 
 export async function getSourceSemanticSearch(
@@ -25,9 +25,9 @@ export async function getSourceSemanticSearch(
             };
         }
 
-        if (!endpoint || !apiKey) {
-            console.error(
-                "Make sure to set valid values for endpoint and apiKey with proper authorization."
+        if (!serviceName || !apiKey || !indexName) {
+            context.error(
+                "Make sure to set valid values for endpoint, apiKey, and indexName in the environment variables"
             );
             return {
                 status: 500,
@@ -35,6 +35,7 @@ export async function getSourceSemanticSearch(
         }
 
         const credential = new AzureKeyCredential(apiKey);
+        const endpoint = `https://${serviceName}.search.windows.net`;
 
         const searchClient: SearchClient<Document> = new SearchClient<Document>(
             endpoint,
@@ -55,7 +56,6 @@ export async function getSourceSemanticSearch(
 
         return { body: JSON.stringify(results) };
     } catch (err) {
-        console.error(err);
         context.error(err);
         // This rethrown exception will only fail the individual invocation, instead of crashing the whole process
         throw err;
