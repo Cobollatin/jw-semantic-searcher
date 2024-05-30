@@ -11,7 +11,7 @@ on:
     pull_request:
         branches:
             - main
-        types: [opened, synchronize, reopened, closed]
+        types: [opened, synchronize, reopened]
         paths:
             - "indexer/**"
             - ".github/workflows/batch_pipeline.yaml"
@@ -58,6 +58,7 @@ jobs:
                       echo "Image already exists in ACR, skipping build"
                       echo "::set-output name=skip_build::true"
                   fi
+                  exit 0
             - name: Build and push image to ACR
               working-directory: ./indexer
               if: github.event_name == 'push' || steps.check-if-image-exists.outputs.skip_build != 'true'
@@ -118,6 +119,7 @@ jobs:
                   if [ $? -eq 0 ]; then
                       echo "::set-output name=task_exists::true"
                   fi
+                  exit 0
             - name: Reactivate Batch Job Task
               if: steps.check-if-job-exists.outputs.task_exists == 'true'
               run: az batch task reactivate --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }}
