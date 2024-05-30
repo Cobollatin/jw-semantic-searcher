@@ -18,9 +18,9 @@ await searchService.CreateOrUpdateIndexAsync(index);
 
 var documents = new List<Document>
 {
-    new() { Id =  Guid.NewGuid(), Title = "1", Content = "This is a preview of document 1", Url = "http://example.com/1" },
-    new() { Id =  Guid.NewGuid(), Title = "2", Content = "This is a preview of document 2", Url = "http://example.com/2" },
-    new() { Id =  Guid.NewGuid(), Title = "3", Content = "This is a preview of document 3", Url = "http://example.com/3" }
+    new() { Id =  Guid.NewGuid().ToString("n"), Title = "1", Content = "This is a preview of document 1", Url = "http://example.com/1" },
+    new() { Id =  Guid.NewGuid().ToString("n"), Title = "2", Content = "This is a preview of document 2", Url = "http://example.com/2" },
+    new() { Id =  Guid.NewGuid().ToString("n"), Title = "3", Content = "This is a preview of document 3", Url = "http://example.com/3" }
 };
 
 await searchService.UploadDocumentsAsync(documents);
