@@ -5,16 +5,16 @@ namespace Indexer.Models
 {
     public class Document
     {
-        [JsonPropertyName("HotelId")]
+        [JsonPropertyName("Id")]
         [SimpleField(IsKey = true, IsFilterable = true, IsSortable = true)]
         public required string Id { private get; set; }
-        [JsonPropertyName("HotelName")]
+        [JsonPropertyName("Title")]
         [SearchableField(IsFilterable = true, IsSortable = true)]
         public required string Title { private get; set; }
-        [JsonPropertyName("HotelName")]
+        [JsonPropertyName("Content")]
         [SearchableField(IsFilterable = true, IsSortable = false)]
         public required string Content { private get; set; }
-        [JsonPropertyName("HotelName")]
+        [JsonPropertyName("Url")]
         [SearchableField(IsFilterable = true, IsSortable = false)]
         public required string Url { private get; set; }
     }
