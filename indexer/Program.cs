@@ -40,7 +40,7 @@ var vectorSearch = new VectorSearch
     },
     Algorithms = {
         new HnswAlgorithmConfiguration(semanticConfigName){
-            Parameters = {
+            Parameters = new () {
                     EfConstruction = 400,
                     EfSearch = 500,
                     M = 4,
