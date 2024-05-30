@@ -16,7 +16,10 @@ const semanticSearchConfig =
     process.env.AZURE_SEARCH_SEMANTIC_CONFIG_NAME || "";
 
 const openAiKey = process.env["OPENAI_KEY"] || "";
-const openAiOrg = process.env["OPENAI_ORG"] || "";
+const openAiOrgName = process.env["OPENAI_ORG_NAME"] || "";
+const openAiOrgId = process.env["OPENAI_ORG_ID"] || "";
+const openAiProjectName = process.env["OPENAI_PROJECT_NAME"] || "";
+const openAiProjectId = process.env["OPENAI_PROJECT_ID"] || "";
 const deploymentName = process.env["OPENAI_DEPLOYMENT_NAME"] || "";
 
 export async function getSourceSemanticSearch(
@@ -40,9 +43,16 @@ export async function getSourceSemanticSearch(
             };
         }
 
-        if (!openAiKey || !openAiOrg || !deploymentName) {
+        if (
+            !openAiKey ||
+            !openAiOrgName ||
+            !openAiOrgId ||
+            !openAiProjectName ||
+            !openAiProjectId ||
+            !deploymentName
+        ) {
             context.error(
-                "Make sure to set valid values for OPENAI_KEY, OPENAI_ORG, and OPENAI_DEPLOYMENT_NAME in your environment variables."
+                "Make sure to set valid values for OPENAI_KEY, OPENAI_ORG, OPENAI_PROJECT, OPENAI_DEPLOYMENT_NAME in your environment variables."
             );
             return {
                 status: 500,
@@ -60,7 +70,8 @@ export async function getSourceSemanticSearch(
 
         const openAiClient = new OpenAI({
             apiKey: openAiKey,
-            organization: openAiOrg,
+            project: openAiProjectId,
+            organization: openAiOrgId,
         });
         const embeddings = await openAiClient.embeddings.create({
             input: query,

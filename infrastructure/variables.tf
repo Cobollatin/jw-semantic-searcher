@@ -62,9 +62,27 @@ variable "openai_key" {
 }
 
 # Variable for the repositories with docker images
-variable "openai_org" {
-  description = "The OpenAI API organization" # Specifies the OpenAI API organization used for the semantic search configuration.
+variable "openai_project_name" {
+  description = "The OpenAI API project name" # Specifies the OpenAI API project name used for the semantic search configuration.
   type        = string                        # The value of this variable is a string.
+}
+
+# Variable for the repositories with docker images
+variable "openai_project_id" {
+  description = "The OpenAI API project ID" # Specifies the OpenAI API project ID used for the semantic search configuration.
+  type        = string                      # The value of this variable is a string.
+}
+
+# Variable for the repositories with docker images
+variable "openai_org_name" {
+  description = "The OpenAI API organization name" # Specifies the OpenAI API organization name used for the semantic search configuration.
+  type        = string                             # The value of this variable is a string.
+}
+
+# Variable for the repositories with docker images
+variable "openai_org_id" {
+  description = "The OpenAI API organization ID" # Specifies the OpenAI API organization ID used for the semantic search configuration.
+  type        = string                           # The value of this variable is a string.
 }
 
 # Variable for the repositories with docker images

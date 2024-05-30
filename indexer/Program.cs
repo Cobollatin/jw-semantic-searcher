@@ -63,9 +63,12 @@ var index = new SearchIndex(indexName)
 };
 
 string openAiKey = Environment.GetEnvironmentVariable("OPENAI_KEY") ?? throw new ArgumentNullException("OPENAI_KEY");
-string openAiOrg = Environment.GetEnvironmentVariable("OPENAI_ORG") ?? throw new ArgumentNullException("OPENAI_ORG");
+// string openAiOrgName = Environment.GetEnvironmentVariable("OPENAI_ORG_NAME") ?? throw new ArgumentNullException("OPENAI_ORG_NAME");
+string openAiOrgId = Environment.GetEnvironmentVariable("OPENAI_ORG_ID") ?? throw new ArgumentNullException("OPENAI_ORG_ID");
+// string openAiProjectName = Environment.GetEnvironmentVariable("OPENAI_PROJECT_NAME") ?? throw new ArgumentNullException("OPENAI_PROJECT_NAME");
+// string openAiProjectId = Environment.GetEnvironmentVariable("OPENAI_PROJECT_ID") ?? throw new ArgumentNullException("OPENAI_PROJECT_ID");
 string deploymentName = Environment.GetEnvironmentVariable("OPENAI_DEPLOYMENT_NAME") ?? throw new ArgumentNullException("OPENAI_DEPLOYMENT_NAME");
-var openAIClient = new OpenAIAPI(new APIAuthentication(openAiKey, openAiOrg));
+var openAIClient = new OpenAIAPI(new APIAuthentication(openAiKey, openAiOrgId));
 
 CancellationTokenSource cancellationTokenSource = new();
 CancellationToken cancellationToken = cancellationTokenSource.Token;

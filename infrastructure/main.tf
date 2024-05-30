@@ -276,7 +276,10 @@ resource "azurerm_static_web_app" "use2_main_swa" {
     "AZURE_SEARCH_SEMANTIC_CONFIG_NAME"     = var.semantic_search_config_name,
     "OPENAI_DEPLOYMENT_NAME"                = var.openai_model,
     "OPENAI_KEY"                            = var.openai_key,
-    "OPENAI_ORG"                            = var.openai_org,
+    "OPENAI_PROJECT_NAME"                   = var.openai_project_name,
+    "OPENAI_PROJECT_ID"                     = var.openai_project_id,
+    "OPENAI_ORG_NAME"                       = var.openai_org_name,
+    "OPENAI_ORG_ID"                         = var.openai_org_id,
     "APPINSIGHTS_INSTRUMENTATIONKEY"        = azurerm_application_insights.use2_main_swa_ai.instrumentation_key,
     "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.use2_main_swa_ai.connection_string,
   }
@@ -561,12 +564,36 @@ resource "github_actions_secret" "use2_main_openai_key" {
   plaintext_value = var.openai_key
 }
 
-resource "github_actions_secret" "use2_main_openai_org" {
+resource "github_actions_secret" "use2_main_openai_project_name" {
   #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
   for_each        = toset(concat(var.batch_repositories, [var.swa_repository]))
   repository      = each.value
-  secret_name     = "OPENAI_ORG"
-  plaintext_value = var.openai_key
+  secret_name     = "OPENAI_PROJECT_NAME"
+  plaintext_value = var.openai_project_name
+}
+
+resource "github_actions_secret" "use2_main_openai_project_id" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
+  for_each        = toset(concat(var.batch_repositories, [var.swa_repository]))
+  repository      = each.value
+  secret_name     = "OPENAI_PROJECT_ID"
+  plaintext_value = var.openai_project_id
+}
+
+resource "github_actions_secret" "use2_main_openai_org_name" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
+  for_each        = toset(concat(var.batch_repositories, [var.swa_repository]))
+  repository      = each.value
+  secret_name     = "OPENAI_ORG_NAME"
+  plaintext_value = var.openai_org_name
+}
+
+resource "github_actions_secret" "use2_main_openai_org_id" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
+  for_each        = toset(concat(var.batch_repositories, [var.swa_repository]))
+  repository      = each.value
+  secret_name     = "OPENAI_ORG_ID"
+  plaintext_value = var.openai_org_id
 }
 
 ############################################################################################################################
