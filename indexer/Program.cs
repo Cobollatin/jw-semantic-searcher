@@ -189,7 +189,7 @@ foreach (var document in partialDocuments)
         Url = document.Url,
         DescriptionVector = descriptionVector
     });
-    Console.WriteLine("Added document {0}", document);
+    Console.WriteLine("Added document {0}", documents.Last().ToString());
 }
 
 await searchService.UploadDocumentsAsync(documents, cancellationToken);
