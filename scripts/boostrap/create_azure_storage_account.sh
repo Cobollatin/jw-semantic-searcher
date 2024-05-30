@@ -16,7 +16,8 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
 # The 'Standard_LRS' SKU indicates the use of Standard performance with Locally Redundant Storage.
 # Enabling encryption for blob storage to ensure data is encrypted at rest.
 az storage account create --name $STORAGE_ACCOUNT_NAME --resource-group $RESOURCE_GROUP \
-    --location $LOCATION --sku Standard_LRS --encryption-services blob
+    --location $LOCATION --sku Standard_LRS --encryption-services blob --min-tls-version TLS1_2 \
+    --allow-blob-public-access false --allow-shared-key-access true --https-only true
 
 # Retrieve the primary key of the storage account. This key is needed to perform operations on the storage account, such as creating a blob container.
 ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP --account-name $STORAGE_ACCOUNT_NAME \
@@ -24,6 +25,16 @@ ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP --ac
 
 # Create a blob container within the storage account. Blob containers are used to store blobs, such as images, text files, or Terraform state files.
 az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME --account-key $ACCOUNT_KEY
+
+# github_runners_ips=()
+
+# for ip in "${github_runners_ips[@]}"
+# do
+#   az storage account network-rule add --account-name $STORAGE_ACCOUNT_NAME --resource-group $RESOURCE_GROUP --ip-address $ip
+# done
+
+# az storage account update --name $STORAGE_ACCOUNT_NAME --resource-group $RESOURCE_GROUP \
+#     --default-action Deny --bypass AzureServices Logging Metrics
 
 gh secret set AZURE_TF_RESOURCE_GROUP -b"$RESOURCE_GROUP" --repo $GITHUB_REPO
 gh secret set AZURE_TF_STORAGE_ACCOUNT_NAME -b"$STORAGE_ACCOUNT_NAME" --repo $GITHUB_REPO

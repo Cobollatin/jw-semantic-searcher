@@ -6,7 +6,7 @@ namespace Indexer.Models
     public class Document
     {
         [JsonPropertyName("Id")]
-        [SimpleField(IsKey = true, IsFilterable = true, IsSortable = true)]
+        [SimpleField(IsFilterable = true, IsSortable = true)]
         public required string Id { get; init; }
         [JsonPropertyName("Title")]
         [SearchableField(IsFilterable = true, IsSortable = true)]
@@ -15,7 +15,7 @@ namespace Indexer.Models
         [SearchableField(IsFilterable = true, IsSortable = false)]
         public required string Content { get; init; }
         [JsonPropertyName("Url")]
-        [SearchableField(IsFilterable = true, IsSortable = false)]
+        [SearchableField(IsKey = true, IsFilterable = true, IsSortable = false)]
         public required string Url { get; init; }
     }
 }
