@@ -262,9 +262,11 @@ resource "azurerm_static_web_app" "use2_main_swa" {
   sku_size                           = "Free"
   tags                               = var.common_tags
   app_settings = {
-    "AZURE_SEARCH_API_KEY"      = azurerm_search_service.use2_main_ss.primary_key,
-    "AZURE_SEARCH_SERVICE_NAME" = azurerm_search_service.use2_main_ss.name,
-    "AZURE_SEARCH_INDEX_NAME"   = var.indexer_name,
+    "AZURE_SEARCH_API_KEY"                  = azurerm_search_service.use2_main_ss.primary_key,
+    "AZURE_SEARCH_SERVICE_NAME"             = azurerm_search_service.use2_main_ss.name,
+    "AZURE_SEARCH_INDEX_NAME"               = var.indexer_name,
+    "APPINSIGHTS_INSTRUMENTATIONKEY"        = azurerm_application_insights.use2_main_swa_ai.instrumentation_key,
+    "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.use2_main_swa_ai.connection_string,
   }
   # We cant use the identity under the free tier
   # identity {
