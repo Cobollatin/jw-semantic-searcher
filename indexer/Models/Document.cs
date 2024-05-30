@@ -7,7 +7,7 @@ namespace Indexer.Models
     {
         [JsonPropertyName("HotelId")]
         [SimpleField(IsKey = true, IsFilterable = true, IsSortable = true)]
-        public required Guid Id { private get; set; }
+        public required string Id { private get; set; }
         [JsonPropertyName("HotelName")]
         [SearchableField(IsFilterable = true, IsSortable = true)]
         public required string Title { private get; set; }
