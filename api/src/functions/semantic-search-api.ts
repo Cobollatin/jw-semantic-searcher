@@ -11,6 +11,8 @@ import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
 const serviceName = process.env.AZURE_SEARCH_SERVICE_NAME || "";
 const apiKey = process.env.AZURE_SEARCH_API_KEY || "";
 const indexName = process.env.AZURE_SEARCH_INDEX_NAME || "";
+const semanticSearchConfig =
+    process.env.AZURE_SEARCH_SEMANTIC_CONFIG_NAME || "";
 
 export async function getSourceSemanticSearch(
     request: HttpRequest,
@@ -24,9 +26,9 @@ export async function getSourceSemanticSearch(
             };
         }
 
-        if (!serviceName || !apiKey || !indexName) {
+        if (!serviceName || !apiKey || !indexName || !semanticSearchConfig) {
             context.error(
-                "Make sure to set valid values for endpoint, apiKey, and indexName in the environment variables"
+                "Make sure to set valid values for endpoint, apiKey, indexName, and semanticSearchConfig in your environment variables."
             );
             return {
                 status: 500,
@@ -46,6 +48,21 @@ export async function getSourceSemanticSearch(
             includeTotalCount: true,
             orderBy: ["search.score() desc"],
             select: ["Id", "Title", "Content", "Url"],
+            queryType: "semantic",
+            semanticSearchOptions: {
+                configurationName: semanticSearchConfig,
+                errorMode: "partial",
+                maxWaitInMilliseconds: 5000,
+                answers: {
+                    answerType: "extractive",
+                    count: 1,
+                    threshold: 0.5,
+                },
+                captions: {
+                    captionType: "extractive",
+                    highlight: true,
+                },
+            },
         });
 
         const results: Array<Document> = new Array<Document>();

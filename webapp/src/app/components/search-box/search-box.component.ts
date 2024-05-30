@@ -41,7 +41,7 @@ export class SearchBoxComponent implements OnDestroy {
                 }),
                 map((term: string) => term.toLowerCase()),
                 tap((term: string) => {
-                    if (term.length < 3) {
+                    if (term.length < 2) {
                         throw {
                             message:
                                 "Search term is too short (min 3 characters)",

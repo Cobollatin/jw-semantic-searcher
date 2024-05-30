@@ -48,6 +48,11 @@ variable "indexer_name" {
   type        = string                                 # The value of this variable is a string.
 }
 
+# Variable for the repositories with docker images
+variable "semantic_search_config_name" {
+  description = "The name of the Azure Search semantic search configuration" # Specifies the name of the Azure Search semantic search configuration.
+  type        = string                                                       # The value of this variable is a string.
+}
 
 # Variable for the repositories with batch jobs
 variable "batch_repositories" {
