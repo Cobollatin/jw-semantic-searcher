@@ -296,6 +296,7 @@ resource "azurerm_application_insights" "use2_main_swa_ai" {
   application_type     = "Node.JS"
   retention_in_days    = 30
   daily_data_cap_in_gb = 0.2
+  workspace_id         = azurerm_log_analytics_workspace.use2_main_law.id
   tags                 = var.common_tags
 }
 
