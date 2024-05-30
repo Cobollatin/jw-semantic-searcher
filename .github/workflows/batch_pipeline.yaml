@@ -115,7 +115,7 @@ jobs:
               id: check-if-job-exists
               if: github.event_name == 'push'
               run: |
-                  az batch task show --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }}
+                  az batch task show --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }} > /dev/null
                   if [ $? -eq 0 ]; then
                       echo "::set-output name=task_exists::true"
                   fi
