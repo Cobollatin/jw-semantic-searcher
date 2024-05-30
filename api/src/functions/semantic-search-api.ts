@@ -40,11 +40,6 @@ export async function getSourceSemanticSearch(
             credential
         );
 
-        const indexClient: SearchIndexClient = new SearchIndexClient(
-            endpoint,
-            credential
-        );
-
         const searchResults = await searchClient.search("*", {
             includeTotalCount: true,
             orderBy: ["@search.score desc"],
