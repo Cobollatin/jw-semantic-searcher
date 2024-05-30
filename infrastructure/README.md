@@ -82,7 +82,10 @@ No modules.
 | [github_actions_secret.use2_main_indexer_name](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_openai_deployment_name](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_openai_key](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
-| [github_actions_secret.use2_main_openai_org](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.use2_main_openai_org_id](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.use2_main_openai_org_name](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.use2_main_openai_project_id](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.use2_main_openai_project_name](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_sa_account_container_url](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_ss_api_key](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.use2_main_ss_name](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
@@ -110,7 +113,10 @@ No modules.
 | <a name="input_location_short"></a> [location\_short](#input\_location\_short) | The short name of the Azure region where resources will be created | `string` | n/a | yes |
 | <a name="input_openai_key"></a> [openai\_key](#input\_openai\_key) | The OpenAI API key | `string` | n/a | yes |
 | <a name="input_openai_model"></a> [openai\_model](#input\_openai\_model) | The OpenAI model used for semantic search | `string` | n/a | yes |
-| <a name="input_openai_org"></a> [openai\_org](#input\_openai\_org) | The OpenAI API organization | `string` | n/a | yes |
+| <a name="input_openai_org_id"></a> [openai\_org\_id](#input\_openai\_org\_id) | The OpenAI API organization ID | `string` | n/a | yes |
+| <a name="input_openai_org_name"></a> [openai\_org\_name](#input\_openai\_org\_name) | The OpenAI API organization name | `string` | n/a | yes |
+| <a name="input_openai_project_id"></a> [openai\_project\_id](#input\_openai\_project\_id) | The OpenAI API project ID | `string` | n/a | yes |
+| <a name="input_openai_project_name"></a> [openai\_project\_name](#input\_openai\_project\_name) | The OpenAI API project name | `string` | n/a | yes |
 | <a name="input_semantic_search_config_name"></a> [semantic\_search\_config\_name](#input\_semantic\_search\_config\_name) | The name of the Azure Search semantic search configuration | `string` | n/a | yes |
 | <a name="input_swa_repository"></a> [swa\_repository](#input\_swa\_repository) | The GitHub repository for the Static Web App | `string` | n/a | yes |
 
