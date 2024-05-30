@@ -33,8 +33,9 @@ namespace Indexer.Services
 
         public async Task UploadDocumentsAsync(IEnumerable<Document> documents)
         {
-            IndexDocumentsBatch<Document> batch = IndexDocumentsBatch.Upload(documents);
-            await _searchClient.IndexDocumentsAsync(batch);
+            var batch = IndexDocumentsBatch.Create(IndexDocumentsAction.Upload(documents));
+            IndexDocumentsOptions options = new() { ThrowOnAnyError = true };
+            await _searchClient.IndexDocumentsAsync(batch, options);
         }
     }
 }
