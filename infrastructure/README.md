@@ -46,15 +46,6 @@ No modules.
 | [azurerm_network_security_group.use2_kv_nsg](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/network_security_group) | resource |
 | [azurerm_network_security_group.use2_sa_nsg](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/network_security_group) | resource |
 | [azurerm_network_watcher.use2_main_nwwatcher](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/network_watcher) | resource |
-| [azurerm_private_dns_zone.example](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/private_dns_zone) | resource |
-| [azurerm_private_dns_zone.use2_main_kv_dns_zone](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/private_dns_zone) | resource |
-| [azurerm_private_dns_zone.use2_main_sa_dns_zone](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/private_dns_zone) | resource |
-| [azurerm_private_dns_zone_virtual_network_link.use2_main_kv_vn_link](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/private_dns_zone_virtual_network_link) | resource |
-| [azurerm_private_dns_zone_virtual_network_link.use2_main_sa_vn_link](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/private_dns_zone_virtual_network_link) | resource |
-| [azurerm_private_dns_zone_virtual_network_link.use2_main_ss_vn_link](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/private_dns_zone_virtual_network_link) | resource |
-| [azurerm_private_endpoint.use2_main_kv_pe](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/private_endpoint) | resource |
-| [azurerm_private_endpoint.use2_main_sa_pe](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/private_endpoint) | resource |
-| [azurerm_private_endpoint.use2_main_ss_pe](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/private_endpoint) | resource |
 | [azurerm_resource_group.use2_main_rg](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/resource_group) | resource |
 | [azurerm_role_assignment.use2_main_batch_acr_role](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.use2_main_batch_sa_role](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/role_assignment) | resource |
@@ -67,7 +58,6 @@ No modules.
 | [azurerm_subnet.use2_bp_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/subnet) | resource |
 | [azurerm_subnet.use2_kv_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/subnet) | resource |
 | [azurerm_subnet.use2_sa_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/subnet) | resource |
-| [azurerm_subnet.use2_ss_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/subnet) | resource |
 | [azurerm_subnet_network_security_group_association.use2_bp_subnet_nsg_association](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/subnet_network_security_group_association) | resource |
 | [azurerm_subnet_network_security_group_association.use2_kv_subnet_nsg_association](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/subnet_network_security_group_association) | resource |
 | [azurerm_subnet_network_security_group_association.use2_sa_subnet_nsg_association](https://registry.terraform.io/providers/hashicorp/azurerm/3.105.0/docs/resources/subnet_network_security_group_association) | resource |
