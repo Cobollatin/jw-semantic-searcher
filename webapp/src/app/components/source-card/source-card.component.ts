@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { ComponentError, Source } from "src/app/models";
+import { ComponentError, Document } from "src/app/models";
 
 @Component({
     selector: "app-source-card",
@@ -10,7 +10,7 @@ import { ComponentError, Source } from "src/app/models";
     styleUrls: ["./source-card.component.css"],
 })
 export class SourceCardComponent {
-    @Input() source?: Source;
+    @Input() source?: Document;
     @Input() error?: ComponentError;
 
     constructor() {}

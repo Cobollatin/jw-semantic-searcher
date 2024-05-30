@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, catchError, throwError } from "rxjs";
-import { ComponentError, Source } from "../models";
+import { ComponentError, Document } from "../models";
 import { environment } from "src/environments/environment";
 
 @Injectable({
@@ -10,9 +10,9 @@ import { environment } from "src/environments/environment";
 export class SearchSourceService {
     constructor(private _httpClient: HttpClient) {}
 
-    public searchSources(query: string): Observable<Source[]> {
+    public searchSources(query: string): Observable<Document[]> {
         return this._httpClient
-            .get<Source[]>(
+            .get<Document[]>(
                 `${environment.apiUrl}/api/source-semantic-search?query=${query}`
             )
             .pipe(

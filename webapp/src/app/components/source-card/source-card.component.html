@@ -1,10 +1,10 @@
 <section class="result">
     <ng-container *ngIf="source; else errorTemplate">
-        <h2 class="result-heading" (click)="openLink(source.url)">
-            {{ formatTitle(source.title) }}
+        <h2 class="result-heading" (click)="openLink(source.Url)">
+            {{ formatTitle(source.Title) }}
         </h2>
         <p class="result-preview">
-            {{ formatPreview(source.preview) }}
+            {{ formatPreview(source.Content) }}
         </p>
     </ng-container>
     <ng-template #errorTemplate>
@@ -13,8 +13,6 @@
             We couldn't show the source, please try again later or report the
             issue.
         </p>
-        <small class="error" *ngIf="error">
-            Error: {{ error.message }}
-        </small>
+        <small class="error" *ngIf="error"> Error: {{ error.message }} </small>
     </ng-template>
 </section>

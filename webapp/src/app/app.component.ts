@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { ComponentError, Source } from "./models";
+import { ComponentError, Document } from "./models";
 import { SearchBoxComponent } from "./components/search-box/search-box.component";
 import { SourceSearchResultsComponent } from "./components/source-search-results/source-search-results.component";
 import { SearchSourceService } from "./services/search-source.service";
@@ -24,7 +24,7 @@ export class AppComponent {
     /**
      * An array of Source objects.
      */
-    public sources: Array<Source> = [];
+    public sources: Array<Document> = [];
 
     /**
      * Indicates whether the component is currently loading.
@@ -55,7 +55,7 @@ export class AppComponent {
         this.ready = false;
         this.error = undefined;
         this._searchSourceService.searchSources($event).subscribe({
-            next: (sources: Source[]) => {
+            next: (sources: Document[]) => {
                 this.sources = sources;
                 this.loading = false;
                 this.ready = true;
