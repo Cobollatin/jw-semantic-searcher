@@ -437,10 +437,10 @@ resource "azurerm_search_service" "use2_main_ss" {
   customer_managed_key_enforcement_enabled = false
   public_network_access_enabled            = true
   local_authentication_enabled             = true
-  sku                                      = "free"
+  sku                                      = "basic"
+  semantic_search_sku                      = "free"
   tags                                     = var.common_tags
   # Error: `semantic_search_sku` can only be specified when `sku` is not set to "free"
-  # semantic_search_sku                      = "free"
   # Resource identity is not supported for the selected SKU
   # identity {
   #   # The only possible value is SystemAssigned.
