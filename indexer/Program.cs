@@ -14,43 +14,47 @@ string semanticConfigName = Environment.GetEnvironmentVariable("AZURE_SEARCH_SEM
 
 var searchService = new AzureSearchService(serviceName, indexName, apiKey);
 
-var index = new SearchIndex(indexName)
+var fields = new FieldBuilder().Build(typeof(Document));
+var SemanticSearch = new SemanticSearch
 {
-    Fields = new FieldBuilder().Build(typeof(Document)),
-    SemanticSearch = new()
+    Configurations =
     {
-        Configurations =
+        new SemanticConfiguration(semanticConfigName, new()
         {
-            new SemanticConfiguration(semanticConfigName, new()
+            TitleField = new SemanticField("Title"),
+            ContentFields =
             {
-                TitleField = new SemanticField("Title"),
-                ContentFields =
-                {
-                    new SemanticField("Content")
-                },
-                KeywordsFields =
-                {
-                    new SemanticField("Url")
-                },
-            })
-        }
+                new SemanticField("Content")
+            },
+            KeywordsFields =
+            {
+                new SemanticField("Url")
+            },
+        })
+    }
+};
+var vectorSearch = new VectorSearch
+{
+    Profiles = {
+        new VectorSearchProfile(DocumentConstants.DocumentSearchProfile, semanticConfigName)
     },
-    VectorSearch = new()
-    {
-        Profiles = {
-            new VectorSearchProfile(DocumentConstants.DocumentSearchProfile, semanticConfigName)
-        },
-        Algorithms = {
-            new HnswAlgorithmConfiguration(semanticConfigName){
-                Parameters = {
-                        EfConstruction = 400,
-                        EfSearch = 500,
-                        M = 4,
-                        Metric = VectorSearchAlgorithmMetric.Cosine
-                    }
-            }
+    Algorithms = {
+        new HnswAlgorithmConfiguration(semanticConfigName){
+            Parameters = {
+                    EfConstruction = 400,
+                    EfSearch = 500,
+                    M = 4,
+                    Metric = VectorSearchAlgorithmMetric.Cosine
+                }
         }
     }
+};
+
+var index = new SearchIndex(indexName)
+{
+    Fields = fields,
+    SemanticSearch = SemanticSearch,
+    VectorSearch = vectorSearch
 };
 
 string openAiKey = Environment.GetEnvironmentVariable("OPENAI_KEY") ?? throw new ArgumentNullException("OPENAI_KEY");

@@ -935,7 +935,7 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
 $sample = $PendingTasks.GetSample(TimeInterval_Minute * 5);
 $tasks = max($sample);
 $targetVMs = $tasks > 0 ? $tasks : max(0, $TargetDedicatedNodes / 2);
-minPoolSize = 0;
+minPoolSize = 1;
 cappedPoolSize = 1;
 $TargetDedicatedNodes = max(minPoolSize, min($targetVMs, cappedPoolSize));
 $NodeDeallocationOption = taskcompletion;
