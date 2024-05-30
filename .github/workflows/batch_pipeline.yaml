@@ -61,6 +61,7 @@ jobs:
             - name: Build and push image to ACR
               working-directory: ./indexer
               if: github.event_name == 'push' || steps.check-if-image-exists.outputs.skip_build != 'true'
+              # TODO: Secrets are not working in the build command, we need to fix this
               run: az acr build --image ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --image ${{ env.IMAGE_NAME }}:latest --registry ${{ secrets.AZURE_CONTAINER_REGISTRY }} -g ${{ secrets.ACR_RESOURCE_GROUP }} --secret-build-arg AZURE_SEARCH_API_KEY=${{ secrets.AZURE_SEARCH_SERVICE_API_KEY }} --secret-build-arg AZURE_SEARCH_SERVICE_NAME=${{ secrets.AZURE_SEARCH_SERVICE_NAME }} --secret-build-arg AZURE_SEARCH_INDEX_NAME=INDEXER .
     deploy:
         runs-on: ubuntu-latest
@@ -79,7 +80,7 @@ jobs:
                             \"commandLine\": \"\",
                             \"containerSettings\": {
                                 \"imageName\": \"${{ secrets.AZURE_CONTAINER_REGISTRY_SERVER }}/${{ env.IMAGE_NAME }}:latest\",
-                                \"containerRunOptions\": \"--rm --workdir /indexer\",
+                                \"containerRunOptions\": \"--rm --workdir /indexer --env AZURE_SEARCH_API_KEY=${{ secrets.AZURE_SEARCH_SERVICE_API_KEY }} --env AZURE_SEARCH_SERVICE_NAME=${{ secrets.AZURE_SEARCH_SERVICE_NAME }} --env AZURE_SEARCH_INDEX_NAME=INDEXER\",
                             },
                             \"OutputFiles\": [
                                 {
@@ -105,6 +106,17 @@ jobs:
                                 }
                             },
                         }" > task.json
+            - name: Reactivate Batch Job Task
+              uses: azure/CLI@v2.0.0
+              if: github.event_name == 'push'
+              env:
+                  AZURE_BATCH_ENDPOINT: ${{ secrets.BATCH_ACCOUNT_ENDPOINT }}
+                  AZURE_BATCH_ACCESS_KEY: ${{ secrets.BATCH_ACCOUNT_KEY }}
+                  AZURE_BATCH_ACCOUNT: ${{ secrets.BATCH_ACCOUNT_NAME }}
+              with:
+                  azcliversion: "2.59.0"
+                  inlineScript: |
+                      az batch task reactivate --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }}
             - name: Deploy to Azure Batch
               uses: azure/CLI@v2.0.0
               if: github.event_name == 'push'
