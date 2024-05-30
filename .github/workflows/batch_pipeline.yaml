@@ -22,11 +22,12 @@ env:
     IMAGE_NAME: "indexer"
     IMAGE_TAG: ${{ github.sha }}
 jobs:
-    pre_job:
+    pre_deploy:
         runs-on: ubuntu-latest
-        if: github.event_name == 'workflow_dispatch' && github.event.ref != 'refs/heads/main'
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.ref == 'refs/heads/main')
         steps:
             - name: Invalid branch
+              if: github.event_name == 'workflow_dispatch' && github.event.ref != 'refs/heads/main'
               run: |
                   echo "Invalid branch"
                   exit 1
@@ -40,7 +41,7 @@ jobs:
     buildImage:
         runs-on: ubuntu-latest
         if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.ref == 'refs/heads/main')
-        needs: pre_job
+        needs: pre_deploy
         steps:
             - uses: actions/checkout@v4.1.4
             - uses: azure/login@v2.1.0
