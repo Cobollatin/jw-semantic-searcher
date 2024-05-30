@@ -25,7 +25,7 @@ namespace Indexer.Models
         public required string Url { get; init; }
         [JsonIgnore]
         [VectorSearchField(VectorSearchDimensions = 1536, VectorSearchProfileName = DocumentConstants.DocumentSearchProfile)]
-        public required IReadOnlyList<float> DescriptionVector { get; init; }
+        public IReadOnlyList<float>? DescriptionVector { get; set; }
     }
 
 
