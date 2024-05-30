@@ -9,9 +9,9 @@ on:
             - "indexer/**"
             - ".github/workflows/batch_pipeline.yaml"
     pull_request:
-        types: [opened, synchronize, reopened, closed]
         branches:
             - main
+        types: [opened, synchronize, reopened, closed]
         paths:
             - "indexer/**"
             - ".github/workflows/batch_pipeline.yaml"
@@ -66,6 +66,10 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         needs: buildImage
+        env:
+            AZURE_BATCH_ENDPOINT: ${{ secrets.BATCH_ACCOUNT_ENDPOINT }}
+            AZURE_BATCH_ACCESS_KEY: ${{ secrets.BATCH_ACCOUNT_KEY }}
+            AZURE_BATCH_ACCOUNT: ${{ secrets.BATCH_ACCOUNT_NAME }}
         steps:
             - uses: actions/checkout@v4.1.4
             - uses: azure/login@v2.1.0
@@ -107,39 +111,16 @@ jobs:
                             },
                         }" > task.json
             - name: Check if job exists
-              uses: azure/CLI@v2.0.0
               id: check-if-job-exists
               if: github.event_name == 'push'
-              env:
-                  AZURE_BATCH_ENDPOINT: ${{ secrets.BATCH_ACCOUNT_ENDPOINT }}
-                  AZURE_BATCH_ACCESS_KEY: ${{ secrets.BATCH_ACCOUNT_KEY }}
-                  AZURE_BATCH_ACCOUNT: ${{ secrets.BATCH_ACCOUNT_NAME }}
-              with:
-                  azcliversion: "2.59.0"
-                  inlineScript: |
-                      az batch task show --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }}
-                      if [ $? -eq 0 ]; then
-                          echo "::set-output name=task_exists::true"
-                      fi
+              run: |
+                  az batch task show --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }}
+                  if [ $? -eq 0 ]; then
+                      echo "::set-output name=task_exists::true"
+                  fi
             - name: Reactivate Batch Job Task
-              uses: azure/CLI@v2.0.0
               if: steps.check-if-job-exists.outputs.task_exists == 'true'
-              env:
-                  AZURE_BATCH_ENDPOINT: ${{ secrets.BATCH_ACCOUNT_ENDPOINT }}
-                  AZURE_BATCH_ACCESS_KEY: ${{ secrets.BATCH_ACCOUNT_KEY }}
-                  AZURE_BATCH_ACCOUNT: ${{ secrets.BATCH_ACCOUNT_NAME }}
-              with:
-                  azcliversion: "2.59.0"
-                  inlineScript: |
-                      az batch task reactivate --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }}
+              run: az batch task reactivate --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }}
             - name: Deploy to Azure Batch
-              uses: azure/CLI@v2.0.0
               if: github.event_name == 'push' || steps.check-if-job-exists.outputs.task_exists != 'true'
-              env:
-                  AZURE_BATCH_ENDPOINT: ${{ secrets.BATCH_ACCOUNT_ENDPOINT }}
-                  AZURE_BATCH_ACCESS_KEY: ${{ secrets.BATCH_ACCOUNT_KEY }}
-                  AZURE_BATCH_ACCOUNT: ${{ secrets.BATCH_ACCOUNT_NAME }}
-              with:
-                  azcliversion: "2.59.0"
-                  inlineScript: |
-                      az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --json-file task.json
+              run: az batch task create --job-id ${{ secrets.BATCH_JOB_ID }} --json-file task.json
