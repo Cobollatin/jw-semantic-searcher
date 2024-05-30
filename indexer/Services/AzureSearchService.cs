@@ -19,23 +19,21 @@ namespace Indexer.Services
             _indexClient = new SearchIndexClient(new Uri(endpoint), new AzureKeyCredential(apiKey));
         }
 
-        public async Task<SearchResults<SearchDocument>> SearchDocumentsAsync(string query)
+        public async Task CreateOrUpdateIndexAsync(SearchIndex index, CancellationToken cancellationToken = default)
         {
-            SearchOptions options = new() { IncludeTotalCount = true };
-            SearchResults<SearchDocument> results = await _searchClient.SearchAsync<SearchDocument>(query, options);
-            return results;
+            await _indexClient.CreateOrUpdateIndexAsync(index, cancellationToken: cancellationToken);
         }
 
-        public async Task CreateOrUpdateIndexAsync(SearchIndex index)
-        {
-            await _indexClient.CreateOrUpdateIndexAsync(index);
-        }
-
-        public async Task UploadDocumentsAsync(IEnumerable<Document> documents)
+        public async Task UploadDocumentsAsync(IEnumerable<Document> documents, CancellationToken cancellationToken = default)
         {
             var batch = IndexDocumentsBatch.MergeOrUpload(documents);
             IndexDocumentsOptions options = new() { ThrowOnAnyError = true };
-            await _searchClient.IndexDocumentsAsync(batch, options);
+            await _searchClient.IndexDocumentsAsync(batch, options, cancellationToken: cancellationToken);
+        }
+
+        public async Task DeleteIndexAsync(string indexName, CancellationToken cancellationToken = default)
+        {
+            await _indexClient.DeleteIndexAsync(indexName, cancellationToken: cancellationToken);
         }
     }
 }

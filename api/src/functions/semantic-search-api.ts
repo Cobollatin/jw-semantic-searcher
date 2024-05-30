@@ -26,7 +26,7 @@ export async function getSourceSemanticSearch(
         }
 
         if (!endpoint || !apiKey) {
-            console.log(
+            console.error(
                 "Make sure to set valid values for endpoint and apiKey with proper authorization."
             );
             return {
@@ -55,6 +55,7 @@ export async function getSourceSemanticSearch(
 
         return { body: JSON.stringify(results) };
     } catch (err) {
+        console.error(err);
         context.error(err);
         // This rethrown exception will only fail the individual invocation, instead of crashing the whole process
         throw err;
