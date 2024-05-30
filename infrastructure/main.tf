@@ -319,7 +319,6 @@ resource "azurerm_key_vault" "use2_main_kv" {
   tenant_id                     = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days    = 7
   purge_protection_enabled      = true
-  public_network_access_enabled = false
   sku_name                      = "standard"
   tags                          = var.common_tags
 
