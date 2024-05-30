@@ -51,10 +51,12 @@ jobs:
             # We check if the image already exists in the ACR, if it does we skip the build
             - name: Check if image exists
               id: check-if-image-exists
-              if: (github.event_name == 'workflow_dispatch' && github.event.ref == 'refs/heads/main')
+              if: github.event_name == 'workflow_dispatch' && github.event.ref == 'refs/heads/main'
               run: |
-                  az acr repository show --name ${{ secrets.AZURE_CONTAINER_REGISTRY }} --image ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} > /dev/null
-                  if [ $? -eq 0 ]; then
+                  set -e
+                  EXIT_CODE=0
+                  az acr repository show --name ${{ secrets.AZURE_CONTAINER_REGISTRY }} --image ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} > /dev/null || EXIT_CODE=$?
+                  if [ $EXIT_CODE -eq 0 ]; then
                       echo "Image already exists in ACR, skipping build"
                       echo "::set-output name=skip_build::true"
                   fi
@@ -113,10 +115,12 @@ jobs:
                         }" > task.json
             - name: Check if job exists
               id: check-if-job-exists
-              if: github.event_name == 'push'
+              if: github.event_name == 'workflow_dispatch' && github.event.ref == 'refs/heads/main'
               run: |
-                  az batch task show --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }} > /dev/null
-                  if [ $? -eq 0 ]; then
+                  set -e
+                  EXIT_CODE=0
+                  az batch task show --job-id ${{ secrets.BATCH_JOB_ID }} --task-id ${{ github.sha }} > /dev/null || EXIT_CODE=$?
+                  if [ $EXIT_CODE -eq 0 ]; then
                       echo "::set-output name=task_exists::true"
                   fi
                   exit 0
