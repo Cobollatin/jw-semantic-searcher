@@ -92,7 +92,7 @@ export async function getSourceSemanticSearch(
                         kind: "vector",
                         kNearestNeighborsCount: 3,
                         exhaustive: false,
-                        fields: ["Content"],
+                        fields: ["DescriptionVector"],
                         vector: embeddings.data[0].embedding,
                     },
                 ],
