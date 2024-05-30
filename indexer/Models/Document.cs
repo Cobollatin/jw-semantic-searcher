@@ -7,6 +7,7 @@ namespace Indexer.Models
     public static class DocumentConstants
     {
         public const string DocumentSearchProfile = "semantic-search-config";
+        public const int DescriptionVectorDimension = 1536;
     }
 
     public class Document
@@ -24,8 +25,13 @@ namespace Indexer.Models
         [SearchableField(IsFilterable = true, IsSortable = false, AnalyzerName = LexicalAnalyzerName.Values.Keyword)]
         public required string Url { get; init; }
         [JsonIgnore]
-        [VectorSearchField(VectorSearchDimensions = 1536, VectorSearchProfileName = DocumentConstants.DocumentSearchProfile)]
+        [VectorSearchField(VectorSearchDimensions = DocumentConstants.DescriptionVectorDimension, VectorSearchProfileName = DocumentConstants.DocumentSearchProfile)]
         public IReadOnlyList<float>? DescriptionVector { get; set; }
+
+        override public string ToString()
+        {
+            return $"Id: {Id}, Title: {Title.PadRight(10, '\0')[..10]}, Content: {Content.PadRight(20, '\0')[..20]}, Url: {Url}, DescriptionVector: {DescriptionVector?.Count ?? 0} dimensions";
+        }
     }
 
 
