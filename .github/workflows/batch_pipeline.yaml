@@ -33,7 +33,6 @@ jobs:
     indexer_ci:
         runs-on: ubuntu-latest
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
-        needs: pre_job
         steps:
             - uses: actions/checkout@v4.1.4
             - name: "Do nothing"
