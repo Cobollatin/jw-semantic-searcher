@@ -242,6 +242,12 @@ resource "azurerm_static_web_app" "use2_main_swa" {
   sku_tier                           = "Free"
   sku_size                           = "Free"
   tags                               = var.common_tags
+  app_settings = {
+    "WEBSITE_RUN_FROM_PACKAGE"  = "1",
+    "AZURE_SEARCH_API_KEY"      = azurerm_search_service.use2_main_ss.primary_key,
+    "AZURE_SEARCH_SERVICE_NAME" = azurerm_search_service.use2_main_ss.name,
+    "AZURE_SEARCH_INDEX_NAME"   = var.indexer_name,
+  }
   # We cant use the identity under the free tier
   # identity {
   #   type = "UserAssigned"
@@ -403,6 +409,14 @@ resource "github_actions_secret" "use2_main_ss_name" {
   repository      = each.value
   secret_name     = "AZURE_SEARCH_SERVICE_NAME"
   plaintext_value = azurerm_search_service.use2_main_ss.name
+}
+
+resource "github_actions_secret" "use2_main_indexer_name" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
+  for_each        = toset(concat(var.batch_repositories, [var.swa_repository]))
+  repository      = each.value
+  secret_name     = "AZURE_SEARCH_INDEX_NAME"
+  plaintext_value = var.indexer_name
 }
 
 ############################################################################################################################
