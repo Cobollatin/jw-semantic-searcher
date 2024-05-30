@@ -44,7 +44,7 @@ export async function getSourceSemanticSearch(
 
         const searchResults = await searchClient.search(query, {
             includeTotalCount: true,
-            orderBy: ["@search.score desc"],
+            orderBy: ["search.score() desc"],
             select: ["Id", "Title", "Content", "Url"],
         });
 
