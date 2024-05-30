@@ -15,7 +15,7 @@ string semanticConfigName = Environment.GetEnvironmentVariable("AZURE_SEARCH_SEM
 var searchService = new AzureSearchService(serviceName, indexName, apiKey);
 
 var fields = new FieldBuilder().Build(typeof(Document));
-var SemanticSearch = new SemanticSearch
+var SemanticSearch = new SemanticSearch()
 {
     Configurations =
     {
@@ -40,7 +40,7 @@ var vectorSearch = new VectorSearch
     },
     Algorithms = {
         new HnswAlgorithmConfiguration(semanticConfigName){
-            Parameters = new () {
+            Parameters = new HnswParameters() {
                     EfConstruction = 400,
                     EfSearch = 500,
                     M = 4,
