@@ -46,7 +46,8 @@ export async function getSourceSemanticSearch(
 
         const searchResults = await searchClient.search(query, {
             includeTotalCount: true,
-            orderBy: ["search.score() desc"],
+            // Order by is not supported for semantic search
+            // orderBy: ["search.score() desc"],
             select: ["Id", "Title", "Content", "Url"],
             queryType: "semantic",
             semanticSearchOptions: {
