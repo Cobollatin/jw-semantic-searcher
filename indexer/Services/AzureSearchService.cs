@@ -33,7 +33,7 @@ namespace Indexer.Services
 
         public async Task UploadDocumentsAsync(IEnumerable<Document> documents)
         {
-            var batch = IndexDocumentsBatch.Create(IndexDocumentsAction.Upload(documents));
+            var batch = IndexDocumentsBatch.MergeOrUpload(documents);
             IndexDocumentsOptions options = new() { ThrowOnAnyError = true };
             await _searchClient.IndexDocumentsAsync(batch, options);
         }
