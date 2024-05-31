@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Indexes.Models;
 
@@ -32,7 +31,6 @@ namespace Indexer.Models
 
     public class PartialDocument
     {
-        public required string Id { get; init; }
         public required string Title { get; init; }
         public required string Content { get; init; }
         public required string Url { get; init; }

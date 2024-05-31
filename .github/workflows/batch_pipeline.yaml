@@ -104,7 +104,22 @@ jobs:
                                     \"uploadOptions\": {
                                         \"uploadCondition\": \"taskCompletion\"
                                     }
-                                }
+                                },
+                                {
+                                    \"filePattern\": \"../**/data/*.json\",
+                                    \"destination\": {
+                                        \"container\": {
+                                            \"containerUrl\": \"${{ secrets.AZURE_STORAGE_CONTAINER_URL }}\",
+                                            \"path\": \"logs/${{ github.sha }}/data\",
+                                            \"identityReference\": {
+                                                \"resourceId\": \"${{ secrets.BATCH_POOL_IDENTITY_ID }}\",
+                                            }
+                                        }
+                                    },
+                                    \"uploadOptions\": {
+                                        \"uploadCondition\": \"taskCompletion\"
+                                    }
+                                },
                             ],
                             \"UserIdentity\": {
                                 \"autoUser\": {

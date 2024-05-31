@@ -8,6 +8,7 @@ import {
 import { Document, PartialDocument } from "../models";
 import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
 import OpenAI from "openai";
+import { PaginatedList } from "../models/paginated-list";
 
 const serviceName = process.env.AZURE_SEARCH_SERVICE_NAME || "";
 const apiKey = process.env.AZURE_SEARCH_API_KEY || "";
@@ -28,9 +29,15 @@ export async function getSourceSemanticSearch(
 ): Promise<HttpResponseInit> {
     try {
         const query = request.query.get("query");
+        const page = parseInt(request.query.get("page") ?? "1");
+        const pageSize = parseInt(request.query.get("pageSize") ?? "10");
+
         if (!query) {
             return {
                 status: 400,
+                body: JSON.stringify({
+                    error: "Query parameter is required.",
+                }),
             };
         }
 
@@ -40,6 +47,9 @@ export async function getSourceSemanticSearch(
             );
             return {
                 status: 500,
+                body: JSON.stringify({
+                    error: "Invalid search service configuration. Please check the server logs.",
+                }),
             };
         }
 
@@ -56,6 +66,9 @@ export async function getSourceSemanticSearch(
             );
             return {
                 status: 500,
+                body: JSON.stringify({
+                    error: "Invalid OpenAI configuration. Please check the server logs.",
+                }),
             };
         }
 
@@ -73,6 +86,7 @@ export async function getSourceSemanticSearch(
             project: openAiProjectId,
             organization: openAiOrgId,
         });
+
         const embeddings = await openAiClient.embeddings.create({
             input: query,
             model: deploymentName,
@@ -80,11 +94,12 @@ export async function getSourceSemanticSearch(
 
         const searchResults = await searchClient.search(query, {
             includeTotalCount: true,
-            // Order by is not supported for semantic search
-            // orderBy: ["search.score() desc"],
             select: ["Id", "Title", "Content", "Url"],
             facets: ["Content"],
-            queryType: "semantic",
+            // queryType: "semantic",
+            queryType: "full",
+            top: pageSize,
+            skip: pageSize * (page - 1),
             vectorSearchOptions: {
                 filterMode: "preFilter",
                 queries: [
@@ -97,20 +112,20 @@ export async function getSourceSemanticSearch(
                     },
                 ],
             },
-            semanticSearchOptions: {
-                configurationName: semanticSearchConfig,
-                errorMode: "partial",
-                maxWaitInMilliseconds: 5000,
-                answers: {
-                    answerType: "extractive",
-                    count: 1,
-                    threshold: 0.5,
-                },
-                captions: {
-                    captionType: "extractive",
-                    highlight: true,
-                },
-            },
+            // semanticSearchOptions: {
+            //     configurationName: semanticSearchConfig,
+            //     errorMode: "partial",
+            //     maxWaitInMilliseconds: 5000,
+            //     answers: {
+            //         answerType: "extractive",
+            //         count: 1,
+            //         threshold: 0.7,
+            //     },
+            //     captions: {
+            //         captionType: "extractive",
+            //         highlight: true,
+            //     },
+            // },
         });
 
         const results: Array<PartialDocument> = new Array<PartialDocument>();
@@ -118,16 +133,27 @@ export async function getSourceSemanticSearch(
             results.push(result.document);
         }
 
-        return { body: JSON.stringify(results) };
+        const response: PaginatedList<PartialDocument> = {
+            items: results,
+            total: searchResults.count ?? 0,
+            page: page,
+            pageSize: pageSize,
+        };
+
+        return { body: JSON.stringify(response) };
     } catch (err) {
         context.error(err);
-        // This rethrown exception will only fail the individual invocation, instead of crashing the whole process
-        throw err;
+        return {
+            status: 500,
+            body: JSON.stringify({
+                error: "An error occurred while processing the request.",
+            }),
+        };
     }
 }
 
 const options: HttpFunctionOptions = {
-    route: "source-semantic-search",
+    route: "semantic-search",
     methods: ["GET"],
     authLevel: "anonymous",
     handler: getSourceSemanticSearch,

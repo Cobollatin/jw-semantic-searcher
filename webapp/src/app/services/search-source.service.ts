@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable, catchError, throwError } from "rxjs";
 import { ComponentError, Document } from "../models";
 import { environment } from "src/environments/environment";
+import { PaginatedList } from "../models/paginated-list";
 
 @Injectable({
     providedIn: "root",
@@ -10,9 +11,9 @@ import { environment } from "src/environments/environment";
 export class SearchSourceService {
     constructor(private _httpClient: HttpClient) {}
 
-    public searchSources(query: string): Observable<Document[]> {
+    public searchSources(query: string): Observable<PaginatedList<Document>> {
         return this._httpClient
-            .get<Document[]>(
+            .get<PaginatedList<Document>>(
                 `${environment.apiUrl}/api/source-semantic-search?query=${query}`
             )
             .pipe(
