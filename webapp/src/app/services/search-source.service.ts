@@ -14,7 +14,7 @@ export class SearchSourceService {
     public searchSources(query: string): Observable<PaginatedList<Document>> {
         return this._httpClient
             .get<PaginatedList<Document>>(
-                `${environment.apiUrl}/api/source-semantic-search?query=${query}`
+                `${environment.apiUrl}/api/semantic-search?query=${query}`
             )
             .pipe(
                 catchError((error: unknown) => {
