@@ -83,7 +83,7 @@ foreach (var file in filesInDirectory)
         continue;
     }
 
-    if (fileMetadata.Length > 1000000)
+    if (fileMetadata.Length > 1200000)
     {
         logger.LogWarning("File {file} is too large, skipping (max size is 1MB)", file);
         continue;

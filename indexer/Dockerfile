@@ -16,4 +16,4 @@ ADD data /indexer/data
 RUN chmod +x /indexer/docker-entrypoint.sh
 COPY --from=build-env /app/out /indexer
 ENTRYPOINT ["/indexer/docker-entrypoint.sh"]
-CMD ["dotnet", "indexer.dll"]
+CMD ["sh","-c","scrapper /indexer/data && dotnet indexer.dll"]

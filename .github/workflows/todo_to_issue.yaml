@@ -2,13 +2,12 @@ name: "GitHub Issue for TODOs"
 run-name: "GitHub Issue for TODOs for commit ${{ github.sha }}"
 on:
     workflow_dispatch:
-      inputs:
-        MANUAL_COMMIT_REF:
-          description: "The SHA of the commit to get the diff for"
-          required: true
-        MANUAL_BASE_REF:
-          description: "By default, the commit entered above is compared to the one directly before it; to go back further, enter an earlier SHA here"
-          required: false
+        inputs:
+            importAll:
+                default: false
+                required: false
+                type: boolean
+                description: Enable, if you want to import all TODOs. Runs on checked out branch! Only use if you're sure what you are doing.
     push:
         branches:
             - main
@@ -17,18 +16,16 @@ permissions:
     contents: read
     pull-requests: write
 jobs:
-    todo_to_issue:
-        name: "TODO to GitHub Issue"
+    todos:
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4.1.4
-            - name: "TODO to Issue"
-              uses: alstr/todo-to-issue-action@v4.13
-              env:
-                MANUAL_COMMIT_REF: ${{ inputs.MANUAL_COMMIT_REF }}
-                MANUAL_BASE_REF: ${{ inputs.MANUAL_BASE_REF }}
+            - uses: actions/checkout@v3
+            - name: Run Issue Bot
+              uses: derjuulsn/todo-issue@main
               with:
-                AUTO_P: true
-                AUTO_ASSIGN: true
-                  
+                  excludePattern: "^(node_modules/|.git/|dist/|build/|coverage/|bin/|obj/|.terraform/|.terraform.lock.hcl|*.sln)"
+                  reopenClosed: true
+                  autoAssign: true
+                  label: true
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
