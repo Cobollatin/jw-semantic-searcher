@@ -120,3 +120,4 @@ foreach (var file in filesInDirectory)
 }
 
 Console.WriteLine("Index updated successfully with mock data.");
+return 0;
