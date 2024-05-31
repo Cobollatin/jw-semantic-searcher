@@ -25,7 +25,7 @@ jobs:
               with:
                   excludePattern: "^(node_modules/|.git/|dist/|build/|coverage/|bin/|obj/|.terraform/|.terraform.lock.hcl|.*\\.sln)$"
                   reopenClosed: true
-                  autoAssign: true
+                  autoAssign: false
                   label: true
               env:
                   GITHUB_TOKEN: ${{ secrets.TF_GITHUB_TOKEN }}
