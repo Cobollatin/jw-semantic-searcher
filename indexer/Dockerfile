@@ -12,6 +12,7 @@ USER root
 RUN mkdir /indexer
 WORKDIR /indexer
 COPY "docker-entrypoint.sh" /indexer
+ADD data /indexer/data
 RUN chmod +x /indexer/docker-entrypoint.sh
 COPY --from=build-env /app/out /indexer
 ENTRYPOINT ["/indexer/docker-entrypoint.sh"]

@@ -71,7 +71,7 @@ CancellationToken cancellationToken = cancellationTokenSource.Token;
 await searchService.DeleteIndexAsync(indexName, cancellationToken);
 await searchService.CreateOrUpdateIndexAsync(index, cancellationToken);
 
-var filesInDirectory = Directory.GetFiles("data", "*.json", SearchOption.AllDirectories);
+var filesInDirectory = Directory.GetFiles("./data", "*.json", SearchOption.AllDirectories);
 
 foreach (var file in filesInDirectory)
 {
