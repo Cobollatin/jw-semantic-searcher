@@ -4,6 +4,7 @@ import { SearchBoxComponent } from "./components/search-box/search-box.component
 import { SourceSearchResultsComponent } from "./components/source-search-results/source-search-results.component";
 import { SearchSourceService } from "./services/search-source.service";
 import { CommonModule } from "@angular/common";
+import { PaginatedList } from "./models/paginated-list";
 
 @Component({
     standalone: true,
@@ -55,8 +56,8 @@ export class AppComponent {
         this.ready = false;
         this.error = undefined;
         this._searchSourceService.searchSources($event).subscribe({
-            next: (sources: Document[]) => {
-                this.sources = sources;
+            next: (sources: PaginatedList<Document>) => {
+                this.sources = sources.items;
                 this.loading = false;
                 this.ready = true;
             },
