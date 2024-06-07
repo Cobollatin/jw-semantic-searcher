@@ -1,9 +1,14 @@
-<header>
-    <h1>Semantic Searcher</h1>
+<header class="flex flex-row">
+    <div class="basis-1/6 m-auto">
+        <h1 class="text-2xl font-bold">Semantic <br> Searcher</h1>
+    </div>
+    <div class="flex-1 w-full">
+        <app-search-box (search)="search($event)" />
+    </div>
 </header>
+<hr>
 <main>
     <section class="content">
-        <app-search-box (search)="search($event)" />
         <app-source-search-results [sources]="sources" *ngIf="ready" />
         <div class="loader-wrapper" *ngIf="loading">
             <span class="loader"></span>

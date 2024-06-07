@@ -1,23 +1,74 @@
-* {
-    margin: 0;
-    padding: 0;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:host {
+  --content-padding: 10px;
+  --primary-color: #4a90e2;
+  --secondary-color: #357ABD;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+
+header {
+  width: 70%;
+  margin: auto;
+  display: block;
+  padding: var(--content-padding);
+  box-shadow: 0px 5px 25px var(--shadow-color);
+}
+
+
+.content {
+  padding: var(--content-padding);
+}
+
+
+.loader-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+.loader::after,
+.loader::before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #ff3d00;
+  width: 6px;
+  height: 6px;
+  transform: translate(150%, 150%);
+  border-radius: 50%;
+}
+
+.loader::before {
+  left: auto;
+  top: auto;
+  right: 0;
+  bottom: 0;
+  transform: translate(-150%, -150%);
+}
+
+@keyframes rotation {
+  0% {
+      transform: rotate(0deg);
   }
-  
-  body {
-    font-family: 'Be Vietnam Pro', sans-serif;
+  100% {
+      transform: rotate(360deg);
   }
-  
-  :root {
-    --primary-color: #605DC8;
-    --secondary-color: #8B89E6;
-    --accent-color: #e8e7fa;
-    --shadow-color: #E8E8E8;
-  }
-  
-  button.primary {
-    padding: 10px;
-    border: solid 1px var(--primary-color);
-    background: var(--primary-color);
-    color: white;
-    border-radius: 8px;
-  }
+}

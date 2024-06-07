@@ -1,15 +1,11 @@
-<section>
-    <form>
-        <input type="text" placeholder="Semantic input" #filter />
-        <button
-            class="primary"
-            type="button"
-            (click)="publichSearch(filter.value)"
-        >
+<section class="flex flex-row items-center justify-center p-4">
+    <form class="flex items-center w-full">
+        <input type="text" placeholder="Semantic input" #filter class="p-2 border rounded mr-2 w-full" />
+        <button class="primary p-2 bg-blue-500 text-white rounded hover:bg-blue-700 ml-2" type="button" (click)="publichSearch(filter.value)">
             Search
         </button>
     </form>
-    <small *ngIf="error" class="error">
+    <small *ngIf="error" class="error ml-4 text-red-500">
         {{ error.message }}
     </small>
 </section>
