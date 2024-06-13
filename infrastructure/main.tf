@@ -745,7 +745,7 @@ resource "azurerm_storage_container" "use2_main_batch_container" {
 
 resource "azurerm_key_vault_access_policy" "use2_main_sa_kv_access_policy" {
   key_vault_id       = azurerm_key_vault.use2_main_kv.id
-  tenant_id          = data.azurerm_client_config.current.tenant_id
+  tenant_id          = data.azuread_service_principal.current.application_tenant_id
   object_id          = azurerm_user_assigned_identity.use2_main_sa_identity.principal_id
   key_permissions    = ["Get", "Create", "List", "Restore", "Recover", "UnwrapKey", "WrapKey", "Purge", "Encrypt", "Decrypt", "Sign", "Verify"]
   secret_permissions = ["Get"]
