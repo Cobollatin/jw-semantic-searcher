@@ -20,7 +20,8 @@ WORKDIR /indexer
 COPY "docker-entrypoint.sh" /indexer
 ADD data /indexer/data
 RUN chmod +x /indexer/docker-entrypoint.sh
-RUN apt-get update && apt-get install -y libstdc++6
+COPY --from=scrapper-builder /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+COPY --from=scrapper-builder /usr/lib/x86_64-linux-gnu/libgcc_s.so.1 /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
 COPY --from=scrapper-builder /scrapper/out /indexer
 COPY --from=index-builder /indexer/out /indexer
 RUN chmod +x /indexer/scrapper
