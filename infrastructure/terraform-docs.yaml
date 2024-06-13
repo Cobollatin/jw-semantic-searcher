@@ -18,9 +18,6 @@ output:
   file: README.md # The output file where the documentation will be saved
   mode: inject # Mode can be 'inject' or 'replace'; 'inject' updates the specified sections in the existing README.md
 
-# header-from: "main.tf" # File from which the header content will be extracted
-# footer-from: "docs/footer.md" # File from which the footer content will be extracted
-
 settings:
   indent: 2 # Number of spaces for indentation
   escape: true # Escape special characters
