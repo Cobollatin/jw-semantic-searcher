@@ -22,5 +22,6 @@ ADD data /indexer/data
 RUN chmod +x /indexer/docker-entrypoint.sh
 COPY --from=scrapper-builder /indexer/scrapper /indexer
 COPY --from=index-builder /indexer/out /indexer
+RUN chmod +x /indexer/scrapper
 ENTRYPOINT ["/indexer/docker-entrypoint.sh"]
-CMD ["sh","-c","scrapper /indexer/data && dotnet indexer.dll"]
+CMD ["sh","-c","/indexer/scrapper /indexer/data && dotnet /indexer/out/indexer.dll"]
