@@ -991,6 +991,9 @@ EOF
     settings_json = jsonencode({
       "workspaceId" = azurerm_log_analytics_workspace.use2_main_law.workspace_id
     })
+    protected_settings = jsonencode({
+      "workspaceKey" = azurerm_log_analytics_workspace.use2_main_law.primary_shared_key
+    })
   }
   identity {
     type = "UserAssigned"
