@@ -1,4 +1,3 @@
-# Use the .NET SDK image for building the application
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 USER root
 RUN mkdir /app
