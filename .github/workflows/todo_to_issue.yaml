@@ -24,7 +24,7 @@ jobs:
               uses: derjuulsn/todo-issue@main
               with:
                   excludePattern: "^(node_modules/|.git/|dist/|build/|coverage/|bin/|obj/|.terraform/|.terraform.lock.hcl|.*\\.sln)$"
-                  reopenClosed: true
+                  reopenClosed: false
                   autoAssign: false
                   label: true
               env:
