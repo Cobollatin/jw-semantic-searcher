@@ -23,7 +23,7 @@ jobs:
             - name: Run Issue Bot
               uses: derjuulsn/todo-issue@main
               with:
-                  excludePattern: "^(node_modules/|.git/|dist/|build/|coverage/|bin/|obj/|.terraform/|.terraform.lock.hcl|.*\\.sln)$"
+                  excludePattern: "^(node_modules/|.gitattributes|.gitignore|.git/|dist/|build/|coverage/|bin/|obj/|.terraform/|.terraform.lock.hcl|.*\\.sln)$"
                   reopenClosed: false
                   autoAssign: false
                   label: true
