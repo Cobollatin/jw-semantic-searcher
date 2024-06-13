@@ -117,7 +117,8 @@ No modules.
 | <a name="input_openai_project_id"></a> [openai\_project\_id](#input\_openai\_project\_id) | The OpenAI API project ID | `string` | n/a | yes |
 | <a name="input_openai_project_name"></a> [openai\_project\_name](#input\_openai\_project\_name) | The OpenAI API project name | `string` | n/a | yes |
 | <a name="input_semantic_search_config_name"></a> [semantic\_search\_config\_name](#input\_semantic\_search\_config\_name) | The name of the Azure Search semantic search configuration | `string` | n/a | yes |
-| <a name="input_sp_client_id"></a> [sp\_client\_id](#input\_sp\_client\_id) | The name of the application | `string` | n/a | yes |
+| <a name="input_sp_client_id"></a> [sp\_client\_id](#input\_sp\_client\_id) | The service principal client ID | `string` | n/a | yes |
+| <a name="input_sp_tenant_id"></a> [sp\_tenant\_id](#input\_sp\_tenant\_id) | The service principal tenant ID | `string` | n/a | yes |
 | <a name="input_swa_repository"></a> [swa\_repository](#input\_swa\_repository) | The GitHub repository for the Static Web App | `string` | n/a | yes |
 
 ## Outputs
