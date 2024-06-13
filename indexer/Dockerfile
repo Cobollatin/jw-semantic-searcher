@@ -2,7 +2,7 @@ FROM gcc:14.1.0 AS scrapper-builder
 USER root
 RUN mkdir /indexer
 WORKDIR /indexer
-COPY . /indexer
+COPY ./scrapper /indexer
 RUN g++ -o scrapper scrapper.cpp
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS index-builder
