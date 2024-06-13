@@ -346,7 +346,7 @@ resource "azurerm_key_vault" "use2_main_kv" {
   location                    = azurerm_resource_group.use2_main_rg.location
   resource_group_name         = azurerm_resource_group.use2_main_rg.name
   enabled_for_disk_encryption = true
-  tenant_id                   = var.sp_tenant_id
+  tenant_id                   = data.azuread_service_principal.current.application_tenant_id
   soft_delete_retention_days  = 7
   purge_protection_enabled    = true
   sku_name                    = "standard"
@@ -368,7 +368,7 @@ resource "azurerm_role_assignment" "use2_main_kv_role" {
 
 resource "azurerm_key_vault_access_policy" "use2_main_kv_access_policy" {
   key_vault_id = azurerm_key_vault.use2_main_kv.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
+  tenant_id    = data.azuread_service_principal.current.application_tenant_id
   object_id    = data.azuread_service_principal.current.object_id
   key_permissions = [
     "Create",
