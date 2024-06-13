@@ -6,10 +6,8 @@ resource "azurerm_resource_group" "use2_main_rg" {
   tags     = var.common_tags
 }
 
-data "azurerm_client_config" "current" {}
-
 data "azuread_service_principal" "current" {
-  client_id = data.azurerm_client_config.current.client_id
+  client_id = var.sp_client_id
 }
 
 data "github_repository" "use2_acr_github_repos" {
@@ -348,7 +346,7 @@ resource "azurerm_key_vault" "use2_main_kv" {
   location                    = azurerm_resource_group.use2_main_rg.location
   resource_group_name         = azurerm_resource_group.use2_main_rg.name
   enabled_for_disk_encryption = true
-  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  tenant_id                   = data.azuread_service_principal.current.application_tenant_id
   soft_delete_retention_days  = 7
   purge_protection_enabled    = true
   sku_name                    = "standard"
@@ -370,7 +368,7 @@ resource "azurerm_role_assignment" "use2_main_kv_role" {
 
 resource "azurerm_key_vault_access_policy" "use2_main_kv_access_policy" {
   key_vault_id = azurerm_key_vault.use2_main_kv.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
+  tenant_id    = data.azuread_service_principal.current.application_tenant_id
   object_id    = data.azuread_service_principal.current.object_id
   key_permissions = [
     "Create",
@@ -747,7 +745,7 @@ resource "azurerm_storage_container" "use2_main_batch_container" {
 
 resource "azurerm_key_vault_access_policy" "use2_main_sa_kv_access_policy" {
   key_vault_id       = azurerm_key_vault.use2_main_kv.id
-  tenant_id          = data.azurerm_client_config.current.tenant_id
+  tenant_id          = data.azuread_service_principal.current.application_tenant_id
   object_id          = azurerm_user_assigned_identity.use2_main_sa_identity.principal_id
   key_permissions    = ["Get", "Create", "List", "Restore", "Recover", "UnwrapKey", "WrapKey", "Purge", "Encrypt", "Decrypt", "Sign", "Verify"]
   secret_permissions = ["Get"]
@@ -932,13 +930,13 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
   auto_scale {
     evaluation_interval = "PT5M"
     formula             = <<EOF
-$sample = $PendingTasks.GetSample(TimeInterval_Minute * 5);
-$tasks = max($sample);
-$targetVMs = $tasks > 0 ? $tasks : max(0, $TargetDedicatedNodes / 2);
-minPoolSize = 0;
-cappedPoolSize = 1;
-$TargetDedicatedNodes = max(minPoolSize, min($targetVMs, cappedPoolSize));
-$NodeDeallocationOption = taskcompletion;
+      $sample = $PendingTasks.GetSample(TimeInterval_Minute * 5);
+      $tasks = max($sample);
+      $targetVMs = $tasks > 0 ? $tasks : max(0, $TargetDedicatedNodes / 2);
+      minPoolSize = 0;
+      cappedPoolSize = 1;
+      $TargetDedicatedNodes = max(minPoolSize, min($targetVMs, cappedPoolSize));
+      $NodeDeallocationOption = taskcompletion;
 EOF
   }
   data_disks {
