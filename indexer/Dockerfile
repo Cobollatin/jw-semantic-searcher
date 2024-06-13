@@ -1,8 +1,15 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+FROM gcc:14.1.0 AS scrapper-builder
 USER root
-RUN mkdir /app
-WORKDIR /app
-COPY . /app
+RUN mkdir /indexer
+WORKDIR /indexer
+COPY . /indexer
+RUN g++ -o scrapper scrapper.cpp
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS index-builder
+USER root
+RUN mkdir /indexer
+WORKDIR /indexer
+COPY . /indexer
 RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
@@ -13,6 +20,7 @@ WORKDIR /indexer
 COPY "docker-entrypoint.sh" /indexer
 ADD data /indexer/data
 RUN chmod +x /indexer/docker-entrypoint.sh
-COPY --from=build-env /app/out /indexer
+COPY --from=scrapper-builder /indexer/scrapper /indexer
+COPY --from=index-builder /indexer/out /indexer
 ENTRYPOINT ["/indexer/docker-entrypoint.sh"]
 CMD ["sh","-c","scrapper /indexer/data && dotnet indexer.dll"]
