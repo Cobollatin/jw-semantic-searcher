@@ -915,10 +915,10 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
   account_name                   = azurerm_batch_account.use2_main_batch.name
   node_agent_sku_id              = "batch.node.ubuntu 20.04"
   vm_size                        = "Standard_A1_V2" # Standard_B1s
-  metadata                       = var.common_tags
   max_tasks_per_node             = 1
   inter_node_communication       = "Disabled"
   target_node_communication_mode = "Default"
+  metadata                       = var.common_tags
   # Ephemeral OS disk is not supported for VM size Standard_A1_v2.
   # os_disk_placement              = "CacheDisk"
   storage_image_reference {
@@ -988,6 +988,9 @@ EOF
     type_handler_version       = "1.0"
     auto_upgrade_minor_version = true
     automatic_upgrade_enabled  = true
+    settings_json = jsonencode({
+      "workspaceId" = azurerm_log_analytics_workspace.use2_main_law.workspace_id
+    })
   }
   identity {
     type = "UserAssigned"
