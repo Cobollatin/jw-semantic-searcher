@@ -119,5 +119,5 @@ foreach (var file in filesInDirectory)
     logger.LogInformation("Documents uploaded: {count} from {file}", documents.Count, file);
 }
 
-Console.WriteLine("Index updated successfully with mock data.");
+logger.LogInformation("Index updated successfully with mock data.");
 return 0;

@@ -6,10 +6,8 @@ resource "azurerm_resource_group" "use2_main_rg" {
   tags     = var.common_tags
 }
 
-data "azurerm_client_config" "current" {}
-
 data "azuread_service_principal" "current" {
-  client_id = data.azurerm_client_config.current.client_id
+  client_id = var.sp_client_id
 }
 
 data "github_repository" "use2_acr_github_repos" {
@@ -932,13 +930,13 @@ resource "azurerm_batch_pool" "use2_main_batch_pool" {
   auto_scale {
     evaluation_interval = "PT5M"
     formula             = <<EOF
-$sample = $PendingTasks.GetSample(TimeInterval_Minute * 5);
-$tasks = max($sample);
-$targetVMs = $tasks > 0 ? $tasks : max(0, $TargetDedicatedNodes / 2);
-minPoolSize = 0;
-cappedPoolSize = 1;
-$TargetDedicatedNodes = max(minPoolSize, min($targetVMs, cappedPoolSize));
-$NodeDeallocationOption = taskcompletion;
+      $sample = $PendingTasks.GetSample(TimeInterval_Minute * 5);
+      $tasks = max($sample);
+      $targetVMs = $tasks > 0 ? $tasks : max(0, $TargetDedicatedNodes / 2);
+      minPoolSize = 0;
+      cappedPoolSize = 1;
+      $TargetDedicatedNodes = max(minPoolSize, min($targetVMs, cappedPoolSize));
+      $NodeDeallocationOption = taskcompletion;
 EOF
   }
   data_disks {

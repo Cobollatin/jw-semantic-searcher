@@ -6,6 +6,13 @@ variable "app_name" {
   type        = string                        # Specifies the data type of the variable, in this case, a string.
 }
 
+# Variable for the service principal client ID
+variable "sp_client_id" {
+  description = "The name of the application" # Provides a description of the variable, which is helpful for documentation and when prompting for input.
+  type        = string                        # Specifies the data type of the variable, in this case, a string.
+  sensitive   = true                          # Indicates whether the value of the variable should be treated as sensitive and not displayed in logs or outputs.
+}
+
 # Variable for the Azure region
 variable "location" {
   description = "The Azure region where resources will be created" # The Azure region (e.g., "East US", "West Europe") where the resources for this project will be deployed.
