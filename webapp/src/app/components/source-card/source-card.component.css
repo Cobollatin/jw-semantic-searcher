@@ -1,23 +1,28 @@
 .result {
     background: var(--accent-color);
-    border-radius: 30px;
-    padding-bottom: 30px;
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    height: 140px;
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /*box-sizing: border-box;*/
 }
 .result-heading {
-    color: var(--primary-color);
-    padding: 10px 20px 0 20px;
+    /* color: var(--primary-color); */
+    margin-bottom: 10px;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .result-preview {
-    padding: 10px 20px 20px 20px;
-}
-section.result a {
-    padding-left: 20px;
-    text-decoration: none;
-    color: var(--primary-color);
-}
-section.result a::after {
-    content: "\203A";
-    margin-left: 5px;
+    margin-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .error {
     color: red;

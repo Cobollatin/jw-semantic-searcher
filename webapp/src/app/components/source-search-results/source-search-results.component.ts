@@ -12,6 +12,8 @@ import { ComponentError, Document } from "src/app/models";
 })
 export class SourceSearchResultsComponent {
     @Input() sources?: Document[] | null;
+    currentPage: number = 1;
+    itemsPerPage: number = 10;
 
     constructor() {}
 
@@ -39,5 +41,23 @@ export class SourceSearchResultsComponent {
 
     hasError(source: Document): boolean {
         return this.getError(source) !== undefined;
+    }
+
+    get paginatedSources(): Document[] {
+        const start = (this.currentPage - 1) * this.itemsPerPage;
+        const end = start + this.itemsPerPage;
+        return this.sources ? this.sources.slice(start, end) : [];
+    }
+
+    prevPage() {
+        if (this.currentPage > 1) {
+            this.currentPage--;
+        }
+    }
+
+    nextPage() {
+        if (this.sources && this.currentPage * this.itemsPerPage < this.sources.length) {
+            this.currentPage++;
+        }
     }
 }

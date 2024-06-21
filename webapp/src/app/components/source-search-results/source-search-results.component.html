@@ -1,14 +1,20 @@
-<section class="results">
+<section class="results flex flex-col items-center">
     <ng-container *ngIf="sources && sources.length > 0; else noResults">
         <ng-container *ngFor="let source of sources">
             <app-source-card
                 *ngIf="hasError(source); else invalidSource"
                 [source]="source"
+                class="mb-4"
             />
             <ng-template #invalidSource>
-                <app-source-card [error]="getError(source)" />
+                <app-source-card [error]="getError(source)" class="mb-4"/>
             </ng-template>
         </ng-container>
+        <!-- Paginación -->
+        <div class="pagination mt-4">
+            <button class="p-2 bg-gray-300 rounded" (click)="prevPage()">Previous</button>
+            <button class="p-2 bg-gray-300 rounded ml-2" (click)="nextPage()">Next</button>
+        </div>
     </ng-container>
     <ng-template #noResults>
         <h2 class="no-results">No results found for the search term</h2>

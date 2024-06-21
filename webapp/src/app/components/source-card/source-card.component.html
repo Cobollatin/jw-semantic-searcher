@@ -1,18 +1,18 @@
-<section class="result">
+<section class="result border-b border-gray-300 py-4">
     <ng-container *ngIf="source; else errorTemplate">
-        <h2 class="result-heading" (click)="openLink(source.Url)">
+        <h2 class="result-heading text-xl font-bold text-blue-700 cursor-pointer hover:underline" (click)="openLink(source.Url)">
             {{ formatTitle(source.Title) }}
         </h2>
-        <p class="result-preview">
+        <p class="result-preview text-gray-700">
             {{ formatPreview(source.Content) }}
         </p>
     </ng-container>
     <ng-template #errorTemplate>
-        <h2 class="result-heading">Something went wrong</h2>
-        <p class="result-preview">
+        <h2 class="result-heading text-xl font-bold text-blue-700">Something went wrong</h2>
+        <p class="result-preview text-gray-700">
             We couldn't show the source, please try again later or report the
             issue.
         </p>
-        <small class="error" *ngIf="error"> Error: {{ error.message }} </small>
+        <small class="error text-red-500" *ngIf="error"> Error: {{ error.message }} </small>
     </ng-template>
 </section>
