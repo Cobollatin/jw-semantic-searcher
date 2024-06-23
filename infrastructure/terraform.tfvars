@@ -8,6 +8,7 @@ common_tags = {
   Owner       = "Cobollatin"
   CreatedBy   = "Terraform"
   Location    = "East US 2"
+  CreatedOn   = "2023-06-23"
 }
 swa_repository              = "jw-semantic-searcher"
 acr_repositories            = ["jw-semantic-searcher"]
