@@ -83,7 +83,6 @@ jobs:
             - name: Terraform Format
               id: fmt
               run: terraform fmt -check -recursive
-              continue-on-error: true
             - name: Terraform Validate
               id: validate
               run: terraform validate -no-color
