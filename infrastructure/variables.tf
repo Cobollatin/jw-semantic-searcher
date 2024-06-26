@@ -9,15 +9,15 @@ variable "app_name" {
 # Variable for the service principal client ID
 variable "sp_client_id" {
   description = "The service principal client ID" # Provides a description of the variable, which is helpful for documentation and when prompting for input.
-  type        = string                        # Specifies the data type of the variable, in this case, a string.
-  sensitive   = true                          # Indicates whether the value of the variable should be treated as sensitive and not displayed in logs or outputs.
+  type        = string                            # Specifies the data type of the variable, in this case, a string.
+  sensitive   = true                              # Indicates whether the value of the variable should be treated as sensitive and not displayed in logs or outputs.
 }
 
 # Variable for the service principal tenant ID
 variable "sp_tenant_id" {
   description = "The service principal tenant ID" # Provides a description of the variable, which is helpful for documentation and when prompting for input.
-  type        = string                        # Specifies the data type of the variable, in this case, a string.
-  sensitive   = true                          # Indicates whether the value of the variable should be treated as sensitive and not displayed in logs or outputs.
+  type        = string                            # Specifies the data type of the variable, in this case, a string.
+  sensitive   = true                              # Indicates whether the value of the variable should be treated as sensitive and not displayed in logs or outputs.
 }
 
 # Variable for the Azure region
