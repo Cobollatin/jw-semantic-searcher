@@ -7,12 +7,12 @@ using Microsoft.Extensions.Logging;
 using OpenAI_API;
 using OpenAI_API.Models;
 
-if (args.Any(x => x == "test"))
-{
-    var scrapperTest = new JwScrapper();
-    await scrapperTest.ScrapeAsync("test", JwScrapper.Language.EN);
-    return 0;
-}
+// if (args.Any(x => x == "test"))
+// {
+//     var scrapperTest = new JwScrapper();
+//     await scrapperTest.ScrapeAsync("test", JwScrapper.Language.EN);
+//     return 0;
+// }
 
 using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
 var logger = factory.CreateLogger("Indexer");
@@ -80,8 +80,8 @@ await searchService.CreateOrUpdateIndexAsync(index, cancellationToken);
 
 const string path = "./data";
 
-var scrapper = new JwScrapper();
-await scrapper.ScrapeAsync(path, JwScrapper.Language.ES, cancellationToken);
+// var scrapper = new JwScrapper();
+// await scrapper.ScrapeAsync(path, JwScrapper.Language.ES, cancellationToken);
 
 var filesInDirectory = Directory.GetFiles(path, "*.json", SearchOption.AllDirectories);
 

@@ -20,7 +20,7 @@ namespace Indexer.Services
         }
 
         private readonly static string BaseUrl = "https://wol.jw.org/";
-        private readonly static int NumberOfBooks = 66;
+        private readonly static int NumberOfBooks = 1;
 
         private readonly HttpClient _httpClient;
         private readonly ILogger _logger;
@@ -64,7 +64,7 @@ namespace Indexer.Services
 
                         try
                         {
-                            string bookUrl = CreateUrl(bookName, 1, language);
+                            string bookUrl = CreateBookUrl(bookName, language);
                             int numberOfChapters = await GetNumberOfChaptersAsync(bookUrl, ctBook);
                             _logger.LogInformation("Book {BookNumber} has {ChapterCount} chapters.", bookName, numberOfChapters);
 
@@ -83,7 +83,7 @@ namespace Indexer.Services
 
                                     try
                                     {
-                                        string chapterUrl = CreateUrl(bookName, chapter, language);
+                                        string chapterUrl = CreateChapterUrl(bookName, chapter, language);
                                         int numberOfVerses = await GetNumberOfVersesAsync(chapterUrl, ctChapter);
                                         _logger.LogInformation("Chapter {ChapterNumber} of Book {BookNumber} has {VerseCount} verses.", chapter, bookName, numberOfVerses);
 
@@ -144,15 +144,28 @@ namespace Indexer.Services
             }
         }
 
-        internal static string CreateUrl(string book, int chapter, Language language)
+        internal static string CreateBookUrl(string book, Language language)
         {
             return language switch
             {
                 // Example URLs with chapter included
                 // https://wol.jw.org/en/wol/binav/r1/lp-e/nwtsty/1/c1
-                Language.EN => $"{BaseUrl}{language.ToString().ToLower()}/wol/binav/r1/lp-e/nwtsty/{book}/c{chapter}",
+                Language.EN => $"{BaseUrl}{language.ToString().ToLower()}/wol/binav/r1/lp-e/nwtsty/{book}",
                 // https://wol.jw.org/es/wol/binav/r4/lp-s/nwt/66/c1
-                Language.ES => $"{BaseUrl}{language.ToString().ToLower()}/wol/binav/r4/lp-s/nwt/{book}/c{chapter}",
+                Language.ES => $"{BaseUrl}{language.ToString().ToLower()}/wol/binav/r4/lp-s/nwt/{book}",
+                _ => throw new ArgumentOutOfRangeException(nameof(language), language, null),
+            };
+        }
+
+        internal static string CreateChapterUrl(string book, int chapter, Language language)
+        {
+            return language switch
+            {
+                // Example URLs with chapter included
+                // https://wol.jw.org/en/wol/binav/r1/lp-e/nwtsty/1/c1
+                Language.EN => $"{BaseUrl}{language.ToString().ToLower()}/wol/b/r1/lp-e/nwtsty/{book}/{chapter}",
+                // https://wol.jw.org/es/wol/binav/r4/lp-s/nwt/66/c1
+                Language.ES => $"{BaseUrl}{language.ToString().ToLower()}/wol/b/r4/lp-s/nwt/{book}/{chapter}",
                 _ => throw new ArgumentOutOfRangeException(nameof(language), language, null),
             };
         }
@@ -160,15 +173,21 @@ namespace Indexer.Services
         internal async Task<int> GetNumberOfChaptersAsync(string bookUrl, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Fetching number of chapters from URL: {BookUrl}", bookUrl);
+
+            // Send HTTP GET request to the book URL
             var response = await _httpClient.GetAsync(bookUrl, cancellationToken);
             response.EnsureSuccessStatusCode();
 
+            // Read the response content as a string
             var html = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            // Load the HTML into HtmlAgilityPack
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            // Adjust the XPath based on the actual HTML structure
-            var chapterNodes = doc.DocumentNode.SelectNodes("//div[contains(@class, 'chapter-list')]/a");
+            // Updated XPath to match <li> elements with both 'chapter' and 'gridItem' classes
+            // and select their child <a> elements
+            var chapterNodes = doc.DocumentNode.SelectNodes("//li[contains(@class, 'chapter') and contains(@class, 'gridItem')]/a");
 
             if (chapterNodes != null)
             {
@@ -190,8 +209,8 @@ namespace Indexer.Services
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            // Adjust the XPath based on the actual HTML structure
-            var verseNodes = doc.DocumentNode.SelectNodes("//div[contains(@class, 'verse')]/span[contains(@class, 'verse-number')]");
+            // Updated XPath based on provided HTML structure
+            var verseNodes = doc.DocumentNode.SelectNodes("//span[contains(@class, 'v')]/a[contains(@class, 'vx vp')]");
 
             if (verseNodes != null)
             {
@@ -205,7 +224,21 @@ namespace Indexer.Services
 
         internal Task<string> GetVerseUrlAsync(string chapterUrl, int verse, CancellationToken cancellationToken = default)
         {
-            string verseUrl = $"{chapterUrl}#v{verse}";
+            _logger.LogInformation("Constructing URL for Verse {VerseNumber} from Chapter URL: {ChapterUrl}", verse, chapterUrl);
+
+            var uri = new Uri(chapterUrl);
+            var segments = uri.Segments;
+
+            if (segments.Length < 6)
+            {
+                _logger.LogError("Unexpected URL format: {ChapterUrl}", chapterUrl);
+                throw new ArgumentException("Invalid chapter URL format.", nameof(chapterUrl));
+            }
+
+            string bookId = segments[5].TrimEnd('/');
+            string verseNumberInBook = verse.ToString(); // Adjust if sequential numbering is required
+
+            string verseUrl = $"{BaseUrl}en/wol/dx/r1/lp-e/{bookId}/{verseNumberInBook}";
             _logger.LogInformation("Constructed URL for Verse {VerseNumber}: {VerseUrl}", verse, verseUrl);
             return Task.FromResult(verseUrl);
         }
@@ -221,8 +254,8 @@ namespace Indexer.Services
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            // Adjust the XPath based on the actual HTML structure
-            var verseNode = doc.DocumentNode.SelectSingleNode("//span[contains(@class, 'verse-text')]");
+            // Updated XPath based on provided HTML structure
+            var verseNode = doc.DocumentNode.SelectSingleNode("//span[contains(@class, 'v')]/a[contains(@class, 'vx vp')]/following-sibling::text()");
 
             if (verseNode != null)
             {
@@ -235,25 +268,48 @@ namespace Indexer.Services
             throw new InvalidOperationException($"Unable to retrieve text for verse {verse}.");
         }
 
-        internal Task<string> GetVerseTitleAsync(string chapterUrl, int verse, CancellationToken cancellationToken = default)
+        internal async Task<string> GetVerseTitleAsync(string chapterUrl, int verse, CancellationToken cancellationToken = default)
         {
+            _logger.LogInformation("Generating title for Verse {VerseNumber} from Chapter URL: {ChapterUrl}", verse, chapterUrl);
+
             var uri = new Uri(chapterUrl);
             var segments = uri.Segments;
 
-            string title;
-            if (segments.Length >= 8)
+            if (segments.Length < 7)
             {
-                string book = segments[6].TrimEnd('/');
-                string chapter = segments[7].TrimEnd('/');
-                title = $"{book} {chapter}:{verse}";
-            }
-            else
-            {
-                title = $"Verse {verse}";
+                _logger.LogError("Unexpected URL format: {ChapterUrl}", chapterUrl);
+                throw new ArgumentException("Invalid chapter URL format.", nameof(chapterUrl));
             }
 
+            string bookId = segments[5].TrimEnd('/');
+            string chapter = segments[6].TrimEnd('/');
+
+            string bookName = await GetBookNameAsync(bookId, cancellationToken);
+
+            string title = $"{bookName}:{chapter}:{verse}";
             _logger.LogInformation("Generated title for Verse {VerseNumber}: {Title}", verse, title);
-            return Task.FromResult(title);
+            return title;
+        }
+
+        private Task<string> GetBookNameAsync(string bookId, CancellationToken cancellationToken)
+        {
+            // Implement a method to map bookId to book name.
+            // This could be a lookup from a predefined dictionary or fetched from the website.
+
+            // Example with a predefined dictionary
+            var bookIdToName = new Dictionary<string, string>
+    {
+        { "1001070105", "Genesis" },
+        // Add all necessary bookId mappings here
+    };
+
+            if (bookIdToName.TryGetValue(bookId, out var bookName))
+            {
+                return Task.FromResult(bookName);
+            }
+
+            _logger.LogWarning("Unknown bookId: {BookId}. Using 'Unknown Book'.", bookId);
+            return Task.FromResult("Unknown Book");
         }
 
         internal async Task<PartialDocument> GetVerseAsync(string url, int verse, CancellationToken cancellationToken = default)
