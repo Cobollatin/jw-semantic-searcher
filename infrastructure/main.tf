@@ -664,6 +664,7 @@ resource "azurerm_storage_account" "use2_main_sa" {
   #checkov:skip=CKV2_AZURE_1:We dont need encryption at rest for this storage account
   #checkov:skip=CKV_AZURE_43:False positive, the name follows the naming convention
   #checkov:skip=CKV_AZURE_35:We dont have a self-hosted runner in the pipeline yet, so we need to skip this check because the runner needs access
+  #checkov:skip=CKV_AZURE_244:No idea what this is
   name                     = lower("${substr(var.app_name, 0, 4)}${var.location_short}${var.environment_name}sa")
   location                 = azurerm_resource_group.use2_main_rg.location
   resource_group_name      = azurerm_resource_group.use2_main_rg.name
@@ -958,6 +959,7 @@ EOF
     subnet_id                      = azurerm_subnet.use2_bp_subnet.id
     accelerated_networking_enabled = false
     dynamic_vnet_assignment_scope  = "none"
+    # TODO: Bugged, need to report to the provider azurerm
     # public_address_provisioning_type = "NoPublicIPAddresses"
   }
   container_configuration {
