@@ -1,10 +1,3 @@
-FROM gcc:14.1.0 AS scrapper-builder
-USER root
-RUN mkdir /scrapper && mkdir /scrapper/out
-WORKDIR /scrapper
-COPY ./scrapper /scrapper
-RUN g++ -c -Wall scrapper.cpp && g++ -o out/scrapper scrapper.o -static -static-libstdc++
-
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS index-builder
 USER root
 RUN mkdir /indexer
