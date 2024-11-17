@@ -958,7 +958,6 @@ EOF
     subnet_id                      = azurerm_subnet.use2_bp_subnet.id
     accelerated_networking_enabled = false
     dynamic_vnet_assignment_scope  = "none"
-    # TODO: Bugged, need to report to the provider azurerm
     # public_address_provisioning_type = "NoPublicIPAddresses"
   }
   container_configuration {
