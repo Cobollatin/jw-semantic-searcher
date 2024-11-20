@@ -66,7 +66,7 @@ jobs:
               if: github.event_name == 'push' || steps.check-if-image-exists.outputs.skip_build != 'true'
               # TODO: Secrets are not working in the build command, we need to fix this
               run:
-                  az acr build . --image ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
+                  az acr build --image ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
                   --image ${{ env.IMAGE_NAME }}:latest \
                   --registry ${{ secrets.AZURE_CONTAINER_REGISTRY }} \
                   -g ${{ secrets.ACR_RESOURCE_GROUP }} \
@@ -80,7 +80,7 @@ jobs:
                   --secret-build-arg OPENAI_PROJECT_ID=${{ secrets.OPENAI_PROJECT_ID}} \
                   --secret-build-arg OPENAI_ORG_NAME=${{ secrets.OPENAI_ORG_NAME}} \
                   --secret-build-arg OPENAI_ORG_ID=${{ secrets.OPENAI_ORG_ID}} \
-                  --secret-build-arg ENABLE_SEMANTIC_SEARCH=${{ secrets.ENABLE_SEMANTIC_SEARCH}}
+                  --secret-build-arg ENABLE_SEMANTIC_SEARCH=${{ secrets.ENABLE_SEMANTIC_SEARCH}} .
     deploy:
         runs-on: ubuntu-latest
         needs: buildImage
