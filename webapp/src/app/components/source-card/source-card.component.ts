@@ -15,13 +15,16 @@ export class SourceCardComponent {
 
     constructor() {}
 
-    public openLink(url: string): void {
-        window.open(url, "_blank");
+    public openLink(event: Event, url?: string): void {
+        if (!url) {
+            event.preventDefault();
+            return;
+        }
     }
 
-    public formatPreview(preview: string) {
-        if (preview === null || preview === undefined || preview === "") {
-            return "This source has no preview";
+    public formatPreview(preview?: string): string {
+        if (!preview || preview.trim() === "") {
+            return "This source has no preview.";
         }
 
         if (preview.length > 500) {
@@ -30,7 +33,11 @@ export class SourceCardComponent {
         return preview;
     }
 
-    public formatTitle(title: string) {
+    public formatTitle(title?: string): string {
+        if (!title || title.trim() === "") {
+            return "Untitled";
+        }
+
         if (title.length > 200) {
             return title.substring(0, 200) + "...";
         }

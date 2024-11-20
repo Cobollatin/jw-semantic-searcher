@@ -24,7 +24,7 @@ describe("SearchBoxComponent", () => {
     it("should emit search term when search is triggered", async () => {
         const searchTerm = "test";
         const searchSpy = jest.spyOn(component.search, "emit");
-        component.publichSearch(searchTerm);
+        component.publishSearch(searchTerm);
         await new Promise((resolve) => setTimeout(resolve, 500));
         expect(searchSpy).toHaveBeenCalledWith(searchTerm);
     });

@@ -1,15 +1,23 @@
-<section>
-    <form>
-        <input type="text" placeholder="Semantic input" #filter />
+<section class="search-box">
+    <div class="search-container">
+        <input
+            type="text"
+            placeholder="Semantic input"
+            #filter
+            class="search-input"
+            (keyup.enter)="publishSearch(filter.value)"
+            required
+            aria-label="Search input"
+        />
         <button
-            class="primary"
+            class="search-button"
             type="button"
-            (click)="publichSearch(filter.value)"
+            (click)="publishSearch(filter.value)"
         >
             Search
         </button>
-    </form>
-    <small *ngIf="error" class="error">
-        {{ error.message }}
+    </div>
+    <small *ngIf="error | async as errorMessage" class="error-message">
+        {{ errorMessage?.message }}
     </small>
 </section>

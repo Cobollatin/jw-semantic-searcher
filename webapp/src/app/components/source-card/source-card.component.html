@@ -1,7 +1,14 @@
 <section class="result">
     <ng-container *ngIf="source; else errorTemplate">
-        <h2 class="result-heading" (click)="openLink(source.Url)">
-            {{ formatTitle(source.Title) }}
+        <h2 class="result-heading">
+            <a
+                href="{{ source.Url }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                (click)="openLink($event, source.Url)"
+            >
+                {{ formatTitle(source.Title) }}
+            </a>
         </h2>
         <p class="result-preview">
             {{ formatPreview(source.Content) }}
@@ -10,7 +17,7 @@
     <ng-template #errorTemplate>
         <h2 class="result-heading">Something went wrong</h2>
         <p class="result-preview">
-            We couldn't show the source, please try again later or report the
+            We couldn't show the source. Please try again later or report the
             issue.
         </p>
         <small class="error" *ngIf="error"> Error: {{ error.message }} </small>

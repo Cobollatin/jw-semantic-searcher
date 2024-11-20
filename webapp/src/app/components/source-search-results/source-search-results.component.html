@@ -4,9 +4,9 @@
             <app-source-card
                 *ngIf="hasError(source); else invalidSource"
                 [source]="source"
-            />
+            ></app-source-card>
             <ng-template #invalidSource>
-                <app-source-card [error]="getError(source)" />
+                <app-source-card [error]="getError(source)"></app-source-card>
             </ng-template>
         </ng-container>
     </ng-container>

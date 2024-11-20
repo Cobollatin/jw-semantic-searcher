@@ -5,10 +5,9 @@ import {
     HttpResponseInit,
     InvocationContext,
 } from "@azure/functions";
-import { Document, PartialDocument } from "../models";
 import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
 import OpenAI from "openai";
-import { PaginatedList } from "../models/paginated-list";
+import { Document, PartialDocument } from "../models";
 
 const serviceName = process.env.AZURE_SEARCH_SERVICE_NAME || "";
 const apiKey = process.env.AZURE_SEARCH_API_KEY || "";
@@ -31,8 +30,6 @@ export async function getSourceSemanticSearch(
 ): Promise<HttpResponseInit> {
     try {
         const query = request.query.get("query");
-        const page = parseInt(request.query.get("page") ?? "1");
-        const pageSize = parseInt(request.query.get("pageSize") ?? "10");
 
         if (!query) {
             return {
@@ -99,8 +96,8 @@ export async function getSourceSemanticSearch(
             select: ["Id", "Title", "Content", "Url"],
             facets: ["Content"],
             queryType: enableSemanticSearch === "true" ? "semantic" : "full",
-            top: pageSize,
-            skip: pageSize * (page - 1),
+            top: 25,
+            skip: 0,
             vectorSearchOptions: {
                 filterMode: "preFilter",
                 queries: [
@@ -134,14 +131,7 @@ export async function getSourceSemanticSearch(
             results.push(result.document);
         }
 
-        const response: PaginatedList<PartialDocument> = {
-            items: results,
-            total: searchResults.count ?? 0,
-            page: page,
-            pageSize: pageSize,
-        };
-
-        return { body: JSON.stringify(response) };
+        return { body: JSON.stringify(results) };
     } catch (err) {
         context.error(err);
         return {

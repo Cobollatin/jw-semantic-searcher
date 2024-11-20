@@ -1,59 +1,97 @@
-:host {
-    --content-padding: 10px;
-}
+/* Header Styles */
 header {
-    display: block;
-    height: 60px;
-    padding: var(--content-padding);
-    box-shadow: 0px 5px 25px var(--shadow-color);
-}
-.content {
-    padding: var(--content-padding);
+    background-color: #6200ea;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
 }
 
+header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+/* Main Content Styles */
+main {
+    flex: 1;
+    padding: 20px;
+}
+
+.content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Search Box Styles */
+app-search-box {
+    display: block;
+    margin-bottom: 20px;
+}
+
+/* Loader Styles */
 .loader-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    padding: 50px 0;
+    overflow: hidden;
 }
 
 .loader {
-    width: 48px;
-    height: 48px;
-    border: 2px solid #fff;
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #6200ea;
     border-radius: 50%;
-    display: inline-block;
-    position: relative;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-}
-.loader::after,
-.loader::before {
-    content: "";
-    box-sizing: border-box;
-    position: absolute;
-    left: 0;
-    top: 0;
-    background: #ff3d00;
-    width: 6px;
-    height: 6px;
-    transform: translate(150%, 150%);
-    border-radius: 50%;
-}
-.loader::before {
-    left: auto;
-    top: auto;
-    right: 0;
-    bottom: 0;
-    transform: translate(-150%, -150%);
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    overflow: hidden;
 }
 
-@keyframes rotation {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
+@keyframes spin {
+    to {
         transform: rotate(360deg);
+    }
+}
+
+/* Error Message Styles */
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 15px;
+    border: 1px solid #c62828;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #eceff1;
+    color: #607d8b;
+    padding: 10px 0;
+    text-align: center;
+}
+
+footer a {
+    color: #6200ea;
+    text-decoration: none;
+    margin-left: 5px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    .content {
+        padding: 10px;
+    }
+
+    .error-message {
+        font-size: 0.9em;
     }
 }
