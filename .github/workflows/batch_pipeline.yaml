@@ -65,7 +65,7 @@ jobs:
               working-directory: ./indexer
               if: github.event_name == 'push' || steps.check-if-image-exists.outputs.skip_build != 'true'
               # TODO: Secrets are not working in the build command, we need to fix this
-              run:
+              run: |
                   az acr build --image ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
                   --image ${{ env.IMAGE_NAME }}:latest \
                   --registry ${{ secrets.AZURE_CONTAINER_REGISTRY }} \
