@@ -10,7 +10,7 @@ The web application is built using Angular, providing a lightweight and efficien
 
 ### Indexer
 
-The indexer is a .NET Core application responsible for processing and indexing data to be used in semantic searches. It includes a Docker setup for easy deployment and scalability. For more information, see the [indexer README.md](indexer/README.md) (Note: You might need to create or update this README based on the project's specifics).
+The indexer is a .NET Core application responsible for processing and indexing data to be used in semantic searches. It includes a Docker setup for easy deployment and scalability. For more information, see the [indexer README.md](indexer/README.md) (Note: You might need to create or update this README based on the project's specifics). There is a python script called transformed that transform the JSON format of the Bible to a format that the indexer can understand.
 
 ### Infrastructure
 
@@ -23,6 +23,10 @@ To get started with Semantic Searcher, clone this repository and follow the setu
 1. **Web Application**: Navigate to the `webapp` directory and follow the instructions in the README.
 2. **Indexer**: Navigate to the `indexer` directory. Build and run the Docker container as described in the README.
 3. **Infrastructure**: Navigate to the `infrastructure` directory. Follow the Terraform setup instructions in the README to provision the necessary cloud resources.
+
+## Sources
+
+Bible source: <https://github.com/thiagobodruk/bible>
 
 ## License
 

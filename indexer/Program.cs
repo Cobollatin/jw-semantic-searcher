@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Concurrent;
+using System.Text.Json;
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Indexes.Models;
 using Indexer.Models;
@@ -7,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using OpenAI_API;
 using OpenAI_API.Models;
 
-using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
+using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Error));
 var logger = factory.CreateLogger("Indexer");
 
 string serviceName = Environment.GetEnvironmentVariable("AZURE_SEARCH_SERVICE_NAME") ?? throw new ArgumentNullException("AZURE_SEARCH_SERVICE_NAME");
@@ -75,51 +76,105 @@ const string path = "./data";
 
 var filesInDirectory = Directory.GetFiles(path, "*.json", SearchOption.AllDirectories);
 
-foreach (var file in filesInDirectory)
+// Define the maximum degree of parallelism for processing files
+int fileParallelism = 4; // Adjust based on your environment and API limits
+
+await Parallel.ForEachAsync(filesInDirectory, new ParallelOptions
+{
+    MaxDegreeOfParallelism = fileParallelism,
+    CancellationToken = cancellationToken
+},
+async (file, ct) =>
 {
     var fileMetadata = new FileInfo(file);
 
     if (fileMetadata.Length == 0)
     {
-        logger.LogWarning("File {file} is empty, skipping", file);
-        continue;
+        logger.LogWarning("File {file} is empty, skipping.", file);
+        return;
     }
 
     if (fileMetadata.Length > 1200000)
     {
-        logger.LogWarning("File {file} is too large, skipping (max size is 1MB)", file);
-        continue;
+        logger.LogWarning("File {file} is too large, skipping (max size is 1MB).", file);
+        return;
     }
 
-    var json = File.ReadAllText(file);
-    var partialDocuments = JsonSerializer.Deserialize<List<PartialDocument>>(json);
-    if (partialDocuments == null)
+    string json;
+    try
     {
-        logger.LogWarning("File {file} is empty, skipping", file);
-        continue;
+        json = await File.ReadAllTextAsync(file, ct);
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Failed to read file {file}. Skipping.", file);
+        return;
     }
 
-    var documents = new List<Document>();
-
-    foreach (var document in partialDocuments)
+    List<PartialDocument>? partialDocuments;
+    try
     {
-        var model = new Model(deploymentName);
-        var descriptionVector = await openAIClient.Embeddings.GetEmbeddingsAsync(document.Content, model, DocumentConstants.DescriptionVectorDimension);
-        var documentToAdd = new Document
+        partialDocuments = JsonSerializer.Deserialize<List<PartialDocument>>(json);
+    }
+    catch (JsonException ex)
+    {
+        logger.LogError(ex, "Failed to deserialize JSON in file {file}. Skipping.", file);
+        return;
+    }
+
+    if (partialDocuments == null || partialDocuments.Count == 0)
+    {
+        logger.LogWarning("File {file} contains no documents, skipping.", file);
+        return;
+    }
+
+    int documentParallelism = 4;
+
+    var documents = new ConcurrentBag<Document>();
+
+    await Parallel.ForEachAsync(partialDocuments, new ParallelOptions
+    {
+        MaxDegreeOfParallelism = documentParallelism,
+        CancellationToken = ct
+    },
+    async (document, documentCt) =>
+    {
+        try
         {
-            Id = Guid.NewGuid().ToString("n"),
-            Title = document.Title,
-            Content = document.Content,
-            Url = document.Url,
-            DescriptionVector = descriptionVector
-        };
-        documents.Add(documentToAdd);
-        logger.LogInformation("Document added: {document}", documentToAdd);
-    }
+            var model = new Model(deploymentName);
+            var descriptionVector = await openAIClient.Embeddings.GetEmbeddingsAsync(document.Content, model, DocumentConstants.DescriptionVectorDimension);
 
-    await searchService.UploadDocumentsAsync(documents, cancellationToken);
-    logger.LogInformation("Documents uploaded: {count} from {file}", documents.Count, file);
-}
+            var documentToAdd = new Document
+            {
+                Id = Guid.NewGuid().ToString("n"),
+                Title = document.Title,
+                Content = document.Content,
+                Url = document.Url,
+                DescriptionVector = descriptionVector
+            };
+
+            documents.Add(documentToAdd);
+            logger.LogInformation("Document added: {documentId}", documentToAdd.Id);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to process document in file {file}.", file);
+        }
+    });
+
+    if (!documents.IsEmpty)
+    {
+        try
+        {
+            await searchService.UploadDocumentsAsync(documents.ToList(), ct);
+            logger.LogInformation("Documents uploaded: {count} from {file}", documents.Count(), file);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to upload documents from file {file}.", file);
+        }
+    }
+});
 
 logger.LogInformation("Index updated successfully with mock data.");
 return 0;
