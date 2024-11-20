@@ -1,3 +1,4 @@
+#!/bin/bash
 
 NAMESPACES=("Microsoft.Batch")
 

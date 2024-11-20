@@ -24,7 +24,13 @@ To get started with Semantic Searcher, clone this repository and follow the setu
 2. **Indexer**: Navigate to the `indexer` directory. Build and run the Docker container as described in the README.
 3. **Infrastructure**: Navigate to the `infrastructure` directory. Follow the Terraform setup instructions in the README to provision the necessary cloud resources.
 
-## Sources
+## Links
+
+### Application
+
+- [Semantic Searcher Web Application](https://zealous-mushroom-04e38f10f.5.azurestaticapps.net/)
+
+### Sources
 
 Bible source: <https://github.com/thiagobodruk/bible>
 
