@@ -24,14 +24,14 @@ export class SourceCardComponent {
             return "This source has no preview";
         }
 
-        if (preview.length > 100) {
+        if (preview.length > 500) {
             return preview.substring(0, 100) + "...";
         }
         return preview;
     }
 
     public formatTitle(title: string) {
-        if (title.length > 50) {
+        if (title.length > 200) {
             return title.substring(0, 50) + "...";
         }
         return title;
