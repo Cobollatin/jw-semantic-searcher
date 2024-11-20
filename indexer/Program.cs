@@ -76,8 +76,7 @@ const string path = "./data";
 
 var filesInDirectory = Directory.GetFiles(path, "*.json", SearchOption.AllDirectories);
 
-// Define the maximum degree of parallelism for processing files
-int fileParallelism = 4; // Adjust based on your environment and API limits
+int fileParallelism = 4;
 
 await Parallel.ForEachAsync(filesInDirectory, new ParallelOptions
 {
