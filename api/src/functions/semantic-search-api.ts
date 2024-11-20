@@ -23,6 +23,8 @@ const openAiProjectName = process.env["OPENAI_PROJECT_NAME"] || "";
 const openAiProjectId = process.env["OPENAI_PROJECT_ID"] || "";
 const deploymentName = process.env["OPENAI_DEPLOYMENT_NAME"] || "";
 
+const enableSemanticSearch = process.env["ENABLE_SEMANTIC_SEARCH"] || "false";
+
 export async function getSourceSemanticSearch(
     request: HttpRequest,
     context: InvocationContext
@@ -96,8 +98,7 @@ export async function getSourceSemanticSearch(
             includeTotalCount: true,
             select: ["Id", "Title", "Content", "Url"],
             facets: ["Content"],
-            queryType: "semantic",
-            // queryType: "full",
+            queryType: enableSemanticSearch === "true" ? "semantic" : "full",
             top: pageSize,
             skip: pageSize * (page - 1),
             vectorSearchOptions: {
