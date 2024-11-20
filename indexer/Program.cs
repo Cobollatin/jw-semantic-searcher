@@ -16,6 +16,8 @@ string indexName = Environment.GetEnvironmentVariable("AZURE_SEARCH_INDEX_NAME")
 string apiKey = Environment.GetEnvironmentVariable("AZURE_SEARCH_API_KEY") ?? throw new ArgumentNullException("AZURE_SEARCH_API_KEY");
 string semanticConfigName = Environment.GetEnvironmentVariable("AZURE_SEARCH_SEMANTIC_CONFIG_NAME") ?? throw new ArgumentNullException("AZURE_SEARCH_SEMANTIC_CONFIG_NAME");
 
+string enableSemticSearh = Environment.GetEnvironmentVariable("AZURE_SEARCH_SEMANTIC_CONFIG_NAME") ?? throw new ArgumentNullException("ENABLE_SEMANTIC_SEARCH");
+
 var searchService = new AzureSearchService(serviceName, indexName, apiKey);
 
 var fields = new FieldBuilder().Build(typeof(Document));
@@ -60,6 +62,11 @@ var index = new SearchIndex(indexName)
     SemanticSearch = semanticSearch,
     VectorSearch = vectorSearch
 };
+
+if (enableSemticSearh == "false")
+{
+    semanticSearch = null;
+}
 
 string openAiKey = Environment.GetEnvironmentVariable("OPENAI_KEY") ?? throw new ArgumentNullException("OPENAI_KEY");
 string deploymentName = Environment.GetEnvironmentVariable("OPENAI_DEPLOYMENT_NAME") ?? throw new ArgumentNullException("OPENAI_DEPLOYMENT_NAME");

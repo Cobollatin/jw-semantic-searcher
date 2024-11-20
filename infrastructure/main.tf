@@ -278,6 +278,7 @@ resource "azurerm_static_web_app" "use2_main_swa" {
     "OPENAI_PROJECT_ID"                     = var.openai_project_id,
     "OPENAI_ORG_NAME"                       = var.openai_org_name,
     "OPENAI_ORG_ID"                         = var.openai_org_id,
+    "ENABLE_SEMANTIC_SEARCH"                = local.enable_semantic_search_flag
     "APPINSIGHTS_INSTRUMENTATIONKEY"        = azurerm_application_insights.use2_main_swa_ai.instrumentation_key,
     "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.use2_main_swa_ai.connection_string,
   }
@@ -436,6 +437,10 @@ resource "azurerm_user_assigned_identity" "use2_main_sb_identity" {
 ############################################################################################################################
 # Search Service
 
+locals {
+  enable_semantic_search_flag = azurerm_search_service.use2_main_ss.sku == "free" ? "false" : "true"
+}
+
 resource "azurerm_search_service" "use2_main_ss" {
   #checkov:skip=CKV_AZURE_124:We need to allow public access to the search service
   #checkov:skip=CKV_AZURE_208:No replication in free tier
@@ -449,9 +454,9 @@ resource "azurerm_search_service" "use2_main_ss" {
   customer_managed_key_enforcement_enabled = false
   public_network_access_enabled            = true
   local_authentication_enabled             = true
-  sku                                      = "standard"
+  sku                                      = "free"
   tags                                     = var.common_tags
-  semantic_search_sku                      = "free"
+  # semantic_search_sku                      = "free"
   # Error: `semantic_search_sku` can only be specified when `sku` is not set to "free"
   # Resource identity is not supported for the selected SKU
   identity {
@@ -592,6 +597,14 @@ resource "github_actions_secret" "use2_main_openai_org_id" {
   repository      = each.value
   secret_name     = "OPENAI_ORG_ID"
   plaintext_value = var.openai_org_id
+}
+
+resource "github_actions_secret" "use2_main_semantic_seach_flag" {
+  #checkov:skip=CKV_GIT_4:Not sending sensitive data to the repository, encriptions not needed
+  for_each        = toset(concat(var.batch_repositories, [var.swa_repository]))
+  repository      = each.value
+  secret_name     = "ENABLE_SEMANTIC_SEARCH"
+  plaintext_value = local.enable_semantic_search_flag
 }
 
 ############################################################################################################################
