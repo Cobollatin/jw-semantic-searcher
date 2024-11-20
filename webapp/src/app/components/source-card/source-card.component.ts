@@ -25,14 +25,14 @@ export class SourceCardComponent {
         }
 
         if (preview.length > 500) {
-            return preview.substring(0, 100) + "...";
+            return preview.substring(0, 500) + "...";
         }
         return preview;
     }
 
     public formatTitle(title: string) {
         if (title.length > 200) {
-            return title.substring(0, 50) + "...";
+            return title.substring(0, 200) + "...";
         }
         return title;
     }
