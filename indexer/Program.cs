@@ -19,24 +19,24 @@ string semanticConfigName = Environment.GetEnvironmentVariable("AZURE_SEARCH_SEM
 var searchService = new AzureSearchService(serviceName, indexName, apiKey);
 
 var fields = new FieldBuilder().Build(typeof(Document));
-// var semanticSearch = new SemanticSearch()
-// {
-//     Configurations =
-//     {
-//         new SemanticConfiguration(semanticConfigName, new()
-//         {
-//             TitleField = new SemanticField("Title"),
-//             ContentFields =
-//             {
-//                 new SemanticField("Content")
-//             },
-//             KeywordsFields =
-//             {
-//                 new SemanticField("Url")
-//             },
-//         })
-//     }
-// };
+var semanticSearch = new SemanticSearch()
+{
+    Configurations =
+    {
+        new SemanticConfiguration(semanticConfigName, new()
+        {
+            TitleField = new SemanticField("Title"),
+            ContentFields =
+            {
+                new SemanticField("Content")
+            },
+            KeywordsFields =
+            {
+                new SemanticField("Url")
+            },
+        })
+    }
+};
 var vectorSearch = new VectorSearch
 {
     Profiles = {
@@ -57,7 +57,7 @@ var vectorSearch = new VectorSearch
 var index = new SearchIndex(indexName)
 {
     Fields = fields,
-    // SemanticSearch = semanticSearch,
+    SemanticSearch = semanticSearch,
     VectorSearch = vectorSearch
 };
 

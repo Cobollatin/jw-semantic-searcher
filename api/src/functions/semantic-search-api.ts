@@ -96,8 +96,8 @@ export async function getSourceSemanticSearch(
             includeTotalCount: true,
             select: ["Id", "Title", "Content", "Url"],
             facets: ["Content"],
-            // queryType: "semantic",
-            queryType: "full",
+            queryType: "semantic",
+            // queryType: "full",
             top: pageSize,
             skip: pageSize * (page - 1),
             vectorSearchOptions: {
@@ -112,20 +112,20 @@ export async function getSourceSemanticSearch(
                     },
                 ],
             },
-            // semanticSearchOptions: {
-            //     configurationName: semanticSearchConfig,
-            //     errorMode: "partial",
-            //     maxWaitInMilliseconds: 5000,
-            //     answers: {
-            //         answerType: "extractive",
-            //         count: 1,
-            //         threshold: 0.7,
-            //     },
-            //     captions: {
-            //         captionType: "extractive",
-            //         highlight: true,
-            //     },
-            // },
+            semanticSearchOptions: {
+                configurationName: semanticSearchConfig,
+                errorMode: "partial",
+                maxWaitInMilliseconds: 5000,
+                answers: {
+                    answerType: "extractive",
+                    count: 1,
+                    threshold: 0.7,
+                },
+                captions: {
+                    captionType: "extractive",
+                    highlight: true,
+                },
+            },
         });
 
         const results: Array<PartialDocument> = new Array<PartialDocument>();
