@@ -102,7 +102,7 @@ export async function getSourceSemanticSearch(
 
         if (enableSemanticSearch === "true") {
             searchResults = await searchClient.search(query, {
-                includeTotalCount: true,
+                includeTotalCount: false,
                 select: ["Id", "Title", "Content", "Url"],
                 facets: ["Content"],
                 queryType: "semantic",
@@ -137,7 +137,7 @@ export async function getSourceSemanticSearch(
             });
         } else {
             searchResults = await searchClient.search(query, {
-                includeTotalCount: true,
+                includeTotalCount: false,
                 select: ["Id", "Title", "Content", "Url"],
                 facets: ["Content"],
                 queryType: "full",
