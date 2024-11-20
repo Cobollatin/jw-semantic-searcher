@@ -1,17 +1,39 @@
-<header>
-    <h1>Semantic Searcher</h1>
-</header>
-<main>
-    <section class="content">
-        <app-search-box (search)="search($event)" />
-        <app-source-search-results [sources]="sources" *ngIf="ready" />
-        <div class="loader-wrapper" *ngIf="loading">
-            <span class="loader"></span>
-        </div>
-        <ng-container *ngIf="error">
-            <p>Something went wrong. Please try again later.</p>
-            <p>Code: {{ error.code }}</p>
-            <p>Message: {{ error.message }}</p>
-        </ng-container>
-    </section>
-</main>
+<body>
+    <header>
+        <h1>Bible Semantic Searcher</h1>
+    </header>
+
+    <main>
+        <section class="content">
+            <app-search-box (search)="search($event)"></app-search-box>
+            <app-source-search-results
+                [sources]="sources"
+                *ngIf="ready"
+            ></app-source-search-results>
+            <div class="loader-wrapper" *ngIf="loading">
+                <span class="loader"></span>
+            </div>
+            <ng-container *ngIf="error">
+                <div class="error-message">
+                    <p>
+                        <strong>Something went wrong.</strong> Please try again
+                        later.
+                    </p>
+                    <p><strong>Code:</strong> {{ error.code }}</p>
+                    <p><strong>Message:</strong> {{ error.message }}</p>
+                </div>
+            </ng-container>
+        </section>
+    </main>
+
+    <footer>
+        <p>
+            MIT License &copy; 2023
+            <a
+                href="https://github.com/Cobollatin/jw-semantic-searcher"
+                title="Repo"
+                >Repository</a
+            >
+        </p>
+    </footer>
+</body>

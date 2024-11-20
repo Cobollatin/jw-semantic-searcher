@@ -1,10 +1,9 @@
+import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-import { ComponentError, Document } from "./models";
 import { SearchBoxComponent } from "./components/search-box/search-box.component";
 import { SourceSearchResultsComponent } from "./components/source-search-results/source-search-results.component";
+import { ComponentError, Document } from "./models";
 import { SearchSourceService } from "./services/search-source.service";
-import { CommonModule } from "@angular/common";
-import { PaginatedList } from "./models/paginated-list";
 
 @Component({
     standalone: true,
@@ -56,13 +55,12 @@ export class AppComponent {
         this.ready = false;
         this.error = undefined;
         this._searchSourceService.searchSources($event).subscribe({
-            next: (sources: PaginatedList<Document>) => {
-                this.sources = sources.items;
+            next: (sources: Array<Document>) => {
+                this.sources = sources;
                 this.loading = false;
                 this.ready = true;
             },
             error: (error: ComponentError) => {
-                console.error("App component error", error);
                 this.error = error;
                 this.loading = false;
                 this.ready = false;
