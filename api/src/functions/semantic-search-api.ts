@@ -5,7 +5,11 @@ import {
     HttpResponseInit,
     InvocationContext,
 } from "@azure/functions";
-import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
+import {
+    AzureKeyCredential,
+    SearchClient,
+    SearchDocumentsResult,
+} from "@azure/search-documents";
 import OpenAI from "openai";
 import { Document, PartialDocument } from "../models";
 
@@ -91,40 +95,68 @@ export async function getSourceSemanticSearch(
             model: deploymentName,
         });
 
-        const searchResults = await searchClient.search(query, {
-            includeTotalCount: true,
-            select: ["Id", "Title", "Content", "Url"],
-            facets: ["Content"],
-            queryType: enableSemanticSearch === "true" ? "semantic" : "full",
-            top: 25,
-            skip: 0,
-            vectorSearchOptions: {
-                filterMode: "preFilter",
-                queries: [
-                    {
-                        kind: "vector",
-                        kNearestNeighborsCount: 3,
-                        exhaustive: false,
-                        fields: ["DescriptionVector"],
-                        vector: embeddings.data[0].embedding,
+        let searchResults: SearchDocumentsResult<
+            Document,
+            "Id" | "Title" | "Content" | "Url"
+        >;
+
+        if (enableSemanticSearch === "true") {
+            searchResults = await searchClient.search(query, {
+                includeTotalCount: true,
+                select: ["Id", "Title", "Content", "Url"],
+                facets: ["Content"],
+                queryType: "semantic",
+                top: 25,
+                skip: 0,
+                vectorSearchOptions: {
+                    filterMode: "preFilter",
+                    queries: [
+                        {
+                            kind: "vector",
+                            kNearestNeighborsCount: 3,
+                            exhaustive: false,
+                            fields: ["DescriptionVector"],
+                            vector: embeddings.data[0].embedding,
+                        },
+                    ],
+                },
+                semanticSearchOptions: {
+                    configurationName: semanticSearchConfig,
+                    errorMode: "partial",
+                    maxWaitInMilliseconds: 5000,
+                    answers: {
+                        answerType: "extractive",
+                        count: 1,
+                        threshold: 0.7,
                     },
-                ],
-            },
-            semanticSearchOptions: {
-                configurationName: semanticSearchConfig,
-                errorMode: "partial",
-                maxWaitInMilliseconds: 5000,
-                answers: {
-                    answerType: "extractive",
-                    count: 1,
-                    threshold: 0.7,
+                    captions: {
+                        captionType: "extractive",
+                        highlight: true,
+                    },
                 },
-                captions: {
-                    captionType: "extractive",
-                    highlight: true,
+            });
+        } else {
+            searchResults = await searchClient.search(query, {
+                includeTotalCount: true,
+                select: ["Id", "Title", "Content", "Url"],
+                facets: ["Content"],
+                queryType: "full",
+                top: 25,
+                skip: 0,
+                vectorSearchOptions: {
+                    filterMode: "preFilter",
+                    queries: [
+                        {
+                            kind: "vector",
+                            kNearestNeighborsCount: 3,
+                            exhaustive: false,
+                            fields: ["DescriptionVector"],
+                            vector: embeddings.data[0].embedding,
+                        },
+                    ],
                 },
-            },
-        });
+            });
+        }
 
         const results: Array<PartialDocument> = new Array<PartialDocument>();
         for await (const result of searchResults.results) {
